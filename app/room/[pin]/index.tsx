@@ -1,6 +1,7 @@
 import { Button } from "@/components/Button";
 import { Text, View } from "@/components/Themed";
 import { Room } from "@/types/room";
+import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { ScrollView, StyleSheet } from "react-native";
@@ -42,6 +43,9 @@ export default function CreateRoom() {
                 transition={1000}
               />
               <Text style={styles.text}>{user.name}</Text>
+              {user.isHost && (
+                <FontAwesome name="star" size={24} color="gold" />
+              )}
             </View>
           ))}
         </View>
@@ -74,7 +78,8 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 20,
+    width: "100%",
   },
   image: {
     width: 50,

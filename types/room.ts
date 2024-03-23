@@ -7,4 +7,5 @@ export type Room = {
 type User = {
   id: string;
   name: string;
+  isHost: boolean;
 };
