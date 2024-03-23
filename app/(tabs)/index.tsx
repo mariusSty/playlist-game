@@ -4,19 +4,27 @@ import { Button } from "@/components/Button";
 import { Text, View } from "@/components/Themed";
 import { Room } from "@/types/room";
 import { Link, router } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Main() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const [name, setName] = useState("");
 
   async function handlePress() {
+    let uuid = await SecureStore.getItemAsync("uuid");
+    if (!uuid) {
+      uuid = uuidv4();
+      await SecureStore.setItemAsync("uuid", uuid);
+    }
     const res = await fetch(`${apiUrl}/room`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({ name, id: uuid }),
     });
     const room: Room = await res.json();
     router.navigate(`/room/${room.pin}`);
