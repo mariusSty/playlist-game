@@ -1,15 +1,37 @@
 import { Keyboard, Pressable, StyleSheet, TextInput } from "react-native";
 
 import { Button } from "@/components/Button";
-import { Link } from "expo-router";
-import { useState } from "react";
+import { Text } from "@/components/Themed";
+import { router } from "expo-router";
+import { useLayoutEffect, useState } from "react";
 
 export default function Join() {
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const [pin, setPin] = useState("");
+  const [error, setError] = useState("");
+
+  async function handlePress() {
+    const res = await fetch(`${apiUrl}/room/${pin}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ pin }),
+    });
+    const room = await res.json();
+    console.log("room", room);
+    if (room.message) return setError(room.message);
+    router.navigate(`/room/${pin}`);
+  }
+
+  useLayoutEffect(() => {
+    if (error) setError("");
+  }, []);
+
   return (
     <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
       <TextInput
-        style={styles.textInput}
+        style={[styles.textInput, error ? styles.errorTextInput : {}]}
         value={pin}
         maxLength={4}
         onChangeText={setPin}
@@ -17,9 +39,8 @@ export default function Join() {
         placeholderTextColor="rgba(255,255,255,0.3)"
         keyboardType="numeric"
       />
-      <Link href="/room/id/" asChild>
-        <Button text="Join a room" />
-      </Link>
+      {error && <Text style={styles.error}>{error}</Text>}
+      <Button text="Join a room" onPress={handlePress} />
     </Pressable>
   );
 }
@@ -42,5 +63,11 @@ const styles = StyleSheet.create({
     width: "100%",
     borderColor: "white",
     textAlign: "center",
+  },
+  errorTextInput: {
+    borderColor: "red",
+  },
+  error: {
+    color: "red",
   },
 });
