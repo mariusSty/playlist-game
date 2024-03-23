@@ -1,6 +1,6 @@
 import { Button } from "@/components/Button";
 import { Text, View } from "@/components/Themed";
-import { Link } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import { StyleSheet } from "react-native";
 
 const player = [
@@ -19,9 +19,10 @@ const player = [
 ];
 
 export default function CreateRoom() {
+  const { pin } = useLocalSearchParams();
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>PIN : 0000</Text>
+      <Text style={styles.title}>PIN : {pin}</Text>
       <View style={styles.list}>
         {player.map((player, index) => (
           <View key={index}>

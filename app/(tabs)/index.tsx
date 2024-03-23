@@ -2,11 +2,25 @@ import { Keyboard, Pressable, StyleSheet, TextInput } from "react-native";
 
 import { Button } from "@/components/Button";
 import { Text, View } from "@/components/Themed";
-import { Link } from "expo-router";
+import { Room } from "@/types/room";
+import { Link, router } from "expo-router";
 import { useState } from "react";
 
 export default function Main() {
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const [name, setName] = useState("");
+
+  async function handlePress() {
+    const res = await fetch(`${apiUrl}/room`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name }),
+    });
+    const room: Room = await res.json();
+    router.navigate(`/room/${room.pin}`);
+  }
 
   return (
     <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
@@ -28,9 +42,7 @@ export default function Main() {
         darkColor="rgba(255,255,255,0.1)"
       />
       <View style={styles.buttonsContainer}>
-        <Link href="/room/id/" asChild>
-          <Button text="Create a room" />
-        </Link>
+        <Button text="Create a room" onPress={handlePress} />
         <Link href="/room/join" asChild>
           <Button text="Join a room" />
         </Link>
