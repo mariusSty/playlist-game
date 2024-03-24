@@ -1,9 +1,11 @@
 import { Button } from "@/components/Button";
 import { Text, View } from "@/components/Themed";
+import { UserContext } from "@/contexts/user-context";
 import { Room } from "@/types/room";
 import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Link, router, useLocalSearchParams } from "expo-router";
+import { useContext } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import useSwr from "swr";
 
@@ -12,6 +14,7 @@ const fetcher = (...args: any[]) =>
 
 export default function CreateRoom() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+  const { user } = useContext(UserContext);
 
   const { pin } = useLocalSearchParams();
   const { data: room, isLoading } = useSwr<Room>(
@@ -28,6 +31,8 @@ export default function CreateRoom() {
   }
 
   if (!room) router.navigate("/room/join");
+
+  const isHost = room?.users.find((user) => user.isHost)?.id === user.uuid;
 
   return (
     <View style={styles.container}>
@@ -51,9 +56,11 @@ export default function CreateRoom() {
         </View>
       </ScrollView>
       <View style={styles.button}>
-        <Link href="/room/id/round/id/theme" asChild>
-          <Button text="Start game" />
-        </Link>
+        {isHost && (
+          <Link href="/room/id/round/id/theme" asChild>
+            <Button text="Start game" />
+          </Link>
+        )}
       </View>
     </View>
   );
