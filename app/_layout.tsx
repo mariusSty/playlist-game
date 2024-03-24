@@ -1,4 +1,7 @@
+import { useColorScheme } from "@/components/useColorScheme";
+import { User, UserContext } from "@/contexts/user-context";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { faker } from "@faker-js/faker";
 import {
   DarkTheme,
   DefaultTheme,
@@ -6,10 +9,11 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-
-import { useColorScheme } from "@/components/useColorScheme";
+import { useEffect, useState } from "react";
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -50,13 +54,34 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const [user, setUser] = useState<User>({ uuid: null, name: null });
+
+  async function getUserInfos() {
+    let uuidStored = await SecureStore.getItemAsync("uuid");
+    let nameStored = await SecureStore.getItemAsync("name");
+    if (!uuidStored) {
+      uuidStored = uuidv4();
+      await SecureStore.setItemAsync("uuid", uuidStored);
+    }
+    if (!nameStored) {
+      nameStored = faker.animal.cat();
+      await SecureStore.setItemAsync("name", nameStored);
+    }
+    setUser({ uuid: uuidStored, name: nameStored });
+  }
+
+  useEffect(() => {
+    getUserInfos();
+  }, []);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-      </Stack>
+      <UserContext.Provider value={{ user, setUser }}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        </Stack>
+      </UserContext.Provider>
     </ThemeProvider>
   );
 }

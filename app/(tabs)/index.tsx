@@ -2,43 +2,56 @@ import { Keyboard, Pressable, StyleSheet, TextInput } from "react-native";
 
 import { Button } from "@/components/Button";
 import { Text, View } from "@/components/Themed";
+import { UserContext } from "@/contexts/user-context";
 import { Room } from "@/types/room";
+import { Image } from "expo-image";
 import { Link, router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
 
 export default function Main() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  const [name, setName] = useState("");
+  const { user, setUser } = useContext(UserContext);
+  const [nameInput, setNameInput] = useState(user.name || "");
 
   async function handlePress() {
-    let uuid = await SecureStore.getItemAsync("uuid");
-    if (!uuid) {
-      uuid = uuidv4();
-      await SecureStore.setItemAsync("uuid", uuid);
-    }
     const res = await fetch(`${apiUrl}/room`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, id: uuid }),
+      body: JSON.stringify({ name: user.name, id: user.uuid }),
     });
     const room: Room = await res.json();
     router.navigate(`/room/${room.pin}`);
   }
+
+  async function handleChangeName(name: string) {
+    setNameInput(name);
+    setUser({ ...user, name });
+    await SecureStore.setItemAsync("name", name);
+  }
+
+  useEffect(() => {
+    setNameInput(user.name || "");
+  }, [user.name]);
 
   return (
     <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>Playlist Game</Text>
         <View style={styles.nameContainer}>
+          <Image
+            style={styles.image}
+            source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
+            contentFit="cover"
+            transition={1000}
+          />
           <TextInput
             style={styles.textInput}
-            value={name}
-            onChangeText={setName}
+            value={nameInput}
+            onChangeText={handleChangeName}
             placeholder="Your name ..."
             placeholderTextColor="rgba(255,255,255,0.3)"
           />
@@ -62,13 +75,13 @@ export default function Main() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+    alignItems: "stretch",
     justifyContent: "center",
     gap: 20,
+    padding: 40,
   },
   titleContainer: {
     gap: 20,
-    paddingHorizontal: 40,
   },
   title: {
     fontSize: 40,
@@ -77,7 +90,7 @@ const styles = StyleSheet.create({
   nameContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 20,
   },
   nameText: {
     fontSize: 20,
@@ -85,21 +98,23 @@ const styles = StyleSheet.create({
   textInput: {
     borderWidth: 1,
     borderRadius: 10,
-    padding: 10,
+    paddingVertical: 10,
     fontSize: 20,
     color: "white",
-    width: "100%",
     borderColor: "white",
     textAlign: "center",
+    flex: 1,
+  },
+  image: {
+    width: 50,
+    height: 50,
+    borderRadius: 5,
   },
   separator: {
     marginVertical: 30,
     height: 1,
-    width: "80%",
   },
   buttonsContainer: {
     gap: 20,
-    width: "100%",
-    paddingHorizontal: 40,
   },
 });

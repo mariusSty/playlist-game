@@ -2,29 +2,25 @@ import { Keyboard, Pressable, StyleSheet, TextInput } from "react-native";
 
 import { Button } from "@/components/Button";
 import { Text } from "@/components/Themed";
+import { UserContext } from "@/contexts/user-context";
 import { router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
-import { useLayoutEffect, useState } from "react";
+import { useContext, useLayoutEffect, useState } from "react";
 import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
 
 export default function Join() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
 
+  const { user } = useContext(UserContext);
+
   async function handlePress() {
-    let uuid = await SecureStore.getItemAsync("uuid");
-    if (!uuid) {
-      uuid = uuidv4();
-      await SecureStore.setItemAsync("uuid", uuid);
-    }
     const res = await fetch(`${apiUrl}/room/${pin}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ pin, id: uuid }),
+      body: JSON.stringify({ pin, id: user.uuid, name: user.name }),
     });
     const room = await res.json();
     console.log("room", room);

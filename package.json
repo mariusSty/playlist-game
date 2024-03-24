@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.3",
+    "@faker-js/faker": "^8.4.1",
     "@types/react": "~18.2.69",
     "@types/uuid": "^9.0.8",
     "jest": "^29.7.0",

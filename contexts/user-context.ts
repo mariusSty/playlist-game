@@ -1,0 +1,17 @@
+import { createContext, Dispatch, SetStateAction } from "react";
+
+export type User = {
+  uuid: string | null;
+  name: string | null;
+};
+
+export const UserContext = createContext<{
+  user: User;
+  setUser: Dispatch<SetStateAction<User>>;
+}>({
+  user: {
+    uuid: null,
+    name: null,
+  },
+  setUser: () => {},
+});
