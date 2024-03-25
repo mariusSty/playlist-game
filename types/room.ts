@@ -9,3 +9,8 @@ type User = {
   name: string;
   isHost: boolean;
 };
+
+export type Theme = {
+  id: string;
+  description: string;
+};

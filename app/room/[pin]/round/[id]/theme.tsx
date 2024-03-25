@@ -1,9 +1,35 @@
+import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { Text, View } from "@/components/Themed";
-import { Link } from "expo-router";
-import { Pressable, StyleSheet } from "react-native";
+import { Theme } from "@/types/room";
+
+import { StyleSheet, TextInput } from "react-native";
+import useSWR from "swr";
+
+const fetcher = (...args: any[]) =>
+  fetch(...(args as [RequestInfo, RequestInit])).then((res) => res.json());
 
 export default function RoundTheme() {
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+  const { data: themes = [], isLoading } = useSWR<Theme[]>(
+    `${apiUrl}/theme?limit=4`,
+    fetcher
+  );
+
+  function handleChoose() {
+    console.log("Choose theme");
+  }
+
+  if (isLoading) {
+    return (
+      <Container title="Round 1">
+        <View>
+          <Text>Loading...</Text>
+        </View>
+      </Container>
+    );
+  }
+
   return (
     <Container title="Round 1">
       <View>
@@ -11,34 +37,18 @@ export default function RoundTheme() {
         <Text style={styles.counter}>10</Text>
       </View>
       <View style={styles.buttonsContainer}>
-        <View style={styles.button}>
-          <Link href="/room/id/round/id/song" asChild>
-            <Pressable>
-              <Text>Theme 1</Text>
-            </Pressable>
-          </Link>
-        </View>
-        <View style={styles.button}>
-          <Link href="/room/id/round/id/song" asChild>
-            <Pressable>
-              <Text>Theme 2</Text>
-            </Pressable>
-          </Link>
-        </View>
-        <View style={styles.button}>
-          <Link href="/room/id/round/id/song" asChild>
-            <Pressable>
-              <Text>Theme 3</Text>
-            </Pressable>
-          </Link>
-        </View>
-        <View style={styles.button}>
-          <Link href="/room/id/round/id/song" asChild>
-            <Pressable>
-              <Text>Theme 4</Text>
-            </Pressable>
-          </Link>
-        </View>
+        {themes.map((theme) => (
+          <Button
+            key={theme.id}
+            onPress={handleChoose}
+            text={theme.description}
+          />
+        ))}
+        <TextInput
+          style={styles.textInput}
+          placeholder="Write your own theme..."
+          placeholderTextColor="rgba(255,255,255,0.3)"
+        />
       </View>
     </Container>
   );
@@ -57,11 +67,22 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     flexDirection: "row",
     width: "100%",
+    paddingHorizontal: 40,
+    rowGap: 20,
   },
   button: {
     justifyContent: "center",
     alignItems: "center",
     width: "50%",
-    padding: 10,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingVertical: 10,
+    fontSize: 20,
+    color: "white",
+    borderColor: "white",
+    flex: 1,
+    textAlign: "center",
   },
 });

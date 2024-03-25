@@ -4,7 +4,7 @@ import { UserContext } from "@/contexts/user-context";
 import { Room } from "@/types/room";
 import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { Link, router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useContext } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import useSwr from "swr";
@@ -21,6 +21,20 @@ export default function CreateRoom() {
     `${apiUrl}/room/${pin}`,
     fetcher
   );
+
+  async function handleStartGame() {
+    await fetch(`${apiUrl}/game`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        pin,
+      }),
+    });
+
+    router.navigate(`/room/${pin}/round/id/theme`);
+  }
 
   if (isLoading) {
     return (
@@ -56,11 +70,7 @@ export default function CreateRoom() {
         </View>
       </ScrollView>
       <View style={styles.button}>
-        {isHost && (
-          <Link href="/room/id/round/id/theme" asChild>
-            <Button text="Start game" />
-          </Link>
-        )}
+        {isHost && <Button text="Start game" onPress={handleStartGame} />}
       </View>
     </View>
   );
