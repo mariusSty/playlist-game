@@ -1,7 +1,7 @@
-import { Keyboard, Pressable, StyleSheet, TextInput } from "react-native";
+import { Keyboard, Pressable, StyleSheet, View } from "react-native";
 
 import { Button } from "@/components/Button";
-import { Text, View } from "@/components/Themed";
+import { Text, TextInput, View as ThemedView } from "@/components/Themed";
 import { UserContext } from "@/contexts/user-context";
 import { Room } from "@/types/room";
 import { Image } from "expo-image";
@@ -49,15 +49,13 @@ export default function Main() {
             transition={1000}
           />
           <TextInput
-            style={styles.textInput}
             value={nameInput}
             onChangeText={handleChangeName}
-            placeholder="Your name ..."
-            placeholderTextColor="rgba(255,255,255,0.3)"
+            placeholder="Your name..."
           />
         </View>
       </View>
-      <View
+      <ThemedView
         style={styles.separator}
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
@@ -94,16 +92,6 @@ const styles = StyleSheet.create({
   },
   nameText: {
     fontSize: 20,
-  },
-  textInput: {
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingVertical: 10,
-    fontSize: 20,
-    color: "white",
-    borderColor: "white",
-    textAlign: "center",
-    flex: 1,
   },
   image: {
     width: 50,

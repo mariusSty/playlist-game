@@ -1,7 +1,7 @@
-import { Keyboard, Pressable, StyleSheet, TextInput } from "react-native";
+import { Keyboard, Pressable, StyleSheet, View } from "react-native";
 
 import { Button } from "@/components/Button";
-import { Text } from "@/components/Themed";
+import { Text, TextInput } from "@/components/Themed";
 import { UserContext } from "@/contexts/user-context";
 import { router } from "expo-router";
 import { useContext, useLayoutEffect, useState } from "react";
@@ -34,15 +34,15 @@ export default function Join() {
 
   return (
     <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
-      <TextInput
-        style={[styles.textInput, error ? styles.errorTextInput : {}]}
-        value={pin}
-        maxLength={4}
-        onChangeText={setPin}
-        placeholder="Code pin..."
-        placeholderTextColor="rgba(255,255,255,0.3)"
-        keyboardType="numeric"
-      />
+      <View style={styles.textInputContainer}>
+        <TextInput
+          value={pin}
+          maxLength={4}
+          onChangeText={setPin}
+          placeholder="Code pin..."
+          keyboardType="numeric"
+        />
+      </View>
       {error && <Text style={styles.error}>{error}</Text>}
       <Button text="Join a room" onPress={handlePress} />
     </Pressable>
@@ -51,22 +51,14 @@ export default function Join() {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     gap: 20,
     paddingHorizontal: 40,
   },
-  textInput: {
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    fontSize: 20,
-    color: "white",
-    width: "100%",
-    borderColor: "white",
-    textAlign: "center",
+  textInputContainer: {
+    flexDirection: "row",
   },
   errorTextInput: {
     borderColor: "red",

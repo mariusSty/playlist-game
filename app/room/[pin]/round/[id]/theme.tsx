@@ -1,9 +1,9 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
-import { Text, View } from "@/components/Themed";
+import { Text, TextInput } from "@/components/Themed";
 import { Theme } from "@/types/room";
 
-import { StyleSheet, TextInput } from "react-native";
+import { StyleSheet, View } from "react-native";
 import useSWR from "swr";
 
 const fetcher = (...args: any[]) =>
@@ -47,7 +47,6 @@ export default function RoundTheme() {
         <TextInput
           style={styles.textInput}
           placeholder="Write your own theme..."
-          placeholderTextColor="rgba(255,255,255,0.3)"
         />
       </View>
     </Container>
