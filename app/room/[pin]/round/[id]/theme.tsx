@@ -2,6 +2,8 @@ import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { Text, TextInput } from "@/components/Themed";
 import { Theme } from "@/types/room";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
 
 import { StyleSheet, View } from "react-native";
 import useSWR from "swr";
@@ -10,14 +12,23 @@ const fetcher = (...args: any[]) =>
   fetch(...(args as [RequestInfo, RequestInit])).then((res) => res.json());
 
 export default function RoundTheme() {
+  const [counter, setCounter] = useState(10);
+  const [themePicked, setThemePicked] = useState<Theme | null>(null);
+  const [customTheme, setCustomTheme] = useState("");
+
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const { data: themes = [], isLoading } = useSWR<Theme[]>(
     `${apiUrl}/theme?limit=4`,
     fetcher
   );
 
-  function handleChoose() {
-    console.log("Choose theme");
+  function handleChoose(theme: Theme) {
+    setThemePicked(theme);
+  }
+
+  function handleUpdateCustomThemeText(customThemeText: string) {
+    setCustomTheme(customThemeText);
+    setThemePicked(null);
   }
 
   if (isLoading) {
@@ -30,23 +41,36 @@ export default function RoundTheme() {
     );
   }
 
+  useEffect(() => {
+    if (counter > 0) {
+      const timer = setTimeout(() => {
+        setCounter(counter - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      router.replace("/room/id/round/id/song");
+    }
+  }, [counter]);
+
   return (
     <Container title="Round 1">
       <View>
         <Text>Choose the theme</Text>
-        <Text style={styles.counter}>10</Text>
+        <Text style={styles.counter}>{counter}</Text>
       </View>
       <View style={styles.buttonsContainer}>
         {themes.map((theme) => (
           <Button
             key={theme.id}
-            onPress={handleChoose}
+            onPress={() => handleChoose(theme)}
             text={theme.description}
           />
         ))}
         <TextInput
           style={styles.textInput}
           placeholder="Write your own theme..."
+          onChangeText={handleUpdateCustomThemeText}
+          onFocus={() => setThemePicked(null)}
         />
       </View>
     </Container>
@@ -68,6 +92,11 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 40,
     rowGap: 20,
+  },
+  ring: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "red",
   },
   button: {
     justifyContent: "center",
