@@ -1,7 +1,7 @@
-import { Keyboard, Pressable, StyleSheet, View } from "react-native";
+import { Keyboard, Pressable } from "react-native";
 
 import { Button } from "@/components/Button";
-import { Text, TextInput, View as ThemedView } from "@/components/Themed";
+import { Text, TextInput, View } from "@/components/Themed";
 import { UserContext } from "@/contexts/user-context";
 import { Room } from "@/types/room";
 import { Image } from "expo-image";
@@ -38,71 +38,34 @@ export default function Main() {
   }, [user.name]);
 
   return (
-    <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Playlist Game</Text>
-        <View style={styles.nameContainer}>
-          <Image
-            style={styles.image}
-            source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
-            contentFit="cover"
-            transition={1000}
-          />
-          <TextInput
-            value={nameInput}
-            onChangeText={handleChangeName}
-            placeholder="Your name..."
-          />
+    <View className="flex-1">
+      <Pressable
+        className="flex-1 items-stretch justify-center p-10 gap-20"
+        onPress={() => Keyboard.dismiss()}
+      >
+        <View className="gap-5">
+          <Text className="text-5xl font-bold">Playlist Game</Text>
+          <View className="flex-row items-center gap-5">
+            <Image
+              style={{ width: 50, height: 50, borderRadius: 5 }}
+              source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
+              contentFit="cover"
+              transition={1000}
+            />
+            <TextInput
+              value={nameInput}
+              onChangeText={handleChangeName}
+              placeholder="Your name..."
+            />
+          </View>
         </View>
-      </View>
-      <ThemedView
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-      <View style={styles.buttonsContainer}>
-        <Button text="Create a room" onPress={handlePress} />
-        <Link href="/room/join" asChild>
-          <Button text="Join a room" />
-        </Link>
-      </View>
-    </Pressable>
+        <View className="gap-5">
+          <Button text="Create a room" onPress={handlePress} />
+          <Link href="/room/join" asChild>
+            <Button text="Join a room" />
+          </Link>
+        </View>
+      </Pressable>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "stretch",
-    justifyContent: "center",
-    gap: 20,
-    padding: 40,
-  },
-  titleContainer: {
-    gap: 20,
-  },
-  title: {
-    fontSize: 40,
-    fontWeight: "bold",
-  },
-  nameContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 20,
-  },
-  nameText: {
-    fontSize: 20,
-  },
-  image: {
-    width: 50,
-    height: 50,
-    borderRadius: 5,
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-  },
-  buttonsContainer: {
-    gap: 20,
-  },
-});
