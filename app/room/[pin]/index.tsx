@@ -1,12 +1,11 @@
 import { Button } from "@/components/Button";
-import { Text, View } from "@/components/Themed";
 import { UserContext } from "@/contexts/user-context";
 import { Room } from "@/types/room";
 import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import useSwr from "swr";
 
 const fetcher = (...args: any[]) =>
@@ -38,7 +37,7 @@ export default function CreateRoom() {
 
   if (isLoading) {
     return (
-      <View style={styles.container}>
+      <View className="flex-1 justify-around items-center">
         <Text>Loading...</Text>
       </View>
     );
@@ -49,19 +48,19 @@ export default function CreateRoom() {
   const isHost = room?.users.find((user) => user.isHost)?.id === user.uuid;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>PIN : {pin}</Text>
-      <ScrollView style={styles.scrollList}>
-        <View style={styles.list}>
+    <View className="flex-1 justify-around items-center">
+      <Text className="text-5xl font-bold text-white">PIN : {pin}</Text>
+      <ScrollView className="max-h-[50%]">
+        <View className="gap-7">
           {room?.users.map((user, index) => (
-            <View style={styles.item} key={index}>
+            <View key={index} className="flex-row items-center gap-5 w-full">
               <Image
-                style={styles.image}
+                style={{ width: 50, height: 50, borderRadius: 5 }}
                 source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
                 contentFit="cover"
                 transition={1000}
               />
-              <Text style={styles.text}>{user.name}</Text>
+              <Text className="text-white text-3xl">{user.name}</Text>
               {user.isHost && (
                 <FontAwesome name="star" size={24} color="gold" />
               )}
@@ -69,45 +68,9 @@ export default function CreateRoom() {
           ))}
         </View>
       </ScrollView>
-      <View style={styles.button}>
+      <View className="w-full px-10">
         {isHost && <Button text="Start game" onPress={handleStartGame} />}
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "space-around",
-  },
-  title: {
-    fontSize: 40,
-    fontWeight: "bold",
-  },
-  scrollList: {
-    maxHeight: "50%",
-  },
-  list: {
-    gap: 30,
-  },
-  item: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 20,
-    width: "100%",
-  },
-  image: {
-    width: 50,
-    height: 50,
-    borderRadius: 5,
-  },
-  text: {
-    fontSize: 30,
-  },
-  button: {
-    width: "100%",
-    paddingHorizontal: 40,
-  },
-});

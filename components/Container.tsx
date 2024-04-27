@@ -1,5 +1,4 @@
-import { Text, View } from "@/components/Themed";
-import { StyleSheet } from "react-native";
+import { Text, View } from "react-native";
 
 type ContainerProps = {
   children: React.ReactNode;
@@ -8,21 +7,9 @@ type ContainerProps = {
 
 export default function Container({ children, title }: ContainerProps) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+    <View className="flex-1 items-center justify-around">
+      <Text className="text-white text-3xl font-bold">{title}</Text>
       {children}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "space-around",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-});

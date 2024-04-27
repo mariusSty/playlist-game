@@ -1,7 +1,6 @@
 import Container from "@/components/Container";
-import { Text } from "@/components/Themed";
 import { Link } from "expo-router";
-import { Pressable, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 export default function Result() {
   return (

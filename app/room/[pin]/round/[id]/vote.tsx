@@ -1,7 +1,6 @@
 import Container from "@/components/Container";
-import { Text, View } from "@/components/Themed";
 import { Link } from "expo-router";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 const players = [
   {

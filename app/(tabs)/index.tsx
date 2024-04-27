@@ -1,7 +1,6 @@
-import { Keyboard, Pressable } from "react-native";
+import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
 
 import { Button } from "@/components/Button";
-import { Text, TextInput, View } from "@/components/Themed";
 import { UserContext } from "@/contexts/user-context";
 import { Room } from "@/types/room";
 import { Image } from "expo-image";
@@ -56,6 +55,7 @@ export default function Main() {
               value={nameInput}
               onChangeText={handleChangeName}
               placeholder="Your name..."
+              className="border border-white flex-1 rounded-lg py-3 text-xl text-white text-center"
             />
           </View>
         </View>

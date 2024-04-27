@@ -1,11 +1,10 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
-import { Text, TextInput } from "@/components/Themed";
 import { Theme } from "@/types/room";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 
-import { StyleSheet, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 import useSWR from "swr";
 
 const fetcher = (...args: any[]) =>
@@ -54,11 +53,11 @@ export default function RoundTheme() {
 
   return (
     <Container title="Round 1">
-      <View>
-        <Text>Choose the theme</Text>
-        <Text style={styles.counter}>{counter}</Text>
+      <View className="gap-5">
+        <Text className="text-white">Choose the theme</Text>
+        <Text className="text-9xl text-white">{counter}</Text>
       </View>
-      <View style={styles.buttonsContainer}>
+      <View className="flex-wrap flex-row w-full px-10 gap-y-5">
         {themes.map((theme) => (
           <Button
             key={theme.id}
@@ -67,7 +66,7 @@ export default function RoundTheme() {
           />
         ))}
         <TextInput
-          style={styles.textInput}
+          className="w-full text-white text-xl border border-white rounded-lg py-5 text-center"
           placeholder="Write your own theme..."
           onChangeText={handleUpdateCustomThemeText}
           onFocus={() => setThemePicked(null)}
@@ -76,41 +75,3 @@ export default function RoundTheme() {
     </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "space-around",
-  },
-  counter: {
-    fontSize: 100,
-  },
-  buttonsContainer: {
-    flexWrap: "wrap",
-    flexDirection: "row",
-    width: "100%",
-    paddingHorizontal: 40,
-    rowGap: 20,
-  },
-  ring: {
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: "red",
-  },
-  button: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: "50%",
-  },
-  textInput: {
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingVertical: 10,
-    fontSize: 20,
-    color: "white",
-    borderColor: "white",
-    flex: 1,
-    textAlign: "center",
-  },
-});

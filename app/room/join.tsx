@@ -1,7 +1,6 @@
-import { Keyboard, Pressable, StyleSheet, View } from "react-native";
+import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
 
 import { Button } from "@/components/Button";
-import { Text, TextInput } from "@/components/Themed";
 import { UserContext } from "@/contexts/user-context";
 import { router } from "expo-router";
 import { useContext, useLayoutEffect, useState } from "react";
@@ -23,7 +22,7 @@ export default function Join() {
       body: JSON.stringify({ pin, id: user.uuid, name: user.name }),
     });
     const room = await res.json();
-    console.log("room", room);
+
     if (room.message) return setError(room.message);
     router.navigate(`/room/${pin}`);
   }
@@ -33,37 +32,24 @@ export default function Join() {
   }, []);
 
   return (
-    <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
-      <View style={styles.textInputContainer}>
+    <Pressable
+      className="flex-1 items-center justify-center gap-5 px-10"
+      onPress={() => Keyboard.dismiss()}
+    >
+      <View className="flex-row">
         <TextInput
           value={pin}
           maxLength={4}
           onChangeText={setPin}
           placeholder="Code pin..."
           keyboardType="numeric"
+          className={`${
+            error ? "border-red-500" : "border-white"
+          } border flex-1 rounded-lg py-3 text-xl text-white text-center`}
         />
       </View>
-      {error && <Text style={styles.error}>{error}</Text>}
+      {error && <Text className="text-red-500">{error}</Text>}
       <Button text="Join a room" onPress={handlePress} />
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 20,
-    paddingHorizontal: 40,
-  },
-  textInputContainer: {
-    flexDirection: "row",
-  },
-  errorTextInput: {
-    borderColor: "red",
-  },
-  error: {
-    color: "red",
-  },
-});

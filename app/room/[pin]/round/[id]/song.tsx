@@ -1,7 +1,6 @@
 import Container from "@/components/Container";
-import { Text } from "@/components/Themed";
 import { Link } from "expo-router";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const songs = [
   {

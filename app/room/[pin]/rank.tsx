@@ -1,6 +1,5 @@
 import Container from "@/components/Container";
-import { Text } from "@/components/Themed";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
 export default function Rank() {
   return (
