@@ -1,6 +1,7 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { Theme } from "@/types/room";
+import clsx from "clsx";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 
@@ -13,7 +14,6 @@ const fetcher = (...args: any[]) =>
 export default function RoundTheme() {
   const [counter, setCounter] = useState(10);
   const [themePicked, setThemePicked] = useState<Theme | null>(null);
-  const [customTheme, setCustomTheme] = useState("");
 
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const { data: themes = [], isLoading } = useSWR<Theme[]>(
@@ -26,8 +26,10 @@ export default function RoundTheme() {
   }
 
   function handleUpdateCustomThemeText(customThemeText: string) {
-    setCustomTheme(customThemeText);
-    setThemePicked(null);
+    setThemePicked({
+      id: "custom",
+      description: customThemeText,
+    });
   }
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function RoundTheme() {
     <Container title="Round 1">
       <View className="gap-5">
         <Text className="text-white">Choose the theme</Text>
-        <Text className="text-9xl text-white">{counter}</Text>
+        <Text className="text-9xl text-white text-center">{counter}</Text>
       </View>
       <View className="flex-wrap flex-row w-full px-10 gap-y-5">
         {themes.map((theme) => (
@@ -63,10 +65,18 @@ export default function RoundTheme() {
             key={theme.id}
             onPress={() => handleChoose(theme)}
             text={theme.description}
+            classNames={
+              themePicked?.id === theme.id ? "bg-green-500" : "bg-white"
+            }
           />
         ))}
         <TextInput
-          className="w-full text-white text-xl border border-white rounded-lg py-5 text-center"
+          className={clsx(
+            "w-full text-white text-xl border border-white rounded-lg py-5 text-center",
+            themePicked?.id === "custom" &&
+              themePicked.description !== "" &&
+              "border-green-500"
+          )}
           placeholder="Write your own theme..."
           onChangeText={handleUpdateCustomThemeText}
           onFocus={() => setThemePicked(null)}
