@@ -1,34 +1,22 @@
 import Container from "@/components/Container";
 import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 export default function Reveal() {
   return (
     <Container title="Song reveal">
       <View>
-        <Text style={styles.song}>1. Song - Artist</Text>
+        <Text className="text-white text-xl">1. Song - Artist</Text>
       </View>
-      <View style={styles.choose}>
-        <Text style={styles.text}>Choose by</Text>
-        <Text style={styles.song}>Player 1</Text>
+      <View className="gap-5">
+        <Text className="text-white text-xl">Choose by</Text>
+        <Text className="text-white text-xl">Player 1</Text>
         <Link asChild href="/room/id/round/id/result">
           <Pressable>
-            <Text style={styles.text}>+10 points</Text>
+            <Text className="text-white text-xl">+10 points</Text>
           </Pressable>
         </Link>
       </View>
     </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  song: {
-    fontSize: 30,
-  },
-  choose: {
-    gap: 20,
-  },
-  text: {
-    fontSize: 20,
-  },
-});

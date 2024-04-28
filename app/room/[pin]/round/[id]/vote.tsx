@@ -1,6 +1,8 @@
+import { Button } from "@/components/Button";
 import Container from "@/components/Container";
-import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Link, router } from "expo-router";
+import { useEffect, useState } from "react";
+import { Text, View } from "react-native";
 
 const players = [
   {
@@ -22,21 +24,35 @@ const players = [
 ];
 
 export default function Vote() {
+  const [counter, setCounter] = useState(10);
+
+  useEffect(() => {
+    if (counter > 0) {
+      const timer = setTimeout(() => {
+        setCounter(counter - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      router.replace("/room/id/round/id/reveal");
+    }
+  }, [counter]);
+
   return (
     <Container title="Listen and Vote !">
-      <Text style={styles.counter}>10</Text>
-      <View style={styles.list}>
+      <Text className="text-9xl text-white">{counter}</Text>
+      <View className="w-full">
         {players.map((player, index) => (
-          <View style={styles.item} key={index}>
-            <Text style={styles.text}>{index}</Text>
-            <Text style={styles.text} key={index}>
+          <View
+            key={index}
+            className="flex-row w-full gap-5 justify-evenly py-5"
+          >
+            <Text className="text-white text-lg">{index}</Text>
+            <Text className="text-white text-lg" key={index}>
               {player.name}
             </Text>
 
             <Link href="/room/id/round/id/reveal" asChild>
-              <Pressable>
-                <Text style={styles.text}>V</Text>
-              </Pressable>
+              <Button text="v" />
             </Link>
           </View>
         ))}
@@ -44,22 +60,3 @@ export default function Vote() {
     </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  counter: {
-    fontSize: 100,
-  },
-  list: {
-    width: "100%",
-  },
-  item: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    gap: 20,
-    paddingVertical: 20,
-  },
-  text: {
-    fontSize: 20,
-  },
-});
