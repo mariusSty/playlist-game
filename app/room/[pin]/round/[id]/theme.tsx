@@ -65,9 +65,7 @@ export default function RoundTheme() {
             key={theme.id}
             onPress={() => handleChoose(theme)}
             text={theme.description}
-            classNames={
-              themePicked?.id === theme.id ? "bg-green-500" : "bg-white"
-            }
+            classNames={themePicked?.id === theme.id ? "bg-green-500" : ""}
           />
         ))}
         <TextInput

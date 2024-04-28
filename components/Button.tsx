@@ -14,8 +14,7 @@ export const Button = forwardRef(function Button(
 ) {
   return (
     <Pressable
-      className={clsx(["w-full rounded-lg p-5", classNames])}
-      style={{ padding: 20 }}
+      className={clsx(["w-full rounded-lg p-5 bg-white", classNames])}
       ref={ref}
       onPress={onPress}
     >
