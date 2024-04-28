@@ -30,16 +30,6 @@ export default function RoundTheme() {
     setThemePicked(null);
   }
 
-  if (isLoading) {
-    return (
-      <Container title="Round 1">
-        <View>
-          <Text>Loading...</Text>
-        </View>
-      </Container>
-    );
-  }
-
   useEffect(() => {
     if (counter > 0) {
       const timer = setTimeout(() => {
@@ -50,6 +40,16 @@ export default function RoundTheme() {
       router.replace("/room/id/round/id/song");
     }
   }, [counter]);
+
+  if (isLoading) {
+    return (
+      <Container title="Round 1">
+        <View>
+          <Text>Loading...</Text>
+        </View>
+      </Container>
+    );
+  }
 
   return (
     <Container title="Round 1">
