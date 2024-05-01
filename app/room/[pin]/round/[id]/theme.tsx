@@ -39,6 +39,17 @@ export default function RoundTheme() {
       }, 1000);
       return () => clearTimeout(timer);
     } else {
+      if (themePicked?.id === "custom" && themePicked?.description !== "") {
+        fetch(`${apiUrl}/theme`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            description: themePicked?.description,
+          }),
+        });
+      }
       router.replace("/room/id/round/id/song");
     }
   }, [counter]);
