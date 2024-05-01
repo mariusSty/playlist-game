@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { cn } from "@/utils/cn";
 import { forwardRef, Ref } from "react";
 import { Pressable, Text, View } from "react-native";
 
@@ -14,7 +14,7 @@ export const Button = forwardRef(function Button(
 ) {
   return (
     <Pressable
-      className={clsx(["w-full rounded-lg p-5 bg-white", classNames])}
+      className={cn(["w-full rounded-lg p-5 bg-white", classNames])}
       ref={ref}
       onPress={onPress}
     >

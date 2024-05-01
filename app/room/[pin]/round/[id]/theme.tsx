@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { Theme } from "@/types/room";
-import clsx from "clsx";
+import { cn } from "@/utils/cn";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 
@@ -69,7 +69,7 @@ export default function RoundTheme() {
           />
         ))}
         <TextInput
-          className={clsx(
+          className={cn(
             "w-full text-white text-xl border border-white rounded-lg py-5 text-center",
             themePicked?.id === "custom" &&
               themePicked.description !== "" &&
