@@ -1,15 +1,17 @@
+import { UserContext } from "@/contexts/user-context";
 import { User } from "@/types/room";
 import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { io } from "socket.io-client";
 
 const socket = io(`${process.env.EXPO_PUBLIC_API_URL}/rooms`);
 
 export default function CreateRoom() {
   const [users, setUsers] = useState<User[]>([]);
+  const { user } = useContext(UserContext);
   const { pin } = useLocalSearchParams();
 
   useEffect(() => {
@@ -33,12 +35,21 @@ export default function CreateRoom() {
         pin,
       }),
     });
-
     router.navigate(`/room/${pin}/round/id/theme`);
+  }
+
+  function handleLeaveRoom() {
+    if (user.uuid) {
+      socket.emit("leaveRoom", { roomCode: pin, userId: user.uuid });
+    }
+    router.navigate("/");
   }
 
   return (
     <View className="items-center justify-around flex-1">
+      <Pressable className="self-start m-6" onPress={handleLeaveRoom}>
+        <FontAwesome name="arrow-left" size={24} color="white" />
+      </Pressable>
       <Text className="text-5xl font-bold text-white">PIN : {pin}</Text>
       <ScrollView className="max-h-[50%]">
         <View className="gap-7">
