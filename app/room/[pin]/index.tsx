@@ -1,3 +1,4 @@
+import { Button } from "@/components/Button";
 import { UserContext } from "@/contexts/user-context";
 import { User } from "@/types/room";
 import { FontAwesome } from "@expo/vector-icons";
@@ -11,13 +12,15 @@ const socket = io(`${process.env.EXPO_PUBLIC_API_URL}/rooms`);
 
 export default function CreateRoom() {
   const [users, setUsers] = useState<User[]>([]);
+  const [hostId, setHostId] = useState<string | null>(null);
   const { user } = useContext(UserContext);
   const { pin } = useLocalSearchParams();
 
   useEffect(() => {
     socket.emit("joinRoom", { roomCode: pin });
-    socket.on("userList", ({ users }) => {
+    socket.on("userList", ({ users, hostId }) => {
       setUsers(users);
+      setHostId(hostId);
     });
 
     return () => {
@@ -62,13 +65,18 @@ export default function CreateRoom() {
                 transition={1000}
               />
               <Text className="text-3xl text-white">{user.name}</Text>
-              {user.isHost && (
+              {user.id === hostId && (
                 <FontAwesome name="star" size={24} color="gold" />
               )}
             </View>
           ))}
         </View>
       </ScrollView>
+      {user.uuid === hostId && (
+        <View className="w-full p-6">
+          <Button onPress={handleStartGame} text="Start Game" />
+        </View>
+      )}
     </View>
   );
 }

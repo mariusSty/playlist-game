@@ -7,7 +7,6 @@ export type Room = {
 export type User = {
   id: string;
   name: string;
-  isHost: boolean;
 };
 
 export type Theme = {
