@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
-import { Room, Theme } from "@/types/room";
+import { Game, Theme } from "@/types/room";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Text, View } from "react-native";
@@ -24,13 +24,18 @@ export default function RoundTheme() {
     `${apiUrl}/theme?limit=4`,
     fetcher
   );
-  const { data: room, isLoading: isRoomLoading } = useSWR<Room>(
-    !!pin ? `${apiUrl}/room/${pin}` : null,
+  const { data: game, isLoading: isRoomLoading } = useSWR<Game>(
+    `${apiUrl}/game/${pin}`,
     fetcher
   );
 
   function handleChoose(theme: Theme) {
-    socket.emit("pickTheme", { pin, themeId: theme.id });
+    if (game) {
+      socket.emit("pickTheme", {
+        roundId: game.actualRound?.id,
+        themeId: theme.id,
+      });
+    }
   }
 
   useEffect(() => {
@@ -46,8 +51,8 @@ export default function RoundTheme() {
   }, [counter]);
 
   useEffect(() => {
-    socket.on("themePicked", ({ pin }) => {
-      router.navigate(`/room/${pin}/round/1/song`);
+    socket.on("themePicked", ({ roundId }) => {
+      router.navigate(`/room/${pin}/round/${roundId}/song`);
     });
 
     return () => {
@@ -55,7 +60,7 @@ export default function RoundTheme() {
     };
   });
 
-  if (isLoading || isRoomLoading || !room || !user) {
+  if (isLoading || isRoomLoading || !game || !user) {
     return (
       <Container title="Round 1">
         <View>
@@ -65,7 +70,7 @@ export default function RoundTheme() {
     );
   }
 
-  const isHost = room?.host.id === user.id;
+  const isHost = game.actualRound?.themeMaster.id === user.id;
   if (isHost) {
     return (
       <Container title="Round 1">
