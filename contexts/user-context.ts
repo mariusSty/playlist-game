@@ -1,7 +1,7 @@
 import { createContext, Dispatch, SetStateAction } from "react";
 
 export type User = {
-  uuid: string | null;
+  id: string | null;
   name: string | null;
 };
 
@@ -10,7 +10,7 @@ export const UserContext = createContext<{
   setUser: Dispatch<SetStateAction<User>>;
 }>({
   user: {
-    uuid: null,
+    id: null,
     name: null,
   },
   setUser: () => {},

@@ -14,13 +14,13 @@ export default function Main() {
   const { user, setUser } = useContext(UserContext);
   const [nameInput, setNameInput] = useState(user.name || "");
 
-  async function handlePress() {
+  async function handleCreateRoom() {
     const res = await fetch(`${apiUrl}/room`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name: user.name, id: user.uuid }),
+      body: JSON.stringify({ name: user.name, id: user.id }),
     });
     const room: Room = await res.json();
     router.navigate(`/room/${room.pin}`);
@@ -39,7 +39,7 @@ export default function Main() {
   return (
     <View className="flex-1">
       <Pressable
-        className="flex-1 items-stretch justify-center p-10 gap-20"
+        className="items-stretch justify-center flex-1 gap-20 p-10"
         onPress={() => Keyboard.dismiss()}
       >
         <View className="gap-5">
@@ -55,12 +55,12 @@ export default function Main() {
               value={nameInput}
               onChangeText={handleChangeName}
               placeholder="Your name..."
-              className="border border-white flex-1 rounded-lg py-3 text-xl text-white text-center"
+              className="flex-1 py-3 text-xl text-center text-white border border-white rounded-lg"
             />
           </View>
         </View>
         <View className="gap-5">
-          <Button text="Create a room" onPress={handlePress} />
+          <Button text="Create a room" onPress={handleCreateRoom} />
           <Link href="/room/join" asChild>
             <Button text="Join a room" />
           </Link>

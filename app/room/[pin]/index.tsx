@@ -17,34 +17,27 @@ export default function CreateRoom() {
   const { pin } = useLocalSearchParams();
 
   useEffect(() => {
-    socket.emit("joinRoom", { roomCode: pin });
+    socket.emit("joinRoom", { pin });
     socket.on("userList", ({ users, hostId }) => {
       setUsers(users);
       setHostId(hostId);
     });
+    socket.on("gameStarted", ({ pin }) => {
+      router.navigate(`/room/${pin}/round/1/theme`);
+    });
 
     return () => {
       socket.off("userList");
+      socket.off("gameStarted");
     };
   }, []);
 
   async function handleStartGame() {
-    await fetch(`${process.env.EXPO_PUBLIC_API_URL}/game`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        pin,
-      }),
-    });
-    router.navigate(`/room/${pin}/round/id/theme`);
+    socket.emit("startGame", { pin });
   }
 
   function handleLeaveRoom() {
-    if (user.uuid) {
-      socket.emit("leaveRoom", { roomCode: pin, userId: user.uuid });
-    }
+    socket.emit("leaveRoom", { pin, userId: user.id });
     router.navigate("/");
   }
 
@@ -72,7 +65,7 @@ export default function CreateRoom() {
           ))}
         </View>
       </ScrollView>
-      {user.uuid === hostId && (
+      {user.id === hostId && (
         <View className="w-full p-6">
           <Button onPress={handleStartGame} text="Start Game" />
         </View>

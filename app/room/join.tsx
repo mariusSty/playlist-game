@@ -19,7 +19,7 @@ export default function Join() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ pin, id: user.uuid, name: user.name }),
+      body: JSON.stringify({ pin, id: user.id, name: user.name }),
     });
     const room = await res.json();
 
@@ -33,7 +33,7 @@ export default function Join() {
 
   return (
     <Pressable
-      className="flex-1 items-center justify-center gap-5 px-10"
+      className="items-center justify-center flex-1 gap-5 px-10"
       onPress={() => Keyboard.dismiss()}
     >
       <View className="flex-row">

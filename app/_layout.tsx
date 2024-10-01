@@ -56,7 +56,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  const [user, setUser] = useState<User>({ uuid: null, name: null });
+  const [user, setUser] = useState<User>({ id: null, name: null });
 
   async function getUserInfos() {
     let uuidStored = await SecureStore.getItemAsync("uuid");
@@ -69,7 +69,7 @@ function RootLayoutNav() {
       nameStored = faker.animal.cat();
       await SecureStore.setItemAsync("name", nameStored);
     }
-    setUser({ uuid: uuidStored, name: nameStored });
+    setUser({ id: uuidStored, name: nameStored });
   }
 
   useEffect(() => {
