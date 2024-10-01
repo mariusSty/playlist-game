@@ -15,7 +15,6 @@ const fetcher = (...args: any[]) =>
 
 export default function RoundTheme() {
   const [counter, setCounter] = useState(10);
-  const [themePicked, setThemePicked] = useState<Theme | null>(null);
   const { user } = useContext(UserContext);
   const { pin } = useLocalSearchParams();
 
@@ -84,7 +83,6 @@ export default function RoundTheme() {
               key={theme.id}
               onPress={() => handleChoose(theme)}
               text={theme.description}
-              classNames={themePicked?.id === theme.id ? "bg-green-500" : ""}
             />
           ))}
         </View>
