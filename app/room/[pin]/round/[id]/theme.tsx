@@ -2,6 +2,7 @@ import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { Game, Theme } from "@/types/room";
+import { fetcher } from "@/utils/swr";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Text, View } from "react-native";
@@ -9,9 +10,6 @@ import { io } from "socket.io-client";
 import useSWR from "swr";
 
 const socket = io(`${process.env.EXPO_PUBLIC_API_URL}/rooms`);
-
-const fetcher = (...args: any[]) =>
-  fetch(...(args as [RequestInfo, RequestInit])).then((res) => res.json());
 
 export default function RoundTheme() {
   const [counter, setCounter] = useState(10);
