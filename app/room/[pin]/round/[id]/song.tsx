@@ -1,19 +1,42 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
+import { UserContext } from "@/contexts/user-context";
 import { Game } from "@/types/room";
 import { apiUrl, fetcher } from "@/utils/swr";
-import { Link, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useContext, useEffect, useState } from "react";
 import { Text, TextInput, View } from "react-native";
+import { io } from "socket.io-client";
 import useSWR from "swr";
+
+const socket = io(`${process.env.EXPO_PUBLIC_API_URL}/rooms`);
 
 export default function Song() {
   const [song, setSong] = useState("");
-  const { pin } = useLocalSearchParams();
+  const { pin, id } = useLocalSearchParams();
   const { data: game, isLoading } = useSWR<Game>(
     `${apiUrl}/game/${pin}`,
     fetcher
   );
+  const { user } = useContext(UserContext);
+
+  function handleValidSong() {
+    socket.emit("validSong", {
+      song: {
+        title: song,
+        artist: "",
+        url: "",
+      },
+      roundId: game?.actualRound?.id,
+      userId: user.id,
+    });
+  }
+
+  useEffect(() => {
+    socket.on("nextRound", () => {
+      router.navigate(`/room/${pin}/round/${id}/vote`);
+    });
+  }, []);
 
   if (isLoading) return;
 
@@ -31,9 +54,7 @@ export default function Song() {
         />
       </View>
       <View>
-        <Link href="/room/id/round/id/vote" asChild>
-          <Button text="Valid song" />
-        </Link>
+        <Button text="Valid song" onPress={handleValidSong} />
       </View>
     </Container>
   );
