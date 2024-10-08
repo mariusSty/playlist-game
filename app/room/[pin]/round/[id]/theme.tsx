@@ -3,8 +3,8 @@ import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { Game, Theme } from "@/types/room";
 import { fetcher } from "@/utils/swr";
-import { router, useLocalSearchParams } from "expo-router";
-import { useContext, useEffect, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useContext, useState } from "react";
 import { Text, View } from "react-native";
 import { io } from "socket.io-client";
 import useSWR from "swr";
@@ -35,27 +35,31 @@ export default function RoundTheme() {
     }
   }
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (counter > 0) {
-        setCounter(counter - 1);
-      } else {
-        handleChoose(themes[Math.round(Math.random() * themes.length)]);
-        clearTimeout(timer);
-      }
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [counter]);
+  useFocusEffect(
+    useCallback(() => {
+      const timer = setTimeout(() => {
+        if (counter > 0) {
+          setCounter(counter - 1);
+        } else {
+          handleChoose(themes[Math.round(Math.random() * themes.length)]);
+          clearTimeout(timer);
+        }
+      }, 1000);
+      return () => clearTimeout(timer);
+    }, [counter])
+  );
 
-  useEffect(() => {
-    socket.on("themePicked", ({ roundId }) => {
-      router.navigate(`/room/${pin}/round/${roundId}/song`);
-    });
+  useFocusEffect(
+    useCallback(() => {
+      socket.on("themePicked", ({ roundId }) => {
+        router.navigate(`/room/${pin}/round/${roundId}/song`);
+      });
 
-    return () => {
-      socket.off("themePicked");
-    };
-  });
+      return () => {
+        socket.off("themePicked");
+      };
+    }, [])
+  );
 
   if (isLoading || isRoomLoading || !game || !user) {
     return (

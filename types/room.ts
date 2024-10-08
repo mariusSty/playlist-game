@@ -28,3 +28,17 @@ export type Theme = {
   id: number;
   description: string;
 };
+
+export type Pick = {
+  id: number;
+  round: Round;
+  song: Song;
+  user: User;
+};
+
+export type Song = {
+  id: number;
+  title: string;
+  artist: string;
+  url: string;
+};
