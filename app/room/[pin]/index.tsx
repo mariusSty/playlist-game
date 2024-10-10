@@ -1,14 +1,12 @@
 import { Button } from "@/components/Button";
 import { UserContext } from "@/contexts/user-context";
 import { User } from "@/types/room";
+import { socket } from "@/utils/server";
 import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
-import { io } from "socket.io-client";
-
-const socket = io(`${process.env.EXPO_PUBLIC_API_URL}/rooms`);
 
 export default function CreateRoom() {
   const [users, setUsers] = useState<User[]>([]);

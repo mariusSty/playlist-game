@@ -1,18 +1,25 @@
 import Container from "@/components/Container";
+import { UserContext } from "@/contexts/user-context";
 import { Pick, Room } from "@/types/room";
-import { apiUrl, fetcher } from "@/utils/swr";
+import { apiUrl, fetcher, socket } from "@/utils/server";
 import { useLocalSearchParams } from "expo-router";
+import { useContext } from "react";
 import { Pressable, Text, View } from "react-native";
 import useSWR from "swr";
 
 export default function Vote() {
   const { pin, id } = useLocalSearchParams();
+  const { user } = useContext(UserContext);
   const { data: room = { users: [] } } = useSWR<Room>(
     `${apiUrl}/room/${pin}`,
     fetcher
   );
 
   const { data } = useSWR<Pick>(`${apiUrl}/game/${pin}/pick`, fetcher);
+
+  function handleVote(pickId: string) {
+    socket.emit("vote", { pickId, userId: user.id, roundId: id });
+  }
 
   return (
     <Container title="Listen and Vote !">
@@ -26,7 +33,10 @@ export default function Vote() {
           <Text className="text-lg text-white" key={index}>
             {player.name}
           </Text>
-          <Pressable className="p-5 bg-white rounded-lg">
+          <Pressable
+            className="p-5 bg-white rounded-lg"
+            onPress={() => handleVote(player.id)}
+          >
             <Text>Vote</Text>
           </Pressable>
         </View>

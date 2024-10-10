@@ -2,14 +2,11 @@ import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { Game } from "@/types/room";
-import { apiUrl, fetcher } from "@/utils/swr";
+import { apiUrl, fetcher, socket } from "@/utils/server";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Text, TextInput, View } from "react-native";
-import { io } from "socket.io-client";
 import useSWR from "swr";
-
-const socket = io(`${process.env.EXPO_PUBLIC_API_URL}/rooms`);
 
 export default function Song() {
   const [song, setSong] = useState("");
