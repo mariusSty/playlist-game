@@ -1,21 +1,17 @@
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
-import { Pick, Room } from "@/types/room";
-import { apiUrl, fetcher, socket } from "@/utils/server";
+import { useGameRoom, useGameVotes } from "@/hooks/useGame";
+import { socket } from "@/utils/server";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
-import useSWR from "swr";
 
 export default function Vote() {
   const { pin, id } = useLocalSearchParams();
   const { user } = useContext(UserContext);
-  const { data: room = { users: [] } } = useSWR<Room>(
-    `${apiUrl}/room/${pin}`,
-    fetcher
-  );
+  const { room } = useGameRoom(pin.toString());
+  const { votes } = useGameVotes(pin.toString());
 
-  const { data } = useSWR<Pick>(`${apiUrl}/game/${pin}/votes`, fetcher);
   useEffect(() => {
     socket.on("userVoted", () => {
       router.navigate(`/room/${pin}/round/${id}/reveal`);
@@ -28,8 +24,8 @@ export default function Vote() {
 
   return (
     <Container title="Listen and Vote !">
-      <Text className="text-white text-9xl">{data?.song.title}</Text>
-      {room.users.map((player, index) => (
+      <Text className="text-white text-9xl">{votes?.song.title}</Text>
+      {room?.users.map((player, index) => (
         <View
           key={index}
           className="flex-row items-center w-full gap-5 py-5 justify-evenly"

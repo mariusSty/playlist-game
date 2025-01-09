@@ -1,21 +1,16 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
-import { Game } from "@/types/room";
-import { apiUrl, fetcher, socket } from "@/utils/server";
+import { useGame } from "@/hooks/useGame";
+import { socket } from "@/utils/server";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Text, TextInput, View } from "react-native";
-import useSWR from "swr";
 
 export default function Song() {
   const [song, setSong] = useState("");
   const { pin, id } = useLocalSearchParams();
-  const {
-    data: game,
-    isLoading,
-    mutate,
-  } = useSWR<Game>(`${apiUrl}/game/${pin}`, fetcher);
+  const { game, isGameLoading, mutate } = useGame(pin.toString());
   const { user } = useContext(UserContext);
 
   useFocusEffect(
@@ -42,8 +37,8 @@ export default function Song() {
     });
   }, []);
 
-  if (isLoading) return;
-  console.log(game);
+  if (isGameLoading) return;
+
   const title = `Theme is ${game?.actualRound?.theme?.description || "..."}`;
 
   return (

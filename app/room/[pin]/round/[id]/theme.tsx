@@ -1,27 +1,21 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
-import { Game, Theme } from "@/types/room";
-import { fetcher, socket } from "@/utils/server";
+import { useGame } from "@/hooks/useGame";
+import { useTheme } from "@/hooks/useTheme";
+import { Theme } from "@/types/room";
+import { socket } from "@/utils/server";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useState } from "react";
 import { Text, View } from "react-native";
-import useSWR from "swr";
 
 export default function RoundTheme() {
   const [counter, setCounter] = useState(10);
   const { user } = useContext(UserContext);
   const { pin } = useLocalSearchParams();
 
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  const { data: themes = [], isLoading } = useSWR<Theme[]>(
-    `${apiUrl}/theme?limit=4`,
-    fetcher
-  );
-  const { data: game, isLoading: isRoomLoading } = useSWR<Game>(
-    `${apiUrl}/game/${pin}`,
-    fetcher
-  );
+  const { themes, isThemeLoading } = useTheme();
+  const { game, isGameLoading } = useGame(pin.toString());
 
   function handleChoose(theme: Theme) {
     if (game) {
@@ -58,7 +52,7 @@ export default function RoundTheme() {
     }, [])
   );
 
-  if (isLoading || isRoomLoading || !game || !user) {
+  if (isThemeLoading || isGameLoading || !game || !user) {
     return (
       <Container title="Round 1">
         <View>
