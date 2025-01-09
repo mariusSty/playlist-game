@@ -3,19 +3,26 @@ import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { Game } from "@/types/room";
 import { apiUrl, fetcher, socket } from "@/utils/server";
-import { router, useLocalSearchParams } from "expo-router";
-import { useContext, useEffect, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Text, TextInput, View } from "react-native";
 import useSWR from "swr";
 
 export default function Song() {
   const [song, setSong] = useState("");
   const { pin, id } = useLocalSearchParams();
-  const { data: game, isLoading } = useSWR<Game>(
-    `${apiUrl}/game/${pin}`,
-    fetcher
-  );
+  const {
+    data: game,
+    isLoading,
+    mutate,
+  } = useSWR<Game>(`${apiUrl}/game/${pin}`, fetcher);
   const { user } = useContext(UserContext);
+
+  useFocusEffect(
+    useCallback(() => {
+      mutate();
+    }, [])
+  );
 
   function handleValidSong() {
     socket.emit("validSong", {
@@ -36,7 +43,7 @@ export default function Song() {
   }, []);
 
   if (isLoading) return;
-
+  console.log(game);
   const title = `Theme is ${game?.actualRound?.theme?.description || "..."}`;
 
   return (
