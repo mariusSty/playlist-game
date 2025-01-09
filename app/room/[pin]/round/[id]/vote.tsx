@@ -2,8 +2,8 @@ import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { Pick, Room } from "@/types/room";
 import { apiUrl, fetcher, socket } from "@/utils/server";
-import { useLocalSearchParams } from "expo-router";
-import { useContext } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useContext, useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
 import useSWR from "swr";
 
@@ -17,8 +17,14 @@ export default function Vote() {
 
   const { data } = useSWR<Pick>(`${apiUrl}/game/${pin}/pick`, fetcher);
 
-  function handleVote(pickId: string) {
-    socket.emit("vote", { pickId, userId: user.id, roundId: id });
+  useEffect(() => {
+    socket.on("userVoted", () => {
+      router.navigate(`/room/${pin}/round/${id}/reveal`);
+    });
+  }, []);
+
+  function handleVote(guessId: string) {
+    socket.emit("vote", { guessId, userId: user.id, roundId: id });
   }
 
   return (
