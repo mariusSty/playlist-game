@@ -15,8 +15,7 @@ export default function Vote() {
     fetcher
   );
 
-  const { data } = useSWR<Pick>(`${apiUrl}/game/${pin}/pick`, fetcher);
-
+  const { data } = useSWR<Pick>(`${apiUrl}/game/${pin}/votes`, fetcher);
   useEffect(() => {
     socket.on("userVoted", () => {
       router.navigate(`/room/${pin}/round/${id}/reveal`);
