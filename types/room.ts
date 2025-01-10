@@ -14,31 +14,18 @@ export type User = {
 export type Game = {
   id: number;
   isFinished: boolean;
-  round: Round[];
-  actualRound?: Round;
+  rounds: Round[];
 };
 
 export type Round = {
   id: number;
-  theme: Theme;
+  theme: string;
   themeMaster: User;
-};
-
-export type Theme = {
-  id: number;
-  description: string;
 };
 
 export type Pick = {
   id: number;
   round: Round;
-  song: Song;
+  song: string;
   user: User;
-};
-
-export type Song = {
-  id: number;
-  title: string;
-  artist: string;
-  url: string;
 };

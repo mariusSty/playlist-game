@@ -2,9 +2,10 @@ import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { useGame } from "@/hooks/useGame";
+import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useContext, useState } from "react";
 import { Text, TextInput, View } from "react-native";
 
 export default function Song() {
@@ -21,25 +22,15 @@ export default function Song() {
 
   function handleValidSong() {
     socket.emit("validSong", {
-      song: {
-        title: song,
-        artist: "",
-        url: "",
-      },
-      roundId: game?.actualRound?.id,
+      song,
+      roundId: id,
       userId: user.id,
     });
   }
 
-  useEffect(() => {
-    socket.on("nextRound", () => {
-      router.navigate(`/room/${pin}/round/${id}/vote`);
-    });
-  }, []);
+  if (isGameLoading || !game) return;
 
-  if (isGameLoading) return;
-
-  const title = `Theme is ${game?.actualRound?.theme?.description || "..."}`;
+  const title = `Theme is ${getCurrentRound(game, Number(id))?.theme || "..."}`;
 
   return (
     <Container title={title}>

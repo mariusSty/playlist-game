@@ -2,26 +2,32 @@ import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { useGame } from "@/hooks/useGame";
-import { useTheme } from "@/hooks/useTheme";
-import { Theme } from "@/types/room";
+import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useState } from "react";
 import { Text, View } from "react-native";
 
+const themes = [
+  "Son qui te rappelle ton enfance",
+  "Son pour danser",
+  "Son pour dormir",
+  "Son que tu écoutes en boucle",
+  "Gulty pleasure",
+];
+
 export default function RoundTheme() {
   const [counter, setCounter] = useState(10);
   const { user } = useContext(UserContext);
-  const { pin } = useLocalSearchParams();
+  const { pin, id } = useLocalSearchParams();
 
-  const { themes, isThemeLoading } = useTheme();
   const { game, isGameLoading } = useGame(pin.toString());
 
-  function handleChoose(theme: Theme) {
+  function handleChoose(theme: string) {
     if (game) {
       socket.emit("pickTheme", {
-        roundId: game.actualRound?.id,
-        themeId: theme.id,
+        roundId: id,
+        theme,
       });
     }
   }
@@ -52,7 +58,7 @@ export default function RoundTheme() {
     }, [])
   );
 
-  if (isThemeLoading || isGameLoading || !game || !user) {
+  if (isGameLoading || !game || !user) {
     return (
       <Container title="Round 1">
         <View>
@@ -62,8 +68,10 @@ export default function RoundTheme() {
     );
   }
 
-  const isHost = game.actualRound?.themeMaster.id === user.id;
-  if (isHost) {
+  const isThemeMaster =
+    getCurrentRound(game, Number(id))?.themeMaster.id === user.id;
+
+  if (isThemeMaster) {
     return (
       <Container title="Round 1">
         <View className="gap-5">
@@ -71,11 +79,11 @@ export default function RoundTheme() {
           <Text className="text-center text-white text-9xl">{counter}</Text>
         </View>
         <View className="flex-row flex-wrap w-full px-10 gap-y-5">
-          {themes.map((theme) => (
+          {themes.map((theme, index) => (
             <Button
-              key={theme.id}
+              key={index}
               onPress={() => handleChoose(theme)}
-              text={theme.description}
+              text={theme}
             />
           ))}
         </View>
