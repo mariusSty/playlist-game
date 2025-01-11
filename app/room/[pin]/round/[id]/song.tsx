@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
-import { useGame, useRoom } from "@/hooks/useGame";
+import { useGame } from "@/hooks/useGame";
 import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -11,19 +11,18 @@ import { Text, TextInput, View } from "react-native";
 export default function Song() {
   const [song, setSong] = useState("");
   const { pin, id } = useLocalSearchParams();
-  const { game, isGameLoading, mutate } = useGame(pin.toString());
-  const { room } = useRoom(pin.toString());
+  const { game, isGameLoading, mutate: mutateGame } = useGame(pin.toString());
   const { user } = useContext(UserContext);
 
   useFocusEffect(
     useCallback(() => {
-      mutate();
+      mutateGame();
     }, [])
   );
 
   useEffect(() => {
     socket.on("songValidated", (data) => {
-      if (room?.users.length === data.picks) {
+      if (data.allValidated) {
         router.navigate(`/room/${pin}/round/${id}/vote`);
       }
     });
@@ -38,6 +37,7 @@ export default function Song() {
       song,
       roundId: id,
       userId: user.id,
+      pin,
     });
   }
 
