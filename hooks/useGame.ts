@@ -12,7 +12,7 @@ export function useGame(pin: string) {
   return { game, isGameLoading, mutate };
 }
 
-export function useGameRoom(pin: string) {
+export function useRoom(pin: string) {
   const {
     data: room,
     isLoading: isRoomLoading,
@@ -22,7 +22,7 @@ export function useGameRoom(pin: string) {
   return { room, isRoomLoading, mutate };
 }
 
-export function useGameVotes(pin: string) {
+export function useVotes(pin: string) {
   const {
     data: votes,
     isLoading: isVotesLoading,

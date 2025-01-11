@@ -1,6 +1,6 @@
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
-import { useGameRoom, useGameVotes } from "@/hooks/useGame";
+import { useRoom, useVotes } from "@/hooks/useGame";
 import { socket } from "@/utils/server";
 import { useLocalSearchParams } from "expo-router";
 import { useContext } from "react";
@@ -9,8 +9,8 @@ import { Pressable, Text, View } from "react-native";
 export default function Vote() {
   const { pin, id } = useLocalSearchParams();
   const { user } = useContext(UserContext);
-  const { room } = useGameRoom(pin.toString());
-  const { votes } = useGameVotes(pin.toString());
+  const { room } = useRoom(pin.toString());
+  const { votes } = useVotes(pin.toString());
 
   function handleVote(guessId: string) {
     socket.emit("vote", { guessId, userId: user.id, roundId: id });

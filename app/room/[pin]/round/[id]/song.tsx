@@ -1,17 +1,18 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
-import { useGame } from "@/hooks/useGame";
+import { useGame, useRoom } from "@/hooks/useGame";
 import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useContext, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Text, TextInput, View } from "react-native";
 
 export default function Song() {
   const [song, setSong] = useState("");
   const { pin, id } = useLocalSearchParams();
   const { game, isGameLoading, mutate } = useGame(pin.toString());
+  const { room } = useRoom(pin.toString());
   const { user } = useContext(UserContext);
 
   useFocusEffect(
@@ -19,6 +20,18 @@ export default function Song() {
       mutate();
     }, [])
   );
+
+  useEffect(() => {
+    socket.on("songValidated", (data) => {
+      if (room?.users.length === data.picks) {
+        router.navigate(`/room/${pin}/round/${id}/vote`);
+      }
+    });
+
+    return () => {
+      socket.off("songValidated");
+    };
+  }, []);
 
   function handleValidSong() {
     socket.emit("validSong", {
