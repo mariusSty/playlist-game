@@ -7,13 +7,13 @@ import { useContext } from "react";
 import { Pressable, Text, View } from "react-native";
 
 export default function Vote() {
-  const { pin, id } = useLocalSearchParams();
+  const { pin } = useLocalSearchParams();
   const { user } = useContext(UserContext);
   const { room } = useRoom(pin.toString());
   const { votes } = useVotes(pin.toString());
 
   function handleVote(guessId: string) {
-    socket.emit("vote", { guessId, userId: user.id, roundId: id });
+    socket.emit("vote", { guessId, userId: user.id, pickId: votes?.id });
   }
 
   return (
