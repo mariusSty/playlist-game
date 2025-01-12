@@ -25,6 +25,8 @@ export default function Vote() {
     socket.on("voteValidated", (data) => {
       if (data.pickId) {
         router.navigate(`/room/${pin}/round/${id}/pick/${data.pickId}`);
+      } else {
+        router.navigate(`/room/${pin}/round/${id}/reveal`);
       }
     });
 

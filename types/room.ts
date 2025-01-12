@@ -21,6 +21,7 @@ export type Round = {
   id: number;
   theme: string;
   themeMaster: User;
+  picks: Pick[];
 };
 
 export type Pick = {
@@ -28,4 +29,11 @@ export type Pick = {
   round: Round;
   song: string;
   user: User;
+  votes: Vote[];
+};
+
+export type Vote = {
+  id: number;
+  guessUser: User;
+  guessedUser: User;
 };

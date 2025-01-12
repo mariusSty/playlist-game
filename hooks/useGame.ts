@@ -1,4 +1,4 @@
-import { Game, Pick, Room } from "@/types/room";
+import { Game, Pick, Room, Round } from "@/types/room";
 import { apiUrl, fetcher } from "@/utils/server";
 import useSWR from "swr";
 
@@ -10,6 +10,16 @@ export function useGame(pin: string) {
   } = useSWR<Game>(`${apiUrl}/game/${pin}`, fetcher);
 
   return { game, isGameLoading, mutateGame };
+}
+
+export function useRound(roundId: string) {
+  const {
+    data: round,
+    isLoading: isRoundLoading,
+    mutate: mutateRound,
+  } = useSWR<Round>(`${apiUrl}/game/round/${roundId}`, fetcher);
+
+  return { round, isRoundLoading, mutateRound };
 }
 
 export function useRoom(pin: string) {
