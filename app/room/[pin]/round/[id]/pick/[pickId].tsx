@@ -1,24 +1,41 @@
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
-import { useRoom, useVotes } from "@/hooks/useGame";
+import { usePick, useRoom } from "@/hooks/useGame";
 import { socket } from "@/utils/server";
-import { useLocalSearchParams } from "expo-router";
-import { useContext } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useContext, useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
 
 export default function Vote() {
-  const { pin } = useLocalSearchParams();
+  const { pin, id, pickId } = useLocalSearchParams();
   const { user } = useContext(UserContext);
   const { room } = useRoom(pin.toString());
-  const { votes } = useVotes(pin.toString());
+  const { pick } = usePick(pickId.toString());
 
   function handleVote(guessId: string) {
-    socket.emit("vote", { guessId, userId: user.id, pickId: votes?.id });
+    socket.emit("vote", {
+      guessId,
+      userId: user.id,
+      pickId,
+      pin,
+    });
   }
+
+  useEffect(() => {
+    socket.on("voteValidated", (data) => {
+      if (data.pickId) {
+        router.navigate(`/room/${pin}/round/${id}/pick/${data.pickId}`);
+      }
+    });
+
+    return () => {
+      socket.off("voteValidated");
+    };
+  }, []);
 
   return (
     <Container title="Listen and Vote !">
-      <Text className="text-white text-9xl">{votes?.song}</Text>
+      <Text className="text-white text-9xl">{pick?.song}</Text>
       {room?.users.map((player, index) => (
         <View
           key={index}

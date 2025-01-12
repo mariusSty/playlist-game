@@ -11,7 +11,7 @@ import { Text, TextInput, View } from "react-native";
 export default function Song() {
   const [song, setSong] = useState("");
   const { pin, id } = useLocalSearchParams();
-  const { game, isGameLoading, mutate: mutateGame } = useGame(pin.toString());
+  const { game, isGameLoading, mutateGame } = useGame(pin.toString());
   const { user } = useContext(UserContext);
 
   useFocusEffect(
@@ -22,8 +22,8 @@ export default function Song() {
 
   useEffect(() => {
     socket.on("songValidated", (data) => {
-      if (data.allValidated) {
-        router.navigate(`/room/${pin}/round/${id}/vote`);
+      if (data.pickId) {
+        router.navigate(`/room/${pin}/round/${id}/pick/${data.pickId}`);
       }
     });
 

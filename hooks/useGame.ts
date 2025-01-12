@@ -6,28 +6,28 @@ export function useGame(pin: string) {
   const {
     data: game,
     isLoading: isGameLoading,
-    mutate,
+    mutate: mutateGame,
   } = useSWR<Game>(`${apiUrl}/game/${pin}`, fetcher);
 
-  return { game, isGameLoading, mutate };
+  return { game, isGameLoading, mutateGame };
 }
 
 export function useRoom(pin: string) {
   const {
     data: room,
     isLoading: isRoomLoading,
-    mutate,
+    mutate: mutateRoom,
   } = useSWR<Room>(`${apiUrl}/room/${pin}`, fetcher);
 
-  return { room, isRoomLoading, mutate };
+  return { room, isRoomLoading, mutateRoom };
 }
 
-export function useVotes(pin: string) {
+export function usePick(pickId: string) {
   const {
-    data: votes,
-    isLoading: isVotesLoading,
-    mutate,
-  } = useSWR<Pick>(`${apiUrl}/game/${pin}/votes`, fetcher);
+    data: pick,
+    isLoading: isPickLoading,
+    mutate: mutatePick,
+  } = useSWR<Pick>(`${apiUrl}/game/pick/${pickId}`, fetcher);
 
-  return { votes, isVotesLoading, mutate };
+  return { pick, isPickLoading, mutatePick };
 }
