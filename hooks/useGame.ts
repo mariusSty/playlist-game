@@ -37,7 +37,7 @@ export function usePick(pickId: string) {
     data: pick,
     isLoading: isPickLoading,
     mutate: mutatePick,
-  } = useSWR<Pick>(`${apiUrl}/game/pick/${pickId}`, fetcher);
+  } = useSWR<Pick>(`${apiUrl}/pick/${pickId}`, fetcher);
 
   return { pick, isPickLoading, mutatePick };
 }
