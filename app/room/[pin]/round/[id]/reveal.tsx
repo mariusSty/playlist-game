@@ -3,8 +3,8 @@ import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { useRound } from "@/hooks/useGame";
 import { socket } from "@/utils/server";
-import { useLocalSearchParams } from "expo-router";
-import { useContext } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useContext, useEffect } from "react";
 import { Text, View } from "react-native";
 
 export default function Reveal() {
@@ -12,9 +12,24 @@ export default function Reveal() {
   const { round, isRoundLoading } = useRound(id.toString());
   const { user } = useContext(UserContext);
 
-  const handleNextRound = () => {
-    socket.emit("nextRound", { id });
-  };
+  function handleNextRound() {
+    socket.emit("nextRound", { pin });
+  }
+
+  useEffect(() => {
+    socket.on("newRound", (data) => {
+      router.navigate(`/room/${pin}/round/${data.round.id}/theme`);
+    });
+
+    socket.on("goToResult", () => {
+      router.navigate(`/room/${pin}/result`);
+    });
+
+    return () => {
+      socket.off("newRound");
+      socket.off("goToResult");
+    };
+  }, []);
 
   if (isRoundLoading || !round) {
     return <Text>Loading...</Text>;

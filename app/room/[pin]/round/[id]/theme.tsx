@@ -68,14 +68,16 @@ export default function RoundTheme() {
     );
   }
 
-  const isThemeMaster =
-    getCurrentRound(game, Number(id))?.themeMaster.id === user.id;
+  const currentRound = getCurrentRound(game, Number(id));
+  const isThemeMaster = currentRound?.themeMaster.id === user.id;
 
   if (isThemeMaster) {
     return (
-      <Container title="Round 1">
+      <Container title="Choose the theme">
         <View className="gap-5">
-          <Text className="text-white">Choose the theme</Text>
+          <Text className="text-white">
+            Theme master is {currentRound?.themeMaster.name}
+          </Text>
           <Text className="text-center text-white text-9xl">{counter}</Text>
         </View>
         <View className="flex-row flex-wrap w-full px-10 gap-y-5">
@@ -94,6 +96,9 @@ export default function RoundTheme() {
   return (
     <Container title="Round 1">
       <View className="gap-5">
+        <Text className="text-white">
+          Theme master is {currentRound?.themeMaster.name}
+        </Text>
         <Text className="text-white">Waiting...</Text>
         <Text className="text-center text-white text-9xl">{counter}</Text>
       </View>
