@@ -8,8 +8,8 @@ import { useContext, useEffect } from "react";
 import { Text, View } from "react-native";
 
 export default function Reveal() {
-  const { id, pin } = useLocalSearchParams();
-  const { round, isRoundLoading } = useRound(id.toString());
+  const { roundId, pin } = useLocalSearchParams();
+  const { round, isRoundLoading } = useRound(roundId.toString());
   const { user } = useContext(UserContext);
 
   function handleNextRound() {
@@ -17,8 +17,8 @@ export default function Reveal() {
   }
 
   useEffect(() => {
-    socket.on("newRound", (data) => {
-      router.navigate(`/room/${pin}/round/${data.round.id}/theme`);
+    socket.on("newRound", ({ roundId }) => {
+      router.navigate(`/room/${pin}/${roundId}/theme`);
     });
 
     socket.on("goToResult", () => {

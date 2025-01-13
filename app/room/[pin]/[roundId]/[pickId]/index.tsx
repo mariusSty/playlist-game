@@ -7,7 +7,7 @@ import { useContext, useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
 
 export default function Vote() {
-  const { pin, id, pickId } = useLocalSearchParams();
+  const { pin, roundId, pickId } = useLocalSearchParams();
   const { user } = useContext(UserContext);
   const { room } = useRoom(pin.toString());
   const { pick } = usePick(pickId.toString());
@@ -22,11 +22,11 @@ export default function Vote() {
   }
 
   useEffect(() => {
-    socket.on("voteValidated", (data) => {
-      if (data.pickId) {
-        router.navigate(`/room/${pin}/round/${id}/pick/${data.pickId}`);
+    socket.on("voteValidated", ({ pickId }) => {
+      if (pickId) {
+        router.navigate(`/room/${pin}/${roundId}/${pickId}`);
       } else {
-        router.navigate(`/room/${pin}/round/${id}/reveal`);
+        router.navigate(`/room/${pin}/${roundId}/reveal`);
       }
     });
 

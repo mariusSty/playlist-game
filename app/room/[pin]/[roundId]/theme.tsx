@@ -19,14 +19,14 @@ const themes = [
 export default function RoundTheme() {
   const [counter, setCounter] = useState(10);
   const { user } = useContext(UserContext);
-  const { pin, id } = useLocalSearchParams();
+  const { pin, roundId } = useLocalSearchParams();
 
   const { game, isGameLoading } = useGame(pin.toString());
 
   function handleChoose(theme: string) {
     if (game) {
       socket.emit("pickTheme", {
-        roundId: id,
+        roundId,
         theme,
       });
     }
@@ -49,7 +49,7 @@ export default function RoundTheme() {
   useFocusEffect(
     useCallback(() => {
       socket.on("themePicked", ({ roundId }) => {
-        router.navigate(`/room/${pin}/round/${roundId}/song`);
+        router.navigate(`/room/${pin}/${roundId}/song`);
       });
 
       return () => {
@@ -68,7 +68,7 @@ export default function RoundTheme() {
     );
   }
 
-  const currentRound = getCurrentRound(game, Number(id));
+  const currentRound = getCurrentRound(game, Number(roundId));
   const isThemeMaster = currentRound?.themeMaster.id === user.id;
 
   if (isThemeMaster) {

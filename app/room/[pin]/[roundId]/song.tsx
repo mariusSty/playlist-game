@@ -10,7 +10,7 @@ import { Text, TextInput, View } from "react-native";
 
 export default function Song() {
   const [song, setSong] = useState("");
-  const { pin, id } = useLocalSearchParams();
+  const { pin, roundId } = useLocalSearchParams();
   const { game, isGameLoading, mutateGame } = useGame(pin.toString());
   const { user } = useContext(UserContext);
 
@@ -21,9 +21,9 @@ export default function Song() {
   );
 
   useEffect(() => {
-    socket.on("songValidated", (data) => {
-      if (data.pickId) {
-        router.navigate(`/room/${pin}/round/${id}/pick/${data.pickId}`);
+    socket.on("songValidated", ({ pickId }) => {
+      if (pickId) {
+        router.navigate(`/room/${pin}/${roundId}/${pickId}`);
       }
     });
 
@@ -35,7 +35,7 @@ export default function Song() {
   function handleValidSong() {
     socket.emit("validSong", {
       song,
-      roundId: id,
+      roundId: roundId,
       userId: user.id,
       pin,
     });
@@ -43,7 +43,9 @@ export default function Song() {
 
   if (isGameLoading || !game) return;
 
-  const title = `Theme is ${getCurrentRound(game, Number(id))?.theme || "..."}`;
+  const title = `Theme is ${
+    getCurrentRound(game, Number(roundId))?.theme || "..."
+  }`;
 
   return (
     <Container title={title}>
