@@ -17,7 +17,7 @@ export function useRound(roundId: string) {
     data: round,
     isLoading: isRoundLoading,
     mutate: mutateRound,
-  } = useSWR<Round>(`${apiUrl}/game/round/${roundId}`, fetcher);
+  } = useSWR<Round>(`${apiUrl}/round/${roundId}`, fetcher);
 
   return { round, isRoundLoading, mutateRound };
 }
