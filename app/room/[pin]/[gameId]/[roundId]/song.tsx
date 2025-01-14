@@ -10,8 +10,8 @@ import { Text, TextInput, View } from "react-native";
 
 export default function Song() {
   const [song, setSong] = useState("");
-  const { pin, roundId } = useLocalSearchParams();
-  const { game, isGameLoading, mutateGame } = useGame(pin.toString());
+  const { pin, gameId, roundId } = useLocalSearchParams();
+  const { game, isGameLoading, mutateGame } = useGame(gameId.toString());
   const { user } = useContext(UserContext);
 
   useFocusEffect(
@@ -23,7 +23,7 @@ export default function Song() {
   useEffect(() => {
     socket.on("songValidated", ({ pickId }) => {
       if (pickId) {
-        router.navigate(`/room/${pin}/${roundId}/${pickId}`);
+        router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
       }
     });
 

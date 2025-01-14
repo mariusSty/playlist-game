@@ -20,8 +20,8 @@ export default function CreateRoom() {
       setUsers(users);
       setHostId(hostId);
     });
-    socket.on("gameStarted", ({ roundId }) => {
-      router.navigate(`/room/${pin}/${roundId}/theme`);
+    socket.on("gameStarted", ({ roundId, gameId }) => {
+      router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
     });
 
     return () => {

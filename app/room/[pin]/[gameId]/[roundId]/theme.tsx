@@ -19,9 +19,9 @@ const themes = [
 export default function RoundTheme() {
   const [counter, setCounter] = useState(10);
   const { user } = useContext(UserContext);
-  const { pin, roundId } = useLocalSearchParams();
+  const { pin, gameId, roundId } = useLocalSearchParams();
 
-  const { game, isGameLoading } = useGame(pin.toString());
+  const { game, isGameLoading } = useGame(gameId.toString());
 
   function handleChoose(theme: string) {
     if (game) {
@@ -49,7 +49,7 @@ export default function RoundTheme() {
   useFocusEffect(
     useCallback(() => {
       socket.on("themePicked", ({ roundId }) => {
-        router.navigate(`/room/${pin}/${roundId}/song`);
+        router.navigate(`/room/${pin}/${gameId}/${roundId}/song`);
       });
 
       return () => {

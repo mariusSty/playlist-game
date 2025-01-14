@@ -2,12 +2,12 @@ import { Game, Pick, Room, Round } from "@/types/room";
 import { apiUrl, fetcher } from "@/utils/server";
 import useSWR from "swr";
 
-export function useGame(pin: string) {
+export function useGame(gameId: string) {
   const {
     data: game,
     isLoading: isGameLoading,
     mutate: mutateGame,
-  } = useSWR<Game>(`${apiUrl}/game/${pin}`, fetcher);
+  } = useSWR<Game>(`${apiUrl}/game/${gameId}`, fetcher);
 
   return { game, isGameLoading, mutateGame };
 }

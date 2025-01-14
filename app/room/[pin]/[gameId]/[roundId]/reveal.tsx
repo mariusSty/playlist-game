@@ -8,7 +8,7 @@ import { useContext, useEffect } from "react";
 import { Text, View } from "react-native";
 
 export default function Reveal() {
-  const { roundId, pin } = useLocalSearchParams();
+  const { roundId, pin, gameId } = useLocalSearchParams();
   const { round, isRoundLoading } = useRound(roundId.toString());
   const { user } = useContext(UserContext);
 
@@ -18,11 +18,11 @@ export default function Reveal() {
 
   useEffect(() => {
     socket.on("newRound", ({ roundId }) => {
-      router.navigate(`/room/${pin}/${roundId}/theme`);
+      router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
     });
 
     socket.on("goToResult", () => {
-      router.navigate(`/room/${pin}/result`);
+      router.navigate(`/room/${pin}/${gameId}/result`);
     });
 
     return () => {
