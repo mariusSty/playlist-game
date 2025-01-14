@@ -6,12 +6,13 @@ import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Text, TextInput, View } from "react-native";
 
 export default function Song() {
   const [song, setSong] = useState("");
   const { pin, gameId, roundId } = useLocalSearchParams();
   const { game, isGameLoading, mutateGame } = useGame(gameId.toString());
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const { user } = useContext(UserContext);
 
   useFocusEffect(
@@ -21,11 +22,9 @@ export default function Song() {
   );
 
   useEffect(() => {
-    socket.on("songValidated", ({ pickId }) => {
-      if (pickId) {
-        router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
-      }
-    });
+    socket.on("songValidated", ({ pickId }) =>
+      router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`)
+    );
 
     return () => {
       socket.off("songValidated");
@@ -33,9 +32,10 @@ export default function Song() {
   }, []);
 
   function handleValidSong() {
+    setIsButtonDisabled(true);
     socket.emit("validSong", {
       song,
-      roundId: roundId,
+      roundId,
       userId: user.id,
       pin,
     });
@@ -59,7 +59,11 @@ export default function Song() {
         />
       </View>
       <View>
-        <Button text="Valid song" onPress={handleValidSong} />
+        {isButtonDisabled ? (
+          <ActivityIndicator size="large" color="#fff" />
+        ) : (
+          <Button text="Valid song" onPress={handleValidSong} />
+        )}
       </View>
     </Container>
   );

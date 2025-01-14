@@ -3,16 +3,18 @@ import { UserContext } from "@/contexts/user-context";
 import { usePick, useRoom } from "@/hooks/useGame";
 import { socket } from "@/utils/server";
 import { router, useLocalSearchParams } from "expo-router";
-import { useContext, useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 export default function Vote() {
   const { pin, gameId, roundId, pickId } = useLocalSearchParams();
   const { user } = useContext(UserContext);
   const { room } = useRoom(pin.toString());
   const { pick } = usePick(pickId.toString());
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   function handleVote(guessId: string) {
+    setIsButtonDisabled(true);
     socket.emit("vote", {
       guessId,
       userId: user.id,
@@ -47,12 +49,16 @@ export default function Vote() {
           <Text className="text-lg text-white" key={index}>
             {player.name}
           </Text>
-          <Pressable
-            className="p-5 bg-white rounded-lg"
-            onPress={() => handleVote(player.id)}
-          >
-            <Text>Vote</Text>
-          </Pressable>
+          {isButtonDisabled ? (
+            <ActivityIndicator size="large" color="#fff" />
+          ) : (
+            <Pressable
+              className="p-5 bg-white rounded-lg"
+              onPress={() => handleVote(player.id)}
+            >
+              <Text>Vote</Text>
+            </Pressable>
+          )}
         </View>
       ))}
     </Container>
