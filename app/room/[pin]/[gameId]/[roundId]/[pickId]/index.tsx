@@ -1,25 +1,33 @@
+import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { usePick, useRoom } from "@/hooks/useGame";
 import { socket } from "@/utils/server";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 export default function Vote() {
   const { pin, gameId, roundId, pickId } = useLocalSearchParams();
   const { user } = useContext(UserContext);
   const { room } = useRoom(pin.toString());
   const { pick } = usePick(pickId.toString());
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [isVoteValidated, setIsVoteValidated] = useState(false);
 
   function handleVote(guessId: string) {
-    setIsButtonDisabled(true);
+    setIsVoteValidated(true);
     socket.emit("vote", {
       guessId,
       userId: user.id,
       pickId,
       pin,
+    });
+  }
+
+  function handleCancelVote() {
+    socket.emit("cancelVote", {
+      pickId,
+      userId: user.id,
     });
   }
 
@@ -31,9 +39,13 @@ export default function Vote() {
         router.navigate(`/room/${pin}/${gameId}/${roundId}/reveal`);
       }
     });
+    socket.on("voteCanceled", () => {
+      setIsVoteValidated(false);
+    });
 
     return () => {
       socket.off("voteValidated");
+      socket.off("voteCanceled");
     };
   }, []);
 
@@ -49,9 +61,7 @@ export default function Vote() {
           <Text className="text-lg text-white" key={index}>
             {player.name}
           </Text>
-          {isButtonDisabled ? (
-            <ActivityIndicator size="large" color="#fff" />
-          ) : (
+          {!isVoteValidated && (
             <Pressable
               className="p-5 bg-white rounded-lg"
               onPress={() => handleVote(player.id)}
@@ -61,6 +71,14 @@ export default function Vote() {
           )}
         </View>
       ))}
+      {isVoteValidated && (
+        <View className="flex-col items-stretch gap-2">
+          <Text className="text-xl text-white">
+            Waiting for other players...
+          </Text>
+          <Button text="Cancel" onPress={handleCancelVote} />
+        </View>
+      )}
     </Container>
   );
 }
