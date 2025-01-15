@@ -1,4 +1,4 @@
-import { Game, Pick, Room, Round } from "@/types/room";
+import { Game, Pick, Result, Room, Round } from "@/types/room";
 import { apiUrl, fetcher } from "@/utils/server";
 import useSWR from "swr";
 
@@ -40,4 +40,13 @@ export function usePick(pickId: string) {
   } = useSWR<Pick>(`${apiUrl}/pick/${pickId}`, fetcher);
 
   return { pick, isPickLoading, mutatePick };
+}
+
+export function useResult(gameId: string) {
+  const { data: result, isLoading: isResultLoading } = useSWR<Result[]>(
+    `${apiUrl}/game/${gameId}/result`,
+    fetcher
+  );
+
+  return { result, isResultLoading };
 }

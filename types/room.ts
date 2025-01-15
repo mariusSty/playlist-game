@@ -37,3 +37,8 @@ export type Vote = {
   guessUser: User;
   guessedUser: User;
 };
+
+export type Result = {
+  user: User;
+  score: number;
+};
