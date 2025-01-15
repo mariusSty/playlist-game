@@ -6,13 +6,13 @@ import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { ActivityIndicator, Text, TextInput, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 
 export default function Song() {
-  const [song, setSong] = useState("");
   const { pin, gameId, roundId } = useLocalSearchParams();
+  const [song, setSong] = useState("");
+  const [isSongValidated, setIsSongValidated] = useState(false);
   const { game, isGameLoading, mutateGame } = useGame(gameId.toString());
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const { user } = useContext(UserContext);
 
   useFocusEffect(
@@ -25,19 +25,31 @@ export default function Song() {
     socket.on("songValidated", ({ pickId }) =>
       router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`)
     );
+    socket.on("songCanceled", () => {
+      setIsSongValidated(false);
+      setSong("");
+    });
 
     return () => {
       socket.off("songValidated");
+      socket.off("songCanceled");
     };
   }, []);
 
   function handleValidSong() {
-    setIsButtonDisabled(true);
+    setIsSongValidated(true);
     socket.emit("validSong", {
       song,
       roundId,
       userId: user.id,
       pin,
+    });
+  }
+
+  function handleCancelSong() {
+    socket.emit("cancelSong", {
+      roundId,
+      userId: user.id,
     });
   }
 
@@ -56,11 +68,17 @@ export default function Song() {
           onChangeText={setSong}
           placeholder="Your song..."
           className="w-full py-3 text-xl text-center text-white border border-white rounded-lg"
+          editable={!isSongValidated}
         />
       </View>
-      <View>
-        {isButtonDisabled ? (
-          <ActivityIndicator size="large" color="#fff" />
+      <View className="flex-col items-stretch gap-2">
+        {isSongValidated ? (
+          <>
+            <Text className="text-xl text-white">
+              Waiting for other players...
+            </Text>
+            <Button text="Cancel" onPress={handleCancelSong} />
+          </>
         ) : (
           <Button text="Valid song" onPress={handleValidSong} />
         )}
