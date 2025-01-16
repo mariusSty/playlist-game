@@ -42,3 +42,9 @@ export type Result = {
   user: User;
   score: number;
 };
+
+export type Track = {
+  id: string;
+  title: string;
+  artist: string[];
+};

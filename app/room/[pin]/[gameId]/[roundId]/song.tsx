@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
-import { useGame } from "@/hooks/useGame";
+import { useGame, useSpotifySearch } from "@/hooks/useGame";
 import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -13,6 +13,7 @@ export default function Song() {
   const [song, setSong] = useState("");
   const [isSongValidated, setIsSongValidated] = useState(false);
   const { game, isGameLoading, mutateGame } = useGame(gameId.toString());
+  const { tracks = [] } = useSpotifySearch(song);
   const { user } = useContext(UserContext);
 
   useFocusEffect(
@@ -70,6 +71,14 @@ export default function Song() {
           className="w-full py-3 text-xl text-center text-white border border-white rounded-lg"
           editable={!isSongValidated}
         />
+      </View>
+      <View>
+        {tracks?.map((track) => (
+          <View className="flex-row items-center gap-2 px-5" key={track.id}>
+            <Text className="text-white">{track.title}</Text>
+            <Text className="text-white">{track.artist.join(", ")}</Text>
+          </View>
+        ))}
       </View>
       <View className="flex-col items-stretch gap-2">
         {isSongValidated ? (

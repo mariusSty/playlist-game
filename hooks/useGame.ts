@@ -1,4 +1,4 @@
-import { Game, Pick, Result, Room, Round } from "@/types/room";
+import { Game, Pick, Result, Room, Round, Track } from "@/types/room";
 import { apiUrl, fetcher } from "@/utils/server";
 import useSWR from "swr";
 
@@ -49,4 +49,13 @@ export function useResult(gameId: string) {
   );
 
   return { result, isResultLoading };
+}
+
+export function useSpotifySearch(search: string) {
+  const { data: tracks, isLoading: isTracksLoading } = useSWR<Track[]>(
+    search.length < 3 ? null : `${apiUrl}/pick/search/${search}`,
+    fetcher
+  );
+
+  return { tracks, isTracksLoading };
 }
