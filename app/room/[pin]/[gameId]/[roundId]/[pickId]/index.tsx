@@ -11,7 +11,7 @@ export default function Vote() {
   const { pin, gameId, roundId, pickId } = useLocalSearchParams();
   const { user } = useContext(UserContext);
   const { room } = useRoom(pin.toString());
-  const { pick } = usePick(pickId.toString());
+  const { pick, isPickLoading } = usePick(pickId.toString());
   const [isVoteValidated, setIsVoteValidated] = useState(false);
 
   function handleVote(guessId: string) {
@@ -49,9 +49,13 @@ export default function Vote() {
     };
   }, []);
 
+  if (isPickLoading || !pick) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
     <Container title="Listen and Vote !">
-      <Text className="text-white text-9xl">{pick?.song}</Text>
+      <Text className="text-white text-9xl">{pick.track.title}</Text>
       {room?.users.map((player, index) => (
         <View
           key={index}

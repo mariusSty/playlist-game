@@ -27,7 +27,7 @@ export type Round = {
 export type Pick = {
   id: number;
   round: Round;
-  song: string;
+  track: Track;
   user: User;
   votes: Vote[];
 };

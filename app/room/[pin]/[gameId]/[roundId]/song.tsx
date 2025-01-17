@@ -2,6 +2,7 @@ import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { useGame, useSpotifySearch } from "@/hooks/useGame";
+import { Track } from "@/types/room";
 import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -10,10 +11,10 @@ import { Text, TextInput, View } from "react-native";
 
 export default function Song() {
   const { pin, gameId, roundId } = useLocalSearchParams();
-  const [song, setSong] = useState("");
-  const [isSongValidated, setIsSongValidated] = useState(false);
+  const [search, setSearch] = useState("");
+  const [isTrackSelected, setIsTrackSelected] = useState(false);
   const { game, isGameLoading, mutateGame } = useGame(gameId.toString());
-  const { tracks = [] } = useSpotifySearch(song);
+  const { tracks = [] } = useSpotifySearch(isTrackSelected ? null : search);
   const { user } = useContext(UserContext);
 
   useFocusEffect(
@@ -27,8 +28,8 @@ export default function Song() {
       router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`)
     );
     socket.on("songCanceled", () => {
-      setIsSongValidated(false);
-      setSong("");
+      setIsTrackSelected(false);
+      setSearch("");
     });
 
     return () => {
@@ -37,10 +38,15 @@ export default function Song() {
     };
   }, []);
 
-  function handleValidSong() {
-    setIsSongValidated(true);
+  function handleSelectTrack(track: Track) {
+    setIsTrackSelected(true);
+    setSearch(track.title + " - " + track.artist.join(","));
     socket.emit("validSong", {
-      song,
+      track: {
+        id: track.id,
+        title: track.title,
+        artists: track.artist.join(","),
+      },
       roundId,
       userId: user.id,
       pin,
@@ -64,33 +70,29 @@ export default function Song() {
     <Container title={title}>
       <View className="w-full gap-10 px-5">
         <Text className="text-xl text-white">Choose the song</Text>
-        <TextInput
-          value={song}
-          onChangeText={setSong}
-          placeholder="Your song..."
-          className="w-full py-3 text-xl text-center text-white border border-white rounded-lg"
-          editable={!isSongValidated}
-        />
+        {isTrackSelected ? (
+          <View className="flex-row items-center gap-2 px-5">
+            <Text className="text-xl text-white">{search}</Text>
+            <Button text="Cancel" onPress={handleCancelSong} />
+          </View>
+        ) : (
+          <TextInput
+            value={search}
+            onChangeText={setSearch}
+            placeholder="Your song..."
+            className="w-full py-3 text-xl text-center text-white border border-white rounded-lg"
+          />
+        )}
       </View>
       <View>
         {tracks?.map((track) => (
           <View className="flex-row items-center gap-2 px-5" key={track.id}>
-            <Text className="text-white">{track.title}</Text>
-            <Text className="text-white">{track.artist.join(", ")}</Text>
+            <Button
+              text={track.title + " - " + track.artist.join(", ")}
+              onPress={() => handleSelectTrack(track)}
+            />
           </View>
         ))}
-      </View>
-      <View className="flex-col items-stretch gap-2">
-        {isSongValidated ? (
-          <>
-            <Text className="text-xl text-white">
-              Waiting for other players...
-            </Text>
-            <Button text="Cancel" onPress={handleCancelSong} />
-          </>
-        ) : (
-          <Button text="Valid song" onPress={handleValidSong} />
-        )}
       </View>
     </Container>
   );

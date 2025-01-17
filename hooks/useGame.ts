@@ -51,9 +51,9 @@ export function useResult(gameId: string) {
   return { result, isResultLoading };
 }
 
-export function useSpotifySearch(search: string) {
+export function useSpotifySearch(search: string | null) {
   const { data: tracks, isLoading: isTracksLoading } = useSWR<Track[]>(
-    search.length < 3 ? null : `${apiUrl}/pick/search/${search}`,
+    search ? `${apiUrl}/pick/search/${search}` : null,
     fetcher
   );
 
