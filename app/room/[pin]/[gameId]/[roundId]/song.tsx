@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
-import { useGame, useSpotifySearch } from "@/hooks/useGame";
+import { useGame, useMusicApiSearch } from "@/hooks/useGame";
 import { Track } from "@/types/room";
 import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
@@ -14,9 +14,8 @@ export default function Song() {
   const [search, setSearch] = useState("");
   const [isTrackSelected, setIsTrackSelected] = useState(false);
   const { game, isGameLoading, mutateGame } = useGame(gameId.toString());
-  const { tracks = [] } = useSpotifySearch(isTrackSelected ? null : search);
+  const { tracks = [] } = useMusicApiSearch(isTrackSelected ? null : search);
   const { user } = useContext(UserContext);
-
   useFocusEffect(
     useCallback(() => {
       mutateGame();
@@ -40,12 +39,13 @@ export default function Song() {
 
   function handleSelectTrack(track: Track) {
     setIsTrackSelected(true);
-    setSearch(track.title + " - " + track.artist.join(","));
+    setSearch(track.title + " - " + track.artist);
     socket.emit("validSong", {
       track: {
         id: track.id,
         title: track.title,
-        artists: track.artist.join(","),
+        artist: track.artist,
+        previewUrl: track.previewUrl,
       },
       roundId,
       userId: user.id,
@@ -88,7 +88,7 @@ export default function Song() {
         {tracks?.map((track) => (
           <View className="flex-row items-center gap-2 px-5" key={track.id}>
             <Button
-              text={track.title + " - " + track.artist.join(", ")}
+              text={track.title + " - " + track.artist}
               onPress={() => handleSelectTrack(track)}
             />
           </View>

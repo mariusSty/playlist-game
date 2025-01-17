@@ -46,5 +46,6 @@ export type Result = {
 export type Track = {
   id: string;
   title: string;
-  artist: string[];
+  artist: string;
+  previewUrl: string;
 };
