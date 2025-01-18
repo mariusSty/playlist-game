@@ -16,12 +16,16 @@ export default function CreateRoom() {
 
   useEffect(() => {
     socket.emit("joinRoom", { pin });
-    socket.on("userList", ({ users, hostId }) => {
-      setUsers(users);
-      setHostId(hostId);
+    socket.on("userList", ({ users, hostId, pin: pinFromSocket }) => {
+      if (pinFromSocket === pin) {
+        setUsers(users);
+        setHostId(hostId);
+      }
     });
-    socket.on("gameStarted", ({ roundId, gameId }) => {
-      router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
+    socket.on("gameStarted", ({ roundId, gameId, pin: pinFromSocket }) => {
+      if (pinFromSocket === pin) {
+        router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
+      }
     });
 
     return () => {

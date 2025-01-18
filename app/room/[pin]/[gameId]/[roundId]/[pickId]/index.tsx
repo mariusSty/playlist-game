@@ -51,15 +51,19 @@ export default function Vote() {
   }
 
   useEffect(() => {
-    socket.on("voteValidated", ({ pickId }) => {
-      if (pickId) {
-        router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
-      } else {
-        router.navigate(`/room/${pin}/${gameId}/${roundId}/reveal`);
+    socket.on("voteValidated", ({ pickId, pin: pinFromSocket }) => {
+      if (pinFromSocket === pin) {
+        if (pickId) {
+          router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
+        } else {
+          router.navigate(`/room/${pin}/${gameId}/${roundId}/reveal`);
+        }
       }
     });
-    socket.on("voteCanceled", () => {
-      setIsVoteValidated(false);
+    socket.on("voteCanceled", ({ pin: pinFromSocket }) => {
+      if (pinFromSocket === pin) {
+        setIsVoteValidated(false);
+      }
     });
 
     return () => {

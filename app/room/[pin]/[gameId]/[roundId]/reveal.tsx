@@ -17,12 +17,16 @@ export default function Reveal() {
   }
 
   useEffect(() => {
-    socket.on("newRound", ({ roundId }) => {
-      router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
+    socket.on("newRound", ({ roundId, pin: pinFromSocket }) => {
+      if (pinFromSocket === pin) {
+        router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
+      }
     });
 
-    socket.on("goToResult", () => {
-      router.navigate(`/room/${pin}/${gameId}/result`);
+    socket.on("goToResult", ({ pin: pinFromSocket }) => {
+      if (pinFromSocket === pin) {
+        router.navigate(`/room/${pin}/${gameId}/result`);
+      }
     });
 
     return () => {
@@ -39,7 +43,6 @@ export default function Reveal() {
     <Container title="Round reveal">
       {round.picks.map((pick, index) => (
         <View key={index}>
-          <Text className="text-xl text-white">{pick.song}</Text>
           {pick.votes.map((vote, index) => (
             <Text key={index} className="text-white">
               {vote.guessUser.name} guessed {vote.guessedUser.name}

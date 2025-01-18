@@ -28,6 +28,7 @@ export default function RoundTheme() {
       socket.emit("pickTheme", {
         roundId,
         theme,
+        pin,
       });
     }
   }
@@ -48,8 +49,10 @@ export default function RoundTheme() {
 
   useFocusEffect(
     useCallback(() => {
-      socket.on("themePicked", ({ roundId }) => {
-        router.navigate(`/room/${pin}/${gameId}/${roundId}/song`);
+      socket.on("themePicked", ({ roundId, pin: pinFromSocket }) => {
+        if (pinFromSocket === pin) {
+          router.navigate(`/room/${pin}/${gameId}/${roundId}/song`);
+        }
       });
 
       return () => {

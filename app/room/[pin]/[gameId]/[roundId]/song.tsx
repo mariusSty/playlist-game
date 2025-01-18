@@ -23,12 +23,16 @@ export default function Song() {
   );
 
   useEffect(() => {
-    socket.on("songValidated", ({ pickId }) =>
-      router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`)
-    );
-    socket.on("songCanceled", () => {
-      setIsTrackSelected(false);
-      setSearch("");
+    socket.on("songValidated", ({ pickId, pin: pinFromSocket }) => {
+      if (pinFromSocket === pin) {
+        router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
+      }
+    });
+    socket.on("songCanceled", ({ pin: pinFromSocket }) => {
+      if (pinFromSocket === pin) {
+        setIsTrackSelected(false);
+        setSearch("");
+      }
     });
 
     return () => {
