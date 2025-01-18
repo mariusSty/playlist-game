@@ -14,11 +14,16 @@ export const Button = forwardRef(function Button(
 ) {
   return (
     <Pressable
-      className={cn(["w-full rounded-lg p-5 bg-white", classNames])}
+      className={cn([
+        "w-auto rounded-lg p-5 bg-black dark:bg-white",
+        classNames,
+      ])}
       ref={ref}
       onPress={onPress}
     >
-      <Text className="text-center font-bold text-xl text-black">{text}</Text>
+      <Text className="text-xl font-bold text-center text-white dark:text-black">
+        {text}
+      </Text>
     </Pressable>
   );
 });

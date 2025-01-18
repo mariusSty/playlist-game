@@ -1,16 +1,15 @@
-import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
-
 import { Button } from "@/components/Button";
+import { ThemedTextInput } from "@/components/TextInput";
 import { UserContext } from "@/contexts/user-context";
 import { router } from "expo-router";
 import { useContext, useLayoutEffect, useState } from "react";
+import { Keyboard, Pressable, View } from "react-native";
 import "react-native-get-random-values";
 
 export default function Join() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
-
   const { user } = useContext(UserContext);
 
   async function handlePress() {
@@ -33,23 +32,19 @@ export default function Join() {
 
   return (
     <Pressable
-      className="items-center justify-center flex-1 gap-5 px-10"
+      className="items-center justify-center flex-1 gap-10 px-10"
       onPress={() => Keyboard.dismiss()}
     >
       <View className="flex-row">
-        <TextInput
+        <ThemedTextInput
           value={pin}
           maxLength={4}
           onChangeText={setPin}
           placeholder="Code pin..."
           keyboardType="numeric"
-          className={`${
-            error ? "border-red-500" : "border-white"
-          } border flex-1 rounded-lg py-3 text-xl text-white text-center`}
         />
       </View>
-      {error && <Text className="text-red-500">{error}</Text>}
-      <Button text="Join a room" onPress={handlePress} />
+      <Button text="Join a room" onPress={handlePress} classNames="w-full" />
     </Pressable>
   );
 }

@@ -1,12 +1,12 @@
-import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
-
 import { Button } from "@/components/Button";
+import { ThemedTextInput } from "@/components/TextInput";
 import { UserContext } from "@/contexts/user-context";
 import { Room } from "@/types/room";
 import { Image } from "expo-image";
 import { Link, router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
 
 export default function Main() {
@@ -43,7 +43,9 @@ export default function Main() {
         onPress={() => Keyboard.dismiss()}
       >
         <View className="gap-5">
-          <Text className="text-5xl font-bold">Playlist Game</Text>
+          <Text className="text-5xl font-bold text-black dark:text-white">
+            Playlist Game
+          </Text>
           <View className="flex-row items-center gap-5">
             <Image
               style={{ width: 50, height: 50, borderRadius: 5 }}
@@ -51,12 +53,13 @@ export default function Main() {
               contentFit="cover"
               transition={1000}
             />
-            <TextInput
-              value={nameInput}
-              onChangeText={handleChangeName}
-              placeholder="Your name..."
-              className="flex-1 py-3 text-xl text-center text-white border border-white rounded-lg"
-            />
+            <View className="flex-1">
+              <ThemedTextInput
+                value={nameInput}
+                onChangeText={handleChangeName}
+                placeholder="Your name..."
+              />
+            </View>
           </View>
         </View>
         <View className="gap-5">

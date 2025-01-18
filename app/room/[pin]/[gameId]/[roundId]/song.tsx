@@ -1,5 +1,6 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
+import { ThemedTextInput } from "@/components/TextInput";
 import { UserContext } from "@/contexts/user-context";
 import { useGame } from "@/hooks/useGame";
 import { useMusicApiSearch } from "@/hooks/usePick";
@@ -8,7 +9,7 @@ import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Text, View } from "react-native";
 
 export default function Song() {
   const { pin, gameId, roundId } = useLocalSearchParams();
@@ -81,11 +82,10 @@ export default function Song() {
             <Button text="Cancel" onPress={handleCancelSong} />
           </View>
         ) : (
-          <TextInput
+          <ThemedTextInput
             value={search}
             onChangeText={setSearch}
             placeholder="Your song..."
-            className="w-full py-3 text-xl text-center text-white border border-white rounded-lg"
           />
         )}
       </View>
