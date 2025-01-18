@@ -1,7 +1,8 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
-import { usePick, useRoom } from "@/hooks/useGame";
+import { usePick } from "@/hooks/usePick";
+import { useRoom } from "@/hooks/useRoom";
 import { socket } from "@/utils/server";
 import { Audio } from "expo-av";
 import { router, useLocalSearchParams } from "expo-router";

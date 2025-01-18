@@ -1,7 +1,8 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
-import { useGame, useMusicApiSearch } from "@/hooks/useGame";
+import { useGame } from "@/hooks/useGame";
+import { useMusicApiSearch } from "@/hooks/usePick";
 import { Track } from "@/types/room";
 import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";

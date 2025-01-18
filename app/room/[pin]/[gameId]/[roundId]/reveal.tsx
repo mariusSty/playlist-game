@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
-import { useRound } from "@/hooks/useGame";
+import { useRound } from "@/hooks/useRound";
 import { socket } from "@/utils/server";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect } from "react";
