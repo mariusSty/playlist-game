@@ -44,11 +44,13 @@ export default function CreateRoom() {
   }
 
   return (
-    <View className="items-center justify-around flex-1">
-      <Pressable className="self-start m-6" onPress={handleLeaveRoom}>
-        <FontAwesome name="arrow-left" size={24} color="white" />
+    <View className="items-center justify-between flex-1 m-10">
+      <Pressable className="self-start" onPress={handleLeaveRoom}>
+        <Text className="dark:text-white">
+          <FontAwesome name="arrow-left" size={24} />
+        </Text>
       </Pressable>
-      <Text className="text-5xl font-bold text-white">PIN : {pin}</Text>
+      <Text className="text-5xl font-bold dark:text-white">PIN : {pin}</Text>
       <ScrollView className="max-h-[50%]">
         <View className="gap-7">
           {users.map((user, index) => (
@@ -59,7 +61,7 @@ export default function CreateRoom() {
                 contentFit="cover"
                 transition={1000}
               />
-              <Text className="text-3xl text-white">{user.name}</Text>
+              <Text className="text-3xl dark:text-white">{user.name}</Text>
               {user.id === hostId && (
                 <FontAwesome name="star" size={24} color="gold" />
               )}
@@ -68,7 +70,7 @@ export default function CreateRoom() {
         </View>
       </ScrollView>
       {user.id === hostId && (
-        <View className="w-full p-6">
+        <View className="w-full">
           <Button onPress={handleStartGame} text="Start Game" />
         </View>
       )}

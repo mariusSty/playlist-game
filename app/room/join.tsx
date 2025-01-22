@@ -1,9 +1,10 @@
 import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
 import { UserContext } from "@/contexts/user-context";
+import { FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useContext, useLayoutEffect, useState } from "react";
-import { Keyboard, Pressable, View } from "react-native";
+import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
 
 export default function Join() {
@@ -32,19 +33,24 @@ export default function Join() {
 
   return (
     <Pressable
-      className="items-center justify-center flex-1 gap-10 px-10"
+      className="items-center justify-between flex-1 m-10"
       onPress={() => Keyboard.dismiss()}
     >
-      <View className="flex-row">
+      <Pressable className="self-start" onPress={() => router.navigate("/")}>
+        <Text className="dark:text-white">
+          <FontAwesome name="arrow-left" size={24} />
+        </Text>
+      </Pressable>
+      <View className="w-full gap-2">
+        <Text className="text-xl font-bold dark:text-white">Game PIN</Text>
         <ThemedTextInput
           value={pin}
           maxLength={4}
           onChangeText={setPin}
-          placeholder="Code pin..."
           keyboardType="numeric"
         />
       </View>
-      <Button text="Join a room" onPress={handlePress} classNames="w-full" />
+      <Button text="Join game" onPress={handlePress} classNames="w-full" />
     </Pressable>
   );
 }
