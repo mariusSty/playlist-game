@@ -76,14 +76,16 @@ export default function RoundTheme() {
 
   if (isThemeMaster) {
     return (
-      <Container title="Choose the theme">
+      <Container title="Round 1">
         <View className="gap-5">
-          <Text className="text-white">
-            Theme master is {currentRound?.themeMaster.name}
+          <Text className="text-xl dark:text-white">
+            You are the theme master. Choose the theme for the round.
           </Text>
-          <Text className="text-center text-white text-9xl">{counter}</Text>
+          <Text className="text-center dark:text-white text-9xl">
+            {counter}
+          </Text>
         </View>
-        <View className="flex-row flex-wrap w-full px-10 gap-y-5">
+        <View className="items-stretch gap-y-5">
           {themes.map((theme, index) => (
             <Button
               key={index}
@@ -99,11 +101,10 @@ export default function RoundTheme() {
   return (
     <Container title="Round 1">
       <View className="gap-5">
-        <Text className="text-white">
-          Theme master is {currentRound?.themeMaster.name}
+        <Text className="text-xl dark:text-white">
+          Waiting for {currentRound?.themeMaster.name} to choose the theme...
         </Text>
-        <Text className="text-white">Waiting...</Text>
-        <Text className="text-center text-white text-9xl">{counter}</Text>
+        <Text className="text-center dark:text-white text-9xl">{counter}</Text>
       </View>
     </Container>
   );

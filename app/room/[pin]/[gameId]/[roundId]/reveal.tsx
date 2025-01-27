@@ -3,6 +3,8 @@ import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { useRound } from "@/hooks/useRound";
 import { socket } from "@/utils/server";
+import Entypo from "@expo/vector-icons/Entypo";
+import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect } from "react";
 import { Text, View } from "react-native";
@@ -41,15 +43,32 @@ export default function Reveal() {
 
   return (
     <Container title="Round reveal">
-      {round.picks.map((pick, index) => (
-        <View key={index}>
-          {pick.votes.map((vote, index) => (
-            <Text key={index} className="text-white">
-              {vote.guessUser.name} guessed {vote.guessedUser.name}
+      <View className="gap-4 my-auto">
+        {round.picks.map((pick, index) => (
+          <View key={index}>
+            <Text className="text-xl font-bold dark:text-white">
+              {pick.track.title} - {pick.track.artist}
             </Text>
-          ))}
-        </View>
-      ))}
+            <View className="flex-row items-center w-full gap-4 py-2">
+              <Image
+                style={{ width: 50, height: 50, borderRadius: 5 }}
+                source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${pick.user.name}`}
+                contentFit="cover"
+                transition={1000}
+              />
+              <Text className="text-xl dark:text-white">{pick.user.name}</Text>
+              <Text className="ml-auto text-xl dark:text-white">
+                {pick.votes.find((vote) => vote.guessUser.id === user.id)
+                  ?.guessedUser.id === pick.user.id ? (
+                  <Entypo name="check" color="green" size={32} />
+                ) : (
+                  <Entypo name="cross" color="red" size={32} />
+                )}
+              </Text>
+            </View>
+          </View>
+        ))}
+      </View>
       {round.themeMaster.id === user.id && (
         <Button text="Next round" onPress={handleNextRound} />
       )}

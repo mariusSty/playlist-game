@@ -57,15 +57,14 @@ export default function Main() {
               <ThemedTextInput
                 value={nameInput}
                 onChangeText={handleChangeName}
-                placeholder="Your name..."
               />
             </View>
           </View>
         </View>
         <View className="gap-5">
-          <Button text="Create a room" onPress={handleCreateRoom} />
+          <Button text="Create a game" onPress={handleCreateRoom} />
           <Link href="/room/join" asChild>
-            <Button text="Join a room" />
+            <Button text="Join a game" />
           </Link>
         </View>
       </Pressable>

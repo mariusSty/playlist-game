@@ -12,6 +12,7 @@ import { Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
+import { SafeAreaView } from "react-native";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 
@@ -77,13 +78,15 @@ function RootLayoutNav() {
   }, []);
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <UserContext.Provider value={{ user, setUser }}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        </Stack>
-      </UserContext.Provider>
-    </ThemeProvider>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <UserContext.Provider value={{ user, setUser }}>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          </Stack>
+        </UserContext.Provider>
+      </ThemeProvider>
+    </SafeAreaView>
   );
 }

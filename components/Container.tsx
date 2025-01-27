@@ -1,15 +1,18 @@
+import { ReactNode } from "react";
 import { Text, View } from "react-native";
 
 type ContainerProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   title: string;
 };
 
 export default function Container({ children, title }: ContainerProps) {
   return (
-    <View className="flex-1 items-center justify-around">
-      <Text className="text-white text-3xl font-bold">{title}</Text>
-      {children}
+    <View className="items-center flex-1 gap-8 p-8">
+      <Text className="w-full text-3xl font-bold text-center dark:text-white">
+        {title}
+      </Text>
+      <View className="justify-around flex-1 w-full">{children}</View>
     </View>
   );
 }

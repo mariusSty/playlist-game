@@ -9,7 +9,7 @@ import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 export default function Song() {
   const { pin, gameId, roundId } = useLocalSearchParams();
@@ -18,6 +18,7 @@ export default function Song() {
   const { game, isGameLoading, mutateGame } = useGame(gameId.toString());
   const { tracks = [] } = useMusicApiSearch(isTrackSelected ? null : search);
   const { user } = useContext(UserContext);
+
   useFocusEffect(
     useCallback(() => {
       mutateGame();
@@ -68,36 +69,43 @@ export default function Song() {
 
   if (isGameLoading || !game) return;
 
-  const title = `Theme is ${
+  const title = `Theme is "${
     getCurrentRound(game, Number(roundId))?.theme || "..."
-  }`;
+  }"`;
 
   return (
     <Container title={title}>
-      <View className="w-full gap-10 px-5">
-        <Text className="text-xl text-white">Choose the song</Text>
-        {isTrackSelected ? (
-          <View className="flex-row items-center gap-2 px-5">
-            <Text className="text-xl text-white">{search}</Text>
-            <Button text="Cancel" onPress={handleCancelSong} />
-          </View>
-        ) : (
-          <ThemedTextInput
-            value={search}
-            onChangeText={setSearch}
-            placeholder="Your song..."
-          />
-        )}
+      <View className="w-full gap-10">
+        <View className="w-full gap-2">
+          {isTrackSelected ? (
+            <>
+              <Text className="text-xl dark:text-white">Your song :</Text>
+              <Text className="text-xl dark:text-white">{search}</Text>
+              <Button text="Cancel" onPress={handleCancelSong} />
+            </>
+          ) : (
+            <>
+              <Text className="text-xl font-bold dark:text-white">
+                Choose a song
+              </Text>
+              <ThemedTextInput value={search} onChangeText={setSearch} />
+            </>
+          )}
+        </View>
       </View>
-      <View>
-        {tracks?.map((track) => (
-          <View className="flex-row items-center gap-2 px-5" key={track.id}>
-            <Button
-              text={track.title + " - " + track.artist}
-              onPress={() => handleSelectTrack(track)}
-            />
+      <View className="flex-1">
+        <ScrollView className="gap-4 py-2">
+          <View className="flex-1 gap-2">
+            {tracks?.map((track) => (
+              <Button
+                key={track.id}
+                text={track.title + " - " + track.artist}
+                onPress={() => handleSelectTrack(track)}
+                classNames="w-full"
+              />
+            ))}
           </View>
-        ))}
+        </ScrollView>
       </View>
     </Container>
   );

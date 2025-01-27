@@ -5,9 +5,10 @@ import { usePick } from "@/hooks/usePick";
 import { useRoom } from "@/hooks/useRoom";
 import { socket } from "@/utils/server";
 import { Audio } from "expo-av";
+import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 export default function Vote() {
   const { pin, gameId, roundId, pickId } = useLocalSearchParams();
@@ -87,31 +88,37 @@ export default function Vote() {
 
   return (
     <Container title="Listen and Vote !">
-      <Button text="Play" onPress={handlePlayPreview} />
-      {room?.users.map((player, index) => (
-        <View
-          key={player.id}
-          className="flex-row items-center w-full gap-5 py-5 justify-evenly"
-        >
-          <Text className="text-lg text-white">{player.name}</Text>
-          {!isVoteValidated && (
-            <Pressable
-              className="p-5 bg-white rounded-lg"
-              onPress={() => handleVote(player.id)}
-            >
-              <Text>Vote</Text>
-            </Pressable>
-          )}
-        </View>
-      ))}
-      {isVoteValidated && (
-        <View className="flex-col items-stretch gap-2">
-          <Text className="text-xl text-white">
-            Waiting for other players...
-          </Text>
-          <Button text="Cancel" onPress={handleCancelVote} />
-        </View>
-      )}
+      <Button text="Play song" onPress={handlePlayPreview} classNames="mt-8" />
+      <View className="justify-center flex-1">
+        {isVoteValidated ? (
+          <>
+            <Text className="my-auto text-xl text-center dark:text-white">
+              Waiting for other players...
+            </Text>
+            <Button text="Cancel my vote" onPress={handleCancelVote} />
+          </>
+        ) : (
+          <>
+            {room?.users.map((player) => (
+              <View
+                key={player.id}
+                className="flex-row items-center justify-between w-full py-2"
+              >
+                <Image
+                  style={{ width: 50, height: 50, borderRadius: 5 }}
+                  source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${player.name}`}
+                  contentFit="cover"
+                  transition={1000}
+                />
+                <Text className="text-lg dark:text-white">{player.name}</Text>
+                {!isVoteValidated && (
+                  <Button text="Vote" onPress={() => handleVote(player.id)} />
+                )}
+              </View>
+            ))}
+          </>
+        )}
+      </View>
     </Container>
   );
 }
