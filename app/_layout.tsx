@@ -58,6 +58,10 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const [user, setUser] = useState<User>({ id: null, name: null });
+  const backgroundColor =
+    colorScheme === "dark"
+      ? DarkTheme.colors.background
+      : DefaultTheme.colors.background;
 
   async function getUserInfos() {
     let uuidStored = await SecureStore.getItemAsync("uuid");
@@ -78,7 +82,12 @@ function RootLayoutNav() {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor,
+      }}
+    >
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <UserContext.Provider value={{ user, setUser }}>
           <Stack screenOptions={{ headerShown: false }}>
