@@ -2,7 +2,7 @@ import { Button } from "@/components/Button";
 import { UserContext } from "@/contexts/user-context";
 import { User } from "@/types/room";
 import { socket } from "@/utils/server";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
@@ -47,7 +47,7 @@ export default function CreateRoom() {
     <View className="items-center justify-between flex-1 m-10">
       <Pressable className="self-start" onPress={handleLeaveRoom}>
         <Text className="dark:text-white">
-          <FontAwesome name="arrow-left" size={24} />
+          <FontAwesome6 name="door-open" size={24} />
         </Text>
       </Pressable>
       <Text className="text-5xl font-bold dark:text-white">PIN : {pin}</Text>

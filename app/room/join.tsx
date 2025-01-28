@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
 import { UserContext } from "@/contexts/user-context";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome6 } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useContext, useState } from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
@@ -41,7 +41,7 @@ export default function Join() {
     >
       <Pressable className="self-start" onPress={() => router.navigate("/")}>
         <Text className="dark:text-white">
-          <FontAwesome name="arrow-left" size={24} />
+          <FontAwesome6 name="arrow-left" size={24} />
         </Text>
       </Pressable>
       <View className="w-full gap-2">

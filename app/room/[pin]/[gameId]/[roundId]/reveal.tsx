@@ -3,7 +3,7 @@ import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { useRound } from "@/hooks/useRound";
 import { socket } from "@/utils/server";
-import Entypo from "@expo/vector-icons/Entypo";
+import { FontAwesome6 } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect } from "react";
@@ -60,9 +60,9 @@ export default function Reveal() {
               <Text className="ml-auto text-xl dark:text-white">
                 {pick.votes.find((vote) => vote.guessUser.id === user.id)
                   ?.guessedUser.id === pick.user.id ? (
-                  <Entypo name="check" color="green" size={32} />
+                  <FontAwesome6 name="check" color="green" size={32} />
                 ) : (
-                  <Entypo name="cross" color="red" size={32} />
+                  <FontAwesome6 name="cross" color="red" size={32} />
                 )}
               </Text>
             </View>
