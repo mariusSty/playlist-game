@@ -7,6 +7,7 @@ import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 export default function CreateRoom() {
   const [users, setUsers] = useState<User[]>([]);
@@ -40,6 +41,11 @@ export default function CreateRoom() {
 
   function handleLeaveRoom() {
     socket.emit("leaveRoom", { pin, userId: user.id });
+    Toast.show({
+      type: "info",
+      text1: "Game left",
+      text2: "You left the game",
+    });
     router.navigate("/");
   }
 

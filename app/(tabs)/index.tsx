@@ -8,6 +8,7 @@ import * as SecureStore from "expo-secure-store";
 import React, { useContext, useEffect, useState } from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
+import Toast from "react-native-toast-message";
 
 export default function Main() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -68,6 +69,7 @@ export default function Main() {
           </Link>
         </View>
       </Pressable>
+      <Toast />
     </View>
   );
 }
