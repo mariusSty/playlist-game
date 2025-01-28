@@ -3,14 +3,14 @@ import { ThemedTextInput } from "@/components/TextInput";
 import { UserContext } from "@/contexts/user-context";
 import { FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useContext, useLayoutEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
+import Toast from "react-native-toast-message";
 
 export default function Join() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const [pin, setPin] = useState("");
-  const [error, setError] = useState("");
   const { user } = useContext(UserContext);
 
   async function handlePress() {
@@ -23,13 +23,16 @@ export default function Join() {
     });
     const room = await res.json();
 
-    if (room.message) return setError(room.message);
-    router.navigate(`/room/${pin}`);
+    if (room.message) {
+      Toast.show({
+        type: "error",
+        text1: "Game not found",
+        text2: "The pin is incorrect, try again",
+      });
+    } else {
+      router.navigate(`/room/${pin}`);
+    }
   }
-
-  useLayoutEffect(() => {
-    if (error) setError("");
-  }, []);
 
   return (
     <Pressable
