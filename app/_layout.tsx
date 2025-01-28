@@ -14,6 +14,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native";
 import "react-native-get-random-values";
+import Toast from "react-native-toast-message";
 import { v4 as uuidv4 } from "uuid";
 import "../global.css";
 
@@ -95,6 +96,7 @@ function RootLayoutNav() {
           </Stack>
         </UserContext.Provider>
       </ThemeProvider>
+      <Toast />
     </SafeAreaView>
   );
 }

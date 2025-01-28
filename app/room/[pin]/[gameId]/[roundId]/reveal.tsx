@@ -57,12 +57,12 @@ export default function Reveal() {
                 transition={1000}
               />
               <Text className="text-xl dark:text-white">{pick.user.name}</Text>
-              <Text className="ml-auto text-xl dark:text-white">
+              <Text className="ml-auto dark:text-white">
                 {pick.votes.find((vote) => vote.guessUser.id === user.id)
                   ?.guessedUser.id === pick.user.id ? (
-                  <FontAwesome6 name="check" color="green" size={32} />
+                  <FontAwesome6 name="circle-check" color="green" size={32} />
                 ) : (
-                  <FontAwesome6 name="cross" color="red" size={32} />
+                  <FontAwesome6 name="circle-xmark" color="red" size={32} />
                 )}
               </Text>
             </View>
