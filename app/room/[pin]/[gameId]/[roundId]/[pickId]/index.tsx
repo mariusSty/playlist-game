@@ -6,8 +6,8 @@ import { useRoom } from "@/hooks/useRoom";
 import { socket } from "@/utils/server";
 import { Audio } from "expo-av";
 import { Image } from "expo-image";
-import { router, useLocalSearchParams } from "expo-router";
-import { useContext, useEffect, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
 export default function Vote() {
@@ -48,9 +48,18 @@ export default function Vote() {
       );
 
       setSound(newSound);
-      await newSound.playAsync();
     }
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (sound) {
+          sound.unloadAsync();
+        }
+      };
+    }, [sound])
+  );
 
   useEffect(() => {
     socket.on("voteValidated", ({ pickId, pin: pinFromSocket }) => {
@@ -73,14 +82,6 @@ export default function Vote() {
       socket.off("voteCanceled");
     };
   }, []);
-
-  useEffect(() => {
-    return () => {
-      if (sound) {
-        sound.unloadAsync();
-      }
-    };
-  }, [sound]);
 
   if (isPickLoading || !pick) {
     return <Text>Loading...</Text>;
