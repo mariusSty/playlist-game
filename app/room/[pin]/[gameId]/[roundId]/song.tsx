@@ -9,14 +9,16 @@ import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function Song() {
   const { pin, gameId, roundId } = useLocalSearchParams();
   const [search, setSearch] = useState("");
   const [isTrackSelected, setIsTrackSelected] = useState(false);
   const { game, isGameLoading, mutateGame } = useGame(gameId.toString());
-  const { tracks = [] } = useMusicApiSearch(isTrackSelected ? null : search);
+  const { tracks = [], isTracksLoading } = useMusicApiSearch(
+    isTrackSelected ? null : search
+  );
   const { user } = useContext(UserContext);
 
   useFocusEffect(
@@ -94,18 +96,25 @@ export default function Song() {
         </View>
       </View>
       <View className="flex-1">
-        <ScrollView className="gap-4 py-2">
-          <View className="flex-1 gap-2">
-            {tracks?.map((track) => (
-              <Button
-                key={track.id}
-                text={track.title + " - " + track.artist}
-                onPress={() => handleSelectTrack(track)}
-                classNames="w-full"
-              />
-            ))}
-          </View>
-        </ScrollView>
+        {isTracksLoading ? (
+          <ActivityIndicator
+            size="large"
+            className="my-auto text-black dark:text-white"
+          />
+        ) : (
+          <ScrollView className="gap-4 py-2">
+            <View className="flex-1 gap-2">
+              {tracks?.map((track) => (
+                <Button
+                  key={track.id}
+                  text={track.title + " - " + track.artist}
+                  onPress={() => handleSelectTrack(track)}
+                  classNames="w-full"
+                />
+              ))}
+            </View>
+          </ScrollView>
+        )}
       </View>
     </Container>
   );
