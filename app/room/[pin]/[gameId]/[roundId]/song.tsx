@@ -4,9 +4,11 @@ import { ThemedTextInput } from "@/components/TextInput";
 import { UserContext } from "@/contexts/user-context";
 import { useGame } from "@/hooks/useGame";
 import { useMusicApiSearch } from "@/hooks/usePick";
+import { useRoom } from "@/hooks/useRoom";
 import { Track } from "@/types/room";
 import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
+import { Image } from "expo-image";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
@@ -15,10 +17,13 @@ export default function Song() {
   const { pin, gameId, roundId } = useLocalSearchParams();
   const [search, setSearch] = useState("");
   const [isTrackSelected, setIsTrackSelected] = useState(false);
+  const [usersValidated, setUsersValidated] = useState<string[]>([]);
   const { game, isGameLoading, mutateGame } = useGame(gameId.toString());
+  const { room } = useRoom(pin.toString());
   const { tracks = [], isTracksLoading } = useMusicApiSearch(
     isTrackSelected ? null : search
   );
+
   const { user } = useContext(UserContext);
 
   useFocusEffect(
@@ -28,19 +33,27 @@ export default function Song() {
   );
 
   useEffect(() => {
-    socket.on("songValidated", ({ pickId, pin: pinFromSocket }) => {
+    socket.on("allSongsValidated", ({ pickId, pin: pinFromSocket }) => {
       if (pinFromSocket === pin) {
         router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
       }
     });
-    socket.on("songCanceled", ({ pin: pinFromSocket }) => {
+    socket.on("songValidated", ({ pin: pinFromSocket, users }) => {
       if (pinFromSocket === pin) {
+        setUsersValidated(users);
+      }
+    });
+    socket.on("songCanceled", ({ pin: pinFromSocket, users }) => {
+      console.log("songCanceled", pinFromSocket, pin, users);
+      if (pinFromSocket === pin) {
+        setUsersValidated(users);
         setIsTrackSelected(false);
         setSearch("");
       }
     });
 
     return () => {
+      socket.off("allSongsValidated");
       socket.off("songValidated");
       socket.off("songCanceled");
     };
@@ -66,6 +79,7 @@ export default function Song() {
     socket.emit("cancelSong", {
       roundId,
       userId: user.id,
+      pin,
     });
   }
 
@@ -115,6 +129,36 @@ export default function Song() {
             </View>
           </ScrollView>
         )}
+      </View>
+      <View className="w-full gap-2">
+        <View className="flex-row gap-2">
+          <Text className="text-xl dark:text-white">N'a pas choisi :</Text>
+          {room?.users
+            .filter((user) => !usersValidated.includes(user.id))
+            .map((user) => (
+              <Image
+                key={user.id}
+                style={{ width: 20, height: 20, borderRadius: 5 }}
+                source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
+                contentFit="cover"
+                transition={1000}
+              />
+            ))}
+        </View>
+        <View className="flex-row gap-2">
+          <Text className="text-xl dark:text-white">A choisi :</Text>
+          {room?.users
+            .filter((user) => usersValidated.includes(user.id))
+            .map((user) => (
+              <Image
+                key={user.id}
+                style={{ width: 20, height: 20, borderRadius: 5 }}
+                source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
+                contentFit="cover"
+                transition={1000}
+              />
+            ))}
+        </View>
       </View>
     </Container>
   );
