@@ -3,12 +3,14 @@ import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { usePick } from "@/hooks/usePick";
 import { useRoom } from "@/hooks/useRoom";
+import { Pick } from "@/types/room";
 import { socket } from "@/utils/server";
+import { FontAwesome6 } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { Image } from "expo-image";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 export default function Vote() {
   const { pin, gameId, roundId, pickId } = useLocalSearchParams();
@@ -17,6 +19,7 @@ export default function Vote() {
   const { pick, isPickLoading } = usePick(pickId.toString());
   const [isVoteValidated, setIsVoteValidated] = useState(false);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   function handleVote(guessId: string) {
     setIsVoteValidated(true);
@@ -35,30 +38,55 @@ export default function Vote() {
     });
   }
 
-  async function handlePlayPreview() {
-    if (pick) {
-      if (sound) {
-        await sound.unloadAsync();
+  function handlePlay() {
+    if (!sound) return;
+    sound.playAsync();
+  }
+
+  function handleStartFromBegin() {
+    if (!sound) return;
+    sound.playFromPositionAsync(0);
+  }
+
+  function handlePause() {
+    if (!sound) return;
+    sound.pauseAsync();
+  }
+
+  async function loadSound(pick: Pick) {
+    await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+    const { sound } = await Audio.Sound.createAsync(
+      { uri: pick.track.previewUrl },
+      { shouldPlay: false },
+      (status) => {
+        if (status.isLoaded) {
+          if (status.isPlaying) {
+            setIsPlaying(true);
+          } else {
+            setIsPlaying(false);
+          }
+          if (status.didJustFinish) {
+            setIsPlaying(false);
+          }
+        }
       }
+    );
 
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-      const { sound: newSound } = await Audio.Sound.createAsync(
-        { uri: pick.track.previewUrl },
-        { shouldPlay: true }
-      );
-
-      setSound(newSound);
-    }
+    setSound(sound);
   }
 
   useFocusEffect(
     useCallback(() => {
+      if (pick && !sound) {
+        loadSound(pick);
+      }
+
       return () => {
         if (sound) {
           sound.unloadAsync();
         }
       };
-    }, [sound])
+    }, [sound, pick])
   );
 
   useEffect(() => {
@@ -89,7 +117,35 @@ export default function Vote() {
 
   return (
     <Container title="Listen and Vote !">
-      <Button text="Play song" onPress={handlePlayPreview} classNames="mt-8" />
+      {!sound ? (
+        <ActivityIndicator
+          size="large"
+          className="my-auto text-black dark:text-white"
+        />
+      ) : (
+        <View className="flex-row items-center justify-center gap-5">
+          <Pressable
+            onPress={isPlaying ? handlePause : handlePlay}
+            className="w-auto p-5 bg-black rounded-lg dark:bg-white"
+          >
+            <Text className="text-xl font-bold text-center text-white dark:text-black">
+              {isPlaying ? (
+                <FontAwesome6 name="pause" size={24} />
+              ) : (
+                <FontAwesome6 name="play" size={24} />
+              )}
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={handleStartFromBegin}
+            className="w-auto p-5 bg-black rounded-lg dark:bg-white"
+          >
+            <Text className="text-xl font-bold text-center text-white dark:text-black">
+              <FontAwesome6 name="rotate-left" size={24} />
+            </Text>
+          </Pressable>
+        </View>
+      )}
       <View className="justify-center flex-1">
         {isVoteValidated ? (
           <>
