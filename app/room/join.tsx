@@ -48,7 +48,7 @@ export default function Join() {
         <Text className="text-xl font-bold dark:text-white">Game PIN</Text>
         <ThemedTextInput
           value={pin}
-          maxLength={4}
+          maxLength={6}
           onChangeText={setPin}
           keyboardType="numeric"
         />
