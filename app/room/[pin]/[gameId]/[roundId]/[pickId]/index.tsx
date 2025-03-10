@@ -18,6 +18,7 @@ export default function Vote() {
   const { room } = useRoom(pin.toString());
   const { pick, isPickLoading } = usePick(pickId.toString());
   const [isVoteValidated, setIsVoteValidated] = useState(false);
+  const [usersValidated, setUsersValidated] = useState<string[]>([]);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -91,17 +92,21 @@ export default function Vote() {
   );
 
   useEffect(() => {
-    socket.on("voteValidated", ({ pickId, pin: pinFromSocket }) => {
+    socket.on("voteValidated", ({ pin: pinFromSocket, users }) => {
       if (pinFromSocket === pin) {
-        if (pickId) {
-          router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
-        } else {
-          router.navigate(`/room/${pin}/${gameId}/${roundId}/reveal`);
-        }
+        setUsersValidated(users);
       }
     });
-    socket.on("voteCanceled", ({ pin: pinFromSocket }) => {
+    socket.on("allVotesValidated", ({ pin, pickId }) => {
+      if (pickId) {
+        router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
+      } else {
+        router.navigate(`/room/${pin}/${gameId}/${roundId}/reveal`);
+      }
+    });
+    socket.on("voteCanceled", ({ pin: pinFromSocket, users }) => {
       if (pinFromSocket === pin) {
+        setUsersValidated(users);
         setIsVoteValidated(false);
       }
     });
@@ -149,12 +154,7 @@ export default function Vote() {
       )}
       <View className="justify-center flex-1">
         {isVoteValidated ? (
-          <>
-            <Text className="my-auto text-xl text-center dark:text-white">
-              Waiting for other players...
-            </Text>
-            <Button text="Cancel my vote" onPress={handleCancelVote} />
-          </>
+          <Button text="Cancel my vote" onPress={handleCancelVote} />
         ) : (
           <>
             {room?.users.map((player) => (
@@ -176,6 +176,36 @@ export default function Vote() {
             ))}
           </>
         )}
+      </View>
+      <View className="w-full gap-2">
+        <View className="flex-row gap-2">
+          <Text className="text-xl dark:text-white">N'a pas voté :</Text>
+          {room?.users
+            .filter((user) => !usersValidated.includes(user.id))
+            .map((user) => (
+              <Image
+                key={user.id}
+                style={{ width: 20, height: 20, borderRadius: 5 }}
+                source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
+                contentFit="cover"
+                transition={1000}
+              />
+            ))}
+        </View>
+        <View className="flex-row gap-2">
+          <Text className="text-xl dark:text-white">A voté :</Text>
+          {room?.users
+            .filter((user) => usersValidated.includes(user.id))
+            .map((user) => (
+              <Image
+                key={user.id}
+                style={{ width: 20, height: 20, borderRadius: 5 }}
+                source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
+                contentFit="cover"
+                transition={1000}
+              />
+            ))}
+        </View>
       </View>
     </Container>
   );
