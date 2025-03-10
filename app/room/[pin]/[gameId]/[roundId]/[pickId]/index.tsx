@@ -35,6 +35,7 @@ export default function Vote() {
     socket.emit("cancelVote", {
       pickId,
       userId: user.id,
+      pin,
     });
   }
 

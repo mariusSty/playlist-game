@@ -44,7 +44,6 @@ export default function Song() {
       }
     });
     socket.on("songCanceled", ({ pin: pinFromSocket, users }) => {
-      console.log("songCanceled", pinFromSocket, pin, users);
       if (pinFromSocket === pin) {
         setUsersValidated(users);
         setIsTrackSelected(false);
