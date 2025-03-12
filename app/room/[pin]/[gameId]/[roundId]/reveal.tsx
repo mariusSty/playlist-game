@@ -15,7 +15,7 @@ export default function Reveal() {
   const { user } = useContext(UserContext);
 
   function handleNextRound() {
-    socket.emit("nextRound", { pin });
+    socket.emit("nextRound", { pin, gameId });
   }
 
   useEffect(() => {

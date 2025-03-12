@@ -13,7 +13,6 @@ export type User = {
 
 export type Game = {
   id: number;
-  isFinished: boolean;
   rounds: Round[];
 };
 
