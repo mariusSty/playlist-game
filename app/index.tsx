@@ -15,6 +15,7 @@ export default function Main() {
   const [nameInput, setNameInput] = useState(user.name || "");
 
   async function handleCreateRoom() {
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
     const res = await fetch(`${apiUrl}/room`, {
       method: "POST",
       headers: {
@@ -46,6 +47,7 @@ export default function Main() {
           <Text className="text-5xl font-bold text-black dark:text-white">
             Playlist Game
           </Text>
+          <Text>{apiUrl}</Text>
           <View className="flex-row items-center gap-5">
             <Image
               style={{ width: 50, height: 50, borderRadius: 5 }}
