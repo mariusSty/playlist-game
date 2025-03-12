@@ -14,7 +14,7 @@
   "themePage": {
     "title": "Theme choice",
     "themeMaster": "You are the theme master, please choose the theme for the round",
-    "waiting": "{name} is choosing the theme...",
+    "waiting": "%{name} is choosing the theme...",
     "themes": {
       "gultyPleasure": "Your best song to seduce",
       "sleepyTime": "Your best song to sleep",
@@ -24,7 +24,7 @@
     }
   },
   "pickPage": {
-    "title": "The theme is {theme}, it's time to pick a song",
+    "title": "The theme is '%{theme}', it's time to pick a song",
     "yourSong": "You picked :",
     "cancelButton": "Cancel",
     "chooseSong": "Choose a song",

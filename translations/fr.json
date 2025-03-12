@@ -14,7 +14,7 @@
   "themePage": {
     "title": "Choix du thème",
     "themeMaster": "Vous êtes le maître du thème, veuillez choisir le thème pour ce tour",
-    "waiting": "{name} est en train de choisir le thème...",
+    "waiting": "%{name} est en train de choisir le thème...",
     "themes": {
       "gultyPleasure": "Votre meilleure chanson pour séduire",
       "sleepyTime": "Votre meilleure chanson pour dormir",
@@ -24,7 +24,7 @@
     }
   },
   "pickPage": {
-    "title": "Le thème est {theme}, c'est le moment de choisir une chanson",
+    "title": "Le thème est '%{theme}', c'est maintenant à vous de choisir une chanson associée",
     "yourSong": "Vous avez choisi :",
     "cancelButton": "Annuler",
     "chooseSong": "Choisir une chanson",

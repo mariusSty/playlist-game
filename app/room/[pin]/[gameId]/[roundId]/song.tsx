@@ -1,4 +1,3 @@
-import theme from "@/app/room/[pin]/[gameId]/[roundId]/theme";
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { ThemedTextInput } from "@/components/TextInput";
@@ -7,6 +6,7 @@ import { useGame } from "@/hooks/useGame";
 import { useMusicApiSearch } from "@/hooks/usePick";
 import { useRoom } from "@/hooks/useRoom";
 import { Track } from "@/types/room";
+import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { Image } from "expo-image";
@@ -85,8 +85,11 @@ export default function Song() {
 
   if (isGameLoading || !game) return;
 
+  const currentTheme = getCurrentRound(game, Number(roundId))?.theme;
+  const translatedTheme = i18n.t(`themePage.themes.${currentTheme}`);
+
   return (
-    <Container title={i18n.t("pickPage.title", { theme })}>
+    <Container title={i18n.t("pickPage.title", { theme: translatedTheme })}>
       <View className="w-full gap-10">
         <View className="w-full gap-2">
           {isTrackSelected ? (
