@@ -1,21 +1,19 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
-import { UserContext } from "@/contexts/user-context";
 import { useResult } from "@/hooks/useGame";
+import i18n from "@/utils/translation";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { useContext } from "react";
 import { Text, View } from "react-native";
 
 export default function Result() {
   const { pin, gameId } = useLocalSearchParams();
   const { result, isResultLoading } = useResult(gameId.toString());
-  const { user } = useContext(UserContext);
 
   if (isResultLoading || !result) return <Text>Loading...</Text>;
 
   return (
-    <Container title="Results">
+    <Container title={i18n.t("resultPage.title")}>
       <View className="gap-4 my-auto">
         {result
           .sort((a, b) => b.score - a.score)
@@ -43,7 +41,7 @@ export default function Result() {
           ))}
       </View>
       <Button
-        text="Exit game"
+        text={i18n.t("resultPage.exitButton")}
         onPress={() => router.navigate(`/room/${pin}`)}
       />
     </Container>

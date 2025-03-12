@@ -3,6 +3,7 @@ import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { useRound } from "@/hooks/useRound";
 import { socket } from "@/utils/server";
+import i18n from "@/utils/translation";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
@@ -42,7 +43,7 @@ export default function Reveal() {
   }
 
   return (
-    <Container title="Round reveal">
+    <Container title={i18n.t("revealPage.title")}>
       <View className="gap-4 my-auto">
         {round.picks.map((pick, index) => (
           <View key={index}>
@@ -70,7 +71,10 @@ export default function Reveal() {
         ))}
       </View>
       {round.themeMaster.id === user.id && (
-        <Button text="Next round" onPress={handleNextRound} />
+        <Button
+          text={i18n.t("revealPage.nextRoundButton")}
+          onPress={handleNextRound}
+        />
       )}
     </Container>
   );

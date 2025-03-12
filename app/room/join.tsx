@@ -1,6 +1,7 @@
 import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
 import { UserContext } from "@/contexts/user-context";
+import i18n from "@/utils/translation";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useContext, useState } from "react";
@@ -26,8 +27,8 @@ export default function Join() {
     if (room.message) {
       Toast.show({
         type: "error",
-        text1: "Game not found",
-        text2: "The pin is incorrect, try again",
+        text1: i18n.t("toast.gameNotFound.title"),
+        text2: i18n.t("toast.gameNotFound.description"),
       });
     } else {
       router.navigate(`/room/${pin}`);
@@ -45,7 +46,9 @@ export default function Join() {
         </Text>
       </Pressable>
       <View className="w-full gap-2">
-        <Text className="text-xl font-bold dark:text-white">Game PIN</Text>
+        <Text className="text-xl font-bold dark:text-white">
+          {i18n.t("joinPage.pinInputPlaceholder")}
+        </Text>
         <ThemedTextInput
           value={pin}
           maxLength={6}
@@ -53,7 +56,11 @@ export default function Join() {
           keyboardType="numeric"
         />
       </View>
-      <Button text="Join game" onPress={handlePress} classNames="w-full" />
+      <Button
+        text={i18n.t("joinPage.joinButton")}
+        onPress={handlePress}
+        classNames="w-full"
+      />
     </Pressable>
   );
 }

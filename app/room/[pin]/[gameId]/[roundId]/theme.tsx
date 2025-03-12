@@ -1,20 +1,14 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
+import { themes } from "@/constants/theme";
 import { UserContext } from "@/contexts/user-context";
 import { useGame } from "@/hooks/useGame";
 import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
+import i18n from "@/utils/translation";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useState } from "react";
-import { Text, View } from "react-native";
-
-const themes = [
-  "Son qui te rappelle ton enfance",
-  "Son pour danser",
-  "Son pour dormir",
-  "Son que tu écoutes en boucle",
-  "Gulty pleasure",
-];
+import { ActivityIndicator, Text, View } from "react-native";
 
 export default function RoundTheme() {
   const [counter, setCounter] = useState(10);
@@ -63,9 +57,9 @@ export default function RoundTheme() {
 
   if (isGameLoading || !game || !user) {
     return (
-      <Container title="Round 1">
+      <Container title={i18n.t("themePage.title")}>
         <View>
-          <Text>Loading...</Text>
+          <ActivityIndicator size="large" color="#000000" />
         </View>
       </Container>
     );
@@ -76,10 +70,10 @@ export default function RoundTheme() {
 
   if (isThemeMaster) {
     return (
-      <Container title="Round 1">
+      <Container title={i18n.t("themePage.title")}>
         <View className="gap-5">
           <Text className="text-xl dark:text-white">
-            You are the theme master. Choose the theme for the round.
+            {i18n.t("themePage.themeMaster")}
           </Text>
           <Text className="text-center dark:text-white text-9xl">
             {counter}
@@ -90,7 +84,7 @@ export default function RoundTheme() {
             <Button
               key={index}
               onPress={() => handleChoose(theme)}
-              text={theme}
+              text={i18n.t(`themePage.themes.${theme}`)}
             />
           ))}
         </View>
@@ -102,7 +96,9 @@ export default function RoundTheme() {
     <Container title="Round 1">
       <View className="gap-5">
         <Text className="text-xl dark:text-white">
-          Waiting for {currentRound?.themeMaster.name} to choose the theme...
+          {i18n.t("themePage.waiting", {
+            name: currentRound?.themeMaster.name,
+          })}
         </Text>
         <Text className="text-center dark:text-white text-9xl">{counter}</Text>
       </View>

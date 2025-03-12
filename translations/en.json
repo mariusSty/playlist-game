@@ -1,0 +1,63 @@
+{
+  "homePage": {
+    "title": "Playlist Game",
+    "createButton": "Create a game",
+    "joinButton": "Join a game"
+  },
+  "joinPage": {
+    "joinButton": "Join game",
+    "pinInputPlaceholder": "Enter the PIN"
+  },
+  "startPage": {
+    "startButton": "Start game"
+  },
+  "themePage": {
+    "title": "Theme choice",
+    "themeMaster": "You are the theme master, please choose the theme for the round",
+    "waiting": "{name} is choosing the theme...",
+    "themes": {
+      "gultyPleasure": "Your best song to seduce",
+      "sleepyTime": "Your best song to sleep",
+      "partyTime": "Your best song to party",
+      "sadness": "The song that lifts your spirits",
+      "now": "The song you listen to in loop right now"
+    }
+  },
+  "pickPage": {
+    "title": "The theme is {theme}, it's time to pick a song",
+    "yourSong": "You picked :",
+    "cancelButton": "Cancel",
+    "chooseSong": "Choose a song",
+    "notChosen": "Not chosen yet :",
+    "alreadyChosen": "Already chosen :"
+  },
+  "votePage": {
+    "title": "Listen and Vote !",
+    "voteButton": "Vote",
+    "cancelButton": "Cancel vote",
+    "notVoted": "Not voted yet :",
+    "alreadyVoted": "Already voted :"
+  },
+  "revealPage": {
+    "title": "Round reveal",
+    "nextRoundButton": "Next round"
+  },
+  "resultPage": {
+    "title": "Results",
+    "exitButton": "Exit game"
+  },
+  "toast": {
+    "gameNotFound": {
+      "title": "Game not found",
+      "description": "The pin is incorrect, try again"
+    },
+    "gameLeft": {
+      "title": "Game left",
+      "description": "The game has already started, please join the game"
+    },
+    "gameStarted": {
+      "title": "Game started",
+      "description": "The game has already started, please join the game"
+    }
+  }
+}

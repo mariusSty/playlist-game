@@ -2,6 +2,7 @@ import { Button } from "@/components/Button";
 import { UserContext } from "@/contexts/user-context";
 import { User } from "@/types/room";
 import { socket } from "@/utils/server";
+import i18n from "@/utils/translation";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
@@ -43,8 +44,8 @@ export default function CreateRoom() {
     socket.emit("leaveRoom", { pin, userId: user.id });
     Toast.show({
       type: "info",
-      text1: "Game left",
-      text2: "You left the game",
+      text1: i18n.t("toast.gameLeft.title"),
+      text2: i18n.t("toast.gameLeft.description"),
     });
     router.navigate("/");
   }
@@ -77,7 +78,10 @@ export default function CreateRoom() {
       </ScrollView>
       {user.id === hostId && (
         <View className="w-full">
-          <Button onPress={handleStartGame} text="Start Game" />
+          <Button
+            onPress={handleStartGame}
+            text={i18n.t("startPage.startButton")}
+          />
         </View>
       )}
     </View>

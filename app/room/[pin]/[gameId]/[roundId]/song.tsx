@@ -1,3 +1,4 @@
+import theme from "@/app/room/[pin]/[gameId]/[roundId]/theme";
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { ThemedTextInput } from "@/components/TextInput";
@@ -6,8 +7,8 @@ import { useGame } from "@/hooks/useGame";
 import { useMusicApiSearch } from "@/hooks/usePick";
 import { useRoom } from "@/hooks/useRoom";
 import { Track } from "@/types/room";
-import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
+import i18n from "@/utils/translation";
 import { Image } from "expo-image";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -84,24 +85,25 @@ export default function Song() {
 
   if (isGameLoading || !game) return;
 
-  const title = `Theme is "${
-    getCurrentRound(game, Number(roundId))?.theme || "..."
-  }"`;
-
   return (
-    <Container title={title}>
+    <Container title={i18n.t("pickPage.title", { theme })}>
       <View className="w-full gap-10">
         <View className="w-full gap-2">
           {isTrackSelected ? (
             <>
-              <Text className="text-xl dark:text-white">Your song :</Text>
+              <Text className="text-xl dark:text-white">
+                {i18n.t("pickPage.yourSong")}
+              </Text>
               <Text className="text-xl dark:text-white">{search}</Text>
-              <Button text="Cancel" onPress={handleCancelSong} />
+              <Button
+                text={i18n.t("pickPage.cancelButton")}
+                onPress={handleCancelSong}
+              />
             </>
           ) : (
             <>
               <Text className="text-xl font-bold dark:text-white">
-                Choose a song
+                {i18n.t("pickPage.chooseSong")}
               </Text>
               <ThemedTextInput value={search} onChangeText={setSearch} />
             </>
@@ -131,7 +133,9 @@ export default function Song() {
       </View>
       <View className="w-full gap-2">
         <View className="flex-row gap-2">
-          <Text className="text-xl dark:text-white">N'a pas choisi :</Text>
+          <Text className="text-xl dark:text-white">
+            {i18n.t("pickPage.notChosen")}
+          </Text>
           {room?.users
             .filter((user) => !usersValidated.includes(user.id))
             .map((user) => (
@@ -145,7 +149,9 @@ export default function Song() {
             ))}
         </View>
         <View className="flex-row gap-2">
-          <Text className="text-xl dark:text-white">A choisi :</Text>
+          <Text className="text-xl dark:text-white">
+            {i18n.t("pickPage.alreadyChosen")}
+          </Text>
           {room?.users
             .filter((user) => usersValidated.includes(user.id))
             .map((user) => (

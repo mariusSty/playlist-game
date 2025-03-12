@@ -5,6 +5,7 @@ import { usePick } from "@/hooks/usePick";
 import { useRoom } from "@/hooks/useRoom";
 import { Pick } from "@/types/room";
 import { socket } from "@/utils/server";
+import i18n from "@/utils/translation";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { Image } from "expo-image";
@@ -122,7 +123,7 @@ export default function Vote() {
   }
 
   return (
-    <Container title="Listen and Vote !">
+    <Container title={i18n.t("votePage.title")}>
       {!sound ? (
         <ActivityIndicator
           size="large"
@@ -154,7 +155,10 @@ export default function Vote() {
       )}
       <View className="justify-center flex-1">
         {isVoteValidated ? (
-          <Button text="Cancel my vote" onPress={handleCancelVote} />
+          <Button
+            text={i18n.t("votePage.cancelButton")}
+            onPress={handleCancelVote}
+          />
         ) : (
           <>
             {room?.users.map((player) => (
@@ -179,7 +183,9 @@ export default function Vote() {
       </View>
       <View className="w-full gap-2">
         <View className="flex-row gap-2">
-          <Text className="text-xl dark:text-white">N'a pas voté :</Text>
+          <Text className="text-xl dark:text-white">
+            {i18n.t("votePage.notVoted")}
+          </Text>
           {room?.users
             .filter((user) => !usersValidated.includes(user.id))
             .map((user) => (
@@ -193,7 +199,9 @@ export default function Vote() {
             ))}
         </View>
         <View className="flex-row gap-2">
-          <Text className="text-xl dark:text-white">A voté :</Text>
+          <Text className="text-xl dark:text-white">
+            {i18n.t("votePage.alreadyVoted")}
+          </Text>
           {room?.users
             .filter((user) => usersValidated.includes(user.id))
             .map((user) => (

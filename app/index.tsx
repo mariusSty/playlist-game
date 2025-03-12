@@ -2,6 +2,7 @@ import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
 import { UserContext } from "@/contexts/user-context";
 import { Room } from "@/types/room";
+import i18n from "@/utils/translation";
 import { Image } from "expo-image";
 import { Link, router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -45,7 +46,7 @@ export default function Main() {
       >
         <View className="gap-5">
           <Text className="text-5xl font-bold text-black dark:text-white">
-            Playlist Game
+            {i18n.t("homePage.title")}
           </Text>
           <Text>{apiUrl}</Text>
           <View className="flex-row items-center gap-5">
@@ -64,9 +65,12 @@ export default function Main() {
           </View>
         </View>
         <View className="gap-5">
-          <Button text="Create a game" onPress={handleCreateRoom} />
+          <Button
+            text={i18n.t("homePage.createButton")}
+            onPress={handleCreateRoom}
+          />
           <Link href="/room/join" asChild>
-            <Button text="Join a game" />
+            <Button text={i18n.t("homePage.joinButton")} />
           </Link>
         </View>
       </Pressable>

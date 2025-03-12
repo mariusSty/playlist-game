@@ -1,0 +1,63 @@
+{
+  "homePage": {
+    "title": "Playlist Game",
+    "createButton": "Créer une partie",
+    "joinButton": "Rejoindre une partie"
+  },
+  "joinPage": {
+    "joinButton": "Rejoindre la partie",
+    "pinInputPlaceholder": "Entrez le code PIN"
+  },
+  "startPage": {
+    "startButton": "Commencer la partie"
+  },
+  "themePage": {
+    "title": "Choix du thème",
+    "themeMaster": "Vous êtes le maître du thème, veuillez choisir le thème pour ce tour",
+    "waiting": "{name} est en train de choisir le thème...",
+    "themes": {
+      "gultyPleasure": "Votre meilleure chanson pour séduire",
+      "sleepyTime": "Votre meilleure chanson pour dormir",
+      "partyTime": "Votre meilleure chanson pour faire la fête",
+      "sadness": "La chanson qui vous remonte le moral",
+      "now": "Le son que vous écoutez en boucle en ce moment"
+    }
+  },
+  "pickPage": {
+    "title": "Le thème est {theme}, c'est le moment de choisir une chanson",
+    "yourSong": "Vous avez choisi :",
+    "cancelButton": "Annuler",
+    "chooseSong": "Choisir une chanson",
+    "notChosen": "Pas encore choisi :",
+    "alreadyChosen": "Déjà choisi :"
+  },
+  "votePage": {
+    "title": "Écoutez et Votez !",
+    "voteButton": "Voter",
+    "cancelButton": "Annuler le vote",
+    "notVoted": "Pas encore voté :",
+    "alreadyVoted": "Déjà voté :"
+  },
+  "revealPage": {
+    "title": "Révélation du tour",
+    "nextRoundButton": "Tour suivant"
+  },
+  "resultPage": {
+    "title": "Résultats",
+    "exitButton": "Quitter la partie"
+  },
+  "toast": {
+    "gameNotFound": {
+      "title": "Partie non trouvée",
+      "description": "Le code PIN est incorrect, essayez à nouveau"
+    },
+    "gameLeft": {
+      "title": "Partie quittée",
+      "description": "La partie a déjà commencé, veuillez rejoindre la partie"
+    },
+    "gameStarted": {
+      "title": "Partie commencée",
+      "description": "La partie a déjà commencé, veuillez rejoindre la partie"
+    }
+  }
+}
