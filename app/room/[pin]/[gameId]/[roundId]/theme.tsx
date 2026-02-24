@@ -42,7 +42,7 @@ export default function RoundTheme() {
   useFocusEffect(() => {
     socket.on("themePicked", ({ roundId, pin: pinFromSocket }) => {
       if (pinFromSocket === pin) {
-        router.navigate(`/room/${pin}/${gameId}/${roundId}/song`);
+        router.replace(`/room/${pin}/${gameId}/${roundId}/song`);
       }
     });
 

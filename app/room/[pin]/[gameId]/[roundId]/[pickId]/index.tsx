@@ -67,9 +67,9 @@ export default function Vote() {
     });
     socket.on("allVotesValidated", ({ pin, pickId }) => {
       if (pickId) {
-        router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
+        router.replace(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
       } else {
-        router.navigate(`/room/${pin}/${gameId}/${roundId}/reveal`);
+        router.replace(`/room/${pin}/${gameId}/${roundId}/reveal`);
       }
     });
     socket.on("voteCanceled", ({ pin: pinFromSocket, users }) => {
@@ -81,6 +81,7 @@ export default function Vote() {
 
     return () => {
       socket.off("voteValidated");
+      socket.off("allVotesValidated");
       socket.off("voteCanceled");
     };
   }, []);

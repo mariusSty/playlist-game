@@ -22,13 +22,13 @@ export default function Reveal() {
   useEffect(() => {
     socket.on("newRound", ({ roundId, pin: pinFromSocket }) => {
       if (pinFromSocket === pin) {
-        router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
+        router.replace(`/room/${pin}/${gameId}/${roundId}/theme`);
       }
     });
 
     socket.on("goToResult", ({ pin: pinFromSocket }) => {
       if (pinFromSocket === pin) {
-        router.navigate(`/room/${pin}/${gameId}/result`);
+        router.replace(`/room/${pin}/${gameId}/result`);
       }
     });
 

@@ -42,7 +42,7 @@ export default function Result() {
       </View>
       <Button
         text={i18n.t("resultPage.exitButton")}
-        onPress={() => router.navigate(`/room/${pin}`)}
+        onPress={() => router.dismissTo(`/room/${pin}`)}
       />
     </Container>
   );

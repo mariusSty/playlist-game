@@ -34,7 +34,7 @@ export default function Song() {
   useEffect(() => {
     socket.on("allSongsValidated", ({ pickId, pin: pinFromSocket }) => {
       if (pinFromSocket === pin) {
-        router.navigate(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
+        router.replace(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
       }
     });
     socket.on("songValidated", ({ pin: pinFromSocket, users }) => {
