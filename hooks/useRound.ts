@@ -1,13 +1,19 @@
 import { Round } from "@/types/room";
-import { apiUrl, fetcher } from "@/utils/server";
-import useSWR from "swr";
+import { apiUrl } from "@/utils/server";
+import { useQuery } from "@tanstack/react-query";
+
+export const roundQueryKey = (roundId: string) => ["round", roundId];
 
 export function useRound(roundId: string) {
   const {
     data: round,
     isLoading: isRoundLoading,
-    mutate: mutateRound,
-  } = useSWR<Round>(`${apiUrl}/round/${roundId}`, fetcher);
+    refetch: refetchRound,
+  } = useQuery<Round>({
+    queryKey: roundQueryKey(roundId),
+    queryFn: () =>
+      fetch(`${apiUrl}/round/${roundId}`).then((res) => res.json()),
+  });
 
-  return { round, isRoundLoading, mutateRound };
+  return { round, isRoundLoading, refetchRound };
 }

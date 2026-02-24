@@ -6,15 +6,36 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
+import {
+  focusManager,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import type { AppStateStatus } from "react-native";
+import { AppState, Platform } from "react-native";
 import "react-native-get-random-values";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { v4 as uuidv4 } from "uuid";
 import "../global.css";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60, // 1 minute
+    },
+  },
+});
+
+function onAppStateChange(status: AppStateStatus) {
+  if (Platform.OS !== "web") {
+    focusManager.setFocused(status === "active");
+  }
+}
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -33,7 +54,16 @@ export default function RootLayout() {
     SplashScreen.hideAsync();
   }, []);
 
-  return <RootLayoutNav />;
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", onAppStateChange);
+    return () => subscription.remove();
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RootLayoutNav />
+    </QueryClientProvider>
+  );
 }
 
 function RootLayoutNav() {

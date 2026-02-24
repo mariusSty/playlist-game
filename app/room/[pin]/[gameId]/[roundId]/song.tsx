@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { ThemedTextInput } from "@/components/TextInput";
-import { useGame } from "@/hooks/useGame";
+import { gameQueryKey, useGame } from "@/hooks/useGame";
 import { useMusicApiSearch } from "@/hooks/usePick";
 import { useRoom } from "@/hooks/useRoom";
 import { useUserStore } from "@/stores/user-store";
@@ -9,6 +9,7 @@ import { Track } from "@/types/room";
 import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -19,16 +20,19 @@ export default function Song() {
   const [search, setSearch] = useState("");
   const [isTrackSelected, setIsTrackSelected] = useState(false);
   const [usersValidated, setUsersValidated] = useState<string[]>([]);
-  const { game, isGameLoading, mutateGame } = useGame(gameId.toString());
+  const { game, isGameLoading } = useGame(gameId.toString());
   const { room } = useRoom(pin.toString());
   const { tracks = [], isTracksLoading } = useMusicApiSearch(
     isTrackSelected ? null : search,
   );
 
   const user = useUserStore((state) => state.user);
+  const queryClient = useQueryClient();
 
   useFocusEffect(() => {
-    mutateGame();
+    queryClient.invalidateQueries({
+      queryKey: gameQueryKey(gameId.toString()),
+    });
   });
 
   useEffect(() => {

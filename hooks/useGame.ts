@@ -1,22 +1,28 @@
 import { Game, Result } from "@/types/room";
-import { apiUrl, fetcher } from "@/utils/server";
-import useSWR from "swr";
+import { apiUrl } from "@/utils/server";
+import { useQuery } from "@tanstack/react-query";
+
+export const gameQueryKey = (gameId: string) => ["game", gameId];
 
 export function useGame(gameId: string) {
   const {
     data: game,
     isLoading: isGameLoading,
-    mutate: mutateGame,
-  } = useSWR<Game>(`${apiUrl}/game/${gameId}`, fetcher);
+    refetch: refetchGame,
+  } = useQuery<Game>({
+    queryKey: gameQueryKey(gameId),
+    queryFn: () => fetch(`${apiUrl}/game/${gameId}`).then((res) => res.json()),
+  });
 
-  return { game, isGameLoading, mutateGame };
+  return { game, isGameLoading, refetchGame };
 }
 
 export function useResult(gameId: string) {
-  const { data: result, isLoading: isResultLoading } = useSWR<Result[]>(
-    `${apiUrl}/game/${gameId}/result`,
-    fetcher
-  );
+  const { data: result, isLoading: isResultLoading } = useQuery<Result[]>({
+    queryKey: ["result", gameId],
+    queryFn: () =>
+      fetch(`${apiUrl}/game/${gameId}/result`).then((res) => res.json()),
+  });
 
   return { result, isResultLoading };
 }

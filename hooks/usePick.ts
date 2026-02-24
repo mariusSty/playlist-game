@@ -1,22 +1,31 @@
 import { Pick, Track } from "@/types/room";
-import { apiUrl, fetcher } from "@/utils/server";
-import useSWR from "swr";
+import { apiUrl } from "@/utils/server";
+import { useQuery } from "@tanstack/react-query";
+
+export const pickQueryKey = (pickId: string) => ["pick", pickId];
 
 export function usePick(pickId: string) {
   const {
     data: pick,
     isLoading: isPickLoading,
-    mutate: mutatePick,
-  } = useSWR<Pick>(`${apiUrl}/pick/${pickId}`, fetcher);
+    refetch: refetchPick,
+  } = useQuery<Pick>({
+    queryKey: pickQueryKey(pickId),
+    queryFn: () => fetch(`${apiUrl}/pick/${pickId}`).then((res) => res.json()),
+  });
 
-  return { pick, isPickLoading, mutatePick };
+  return { pick, isPickLoading, refetchPick };
 }
 
 export function useMusicApiSearch(search: string | null) {
-  const { data: tracks, isLoading: isTracksLoading } = useSWR<Track[]>(
-    search && search.length >= 3 ? `${apiUrl}/pick/search/${search}` : null,
-    fetcher
-  );
+  const isEnabled = !!search && search.length >= 3;
+
+  const { data: tracks, isLoading: isTracksLoading } = useQuery<Track[]>({
+    queryKey: ["musicSearch", search],
+    queryFn: () =>
+      fetch(`${apiUrl}/pick/search/${search}`).then((res) => res.json()),
+    enabled: isEnabled,
+  });
 
   return { tracks, isTracksLoading };
 }
