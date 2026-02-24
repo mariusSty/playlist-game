@@ -10,7 +10,6 @@ import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
 
 export default function Main() {
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const { user, setName } = useUserStore();
   const createRoom = useCreateRoom();
 
@@ -32,7 +31,6 @@ export default function Main() {
           <Text className="text-5xl font-bold text-black dark:text-white">
             {i18n.t("homePage.title")}
           </Text>
-          <Text>{apiUrl}</Text>
           <View className="flex-row items-center gap-5">
             <Image
               style={{ width: 50, height: 50, borderRadius: 5 }}
@@ -41,10 +39,7 @@ export default function Main() {
               transition={1000}
             />
             <View className="flex-1">
-              <ThemedTextInput
-                value={user.name || ""}
-                onChangeText={setName}
-              />
+              <ThemedTextInput value={user.name || ""} onChangeText={setName} />
             </View>
           </View>
         </View>
