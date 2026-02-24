@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
+import { useCreateRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
-import { Room } from "@/types/room";
 import i18n from "@/utils/translation";
 import { Image } from "expo-image";
 import { Link, router } from "expo-router";
@@ -14,17 +14,13 @@ export default function Main() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const { user, setUser } = useUserStore();
   const [nameInput, setNameInput] = useState(user.name || "");
+  const createRoom = useCreateRoom();
 
   async function handleCreateRoom() {
-    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-    const res = await fetch(`${apiUrl}/room`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: user.name, id: user.id }),
+    const room = await createRoom.mutateAsync({
+      name: user.name,
+      id: user.id,
     });
-    const room: Room = await res.json();
     router.navigate(`/room/${room.pin}`);
   }
 

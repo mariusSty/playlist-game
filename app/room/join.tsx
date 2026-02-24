@@ -1,5 +1,6 @@
 import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
+import { useJoinRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import { router } from "expo-router";
@@ -10,28 +11,20 @@ import "react-native-get-random-values";
 import Toast from "react-native-toast-message";
 
 export default function Join() {
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const [pin, setPin] = useState("");
   const user = useUserStore((state) => state.user);
+  const joinRoom = useJoinRoom();
 
   async function handlePress() {
-    const res = await fetch(`${apiUrl}/room/${pin}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ pin, id: user.id, name: user.name }),
-    });
-    const room = await res.json();
-
-    if (room.message) {
+    try {
+      await joinRoom.mutateAsync({ pin, id: user.id, name: user.name });
+      router.navigate(`/room/${pin}`);
+    } catch {
       Toast.show({
         type: "error",
         text1: i18n.t("toast.gameNotFound.title"),
         text2: i18n.t("toast.gameNotFound.description"),
       });
-    } else {
-      router.navigate(`/room/${pin}`);
     }
   }
 
