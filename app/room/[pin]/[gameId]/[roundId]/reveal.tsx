@@ -20,23 +20,22 @@ export default function Reveal() {
   }
 
   useEffect(() => {
-    socket.on("newRound", ({ roundId, pin: pinFromSocket }) => {
-      if (pinFromSocket === pin) {
-        router.replace(`/room/${pin}/${gameId}/${roundId}/theme`);
-      }
-    });
+    function onNewRound({ roundId }: { roundId: string }) {
+      router.replace(`/room/${pin}/${gameId}/${roundId}/theme`);
+    }
 
-    socket.on("goToResult", ({ pin: pinFromSocket }) => {
-      if (pinFromSocket === pin) {
-        router.replace(`/room/${pin}/${gameId}/result`);
-      }
-    });
+    function onGoToResult() {
+      router.replace(`/room/${pin}/${gameId}/result`);
+    }
+
+    socket.on("newRound", onNewRound);
+    socket.on("goToResult", onGoToResult);
 
     return () => {
-      socket.off("newRound");
-      socket.off("goToResult");
+      socket.off("newRound", onNewRound);
+      socket.off("goToResult", onGoToResult);
     };
-  }, []);
+  }, [pin, gameId]);
 
   if (isRoundLoading || !round) {
     return <Text>Loading...</Text>;

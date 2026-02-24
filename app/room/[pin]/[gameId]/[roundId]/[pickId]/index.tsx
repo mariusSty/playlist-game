@@ -60,31 +60,33 @@ export default function Vote() {
   }
 
   useEffect(() => {
-    socket.on("voteValidated", ({ pin: pinFromSocket, users }) => {
-      if (pinFromSocket === pin) {
-        setUsersValidated(users);
-      }
-    });
-    socket.on("allVotesValidated", ({ pin, pickId }) => {
-      if (pickId) {
-        router.replace(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
+    function onVoteValidated({ users }: { users: string[] }) {
+      setUsersValidated(users);
+    }
+
+    function onAllVotesValidated({ pickId: nextPickId }: { pickId?: string }) {
+      if (nextPickId) {
+        router.replace(`/room/${pin}/${gameId}/${roundId}/${nextPickId}`);
       } else {
         router.replace(`/room/${pin}/${gameId}/${roundId}/reveal`);
       }
-    });
-    socket.on("voteCanceled", ({ pin: pinFromSocket, users }) => {
-      if (pinFromSocket === pin) {
-        setUsersValidated(users);
-        setIsVoteValidated(false);
-      }
-    });
+    }
+
+    function onVoteCanceled({ users }: { users: string[] }) {
+      setUsersValidated(users);
+      setIsVoteValidated(false);
+    }
+
+    socket.on("voteValidated", onVoteValidated);
+    socket.on("allVotesValidated", onAllVotesValidated);
+    socket.on("voteCanceled", onVoteCanceled);
 
     return () => {
-      socket.off("voteValidated");
-      socket.off("allVotesValidated");
-      socket.off("voteCanceled");
+      socket.off("voteValidated", onVoteValidated);
+      socket.off("allVotesValidated", onAllVotesValidated);
+      socket.off("voteCanceled", onVoteCanceled);
     };
-  }, []);
+  }, [pin, gameId, roundId]);
 
   if (isPickLoading || !pick) {
     return <Text>Loading...</Text>;

@@ -32,30 +32,30 @@ export default function Song() {
   });
 
   useEffect(() => {
-    socket.on("allSongsValidated", ({ pickId, pin: pinFromSocket }) => {
-      if (pinFromSocket === pin) {
-        router.replace(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
-      }
-    });
-    socket.on("songValidated", ({ pin: pinFromSocket, users }) => {
-      if (pinFromSocket === pin) {
-        setUsersValidated(users);
-      }
-    });
-    socket.on("songCanceled", ({ pin: pinFromSocket, users }) => {
-      if (pinFromSocket === pin) {
-        setUsersValidated(users);
-        setIsTrackSelected(false);
-        setSearch("");
-      }
-    });
+    function onAllSongsValidated({ pickId }: { pickId: string }) {
+      router.replace(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
+    }
+
+    function onSongValidated({ users }: { users: string[] }) {
+      setUsersValidated(users);
+    }
+
+    function onSongCanceled({ users }: { users: string[] }) {
+      setUsersValidated(users);
+      setIsTrackSelected(false);
+      setSearch("");
+    }
+
+    socket.on("allSongsValidated", onAllSongsValidated);
+    socket.on("songValidated", onSongValidated);
+    socket.on("songCanceled", onSongCanceled);
 
     return () => {
-      socket.off("allSongsValidated");
-      socket.off("songValidated");
-      socket.off("songCanceled");
+      socket.off("allSongsValidated", onAllSongsValidated);
+      socket.off("songValidated", onSongValidated);
+      socket.off("songCanceled", onSongCanceled);
     };
-  }, []);
+  }, [pin, gameId, roundId]);
 
   function handleSelectTrack(track: Track) {
     setIsTrackSelected(true);

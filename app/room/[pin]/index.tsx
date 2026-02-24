@@ -18,23 +18,30 @@ export default function CreateRoom() {
 
   useEffect(() => {
     socket.emit("joinRoom", { pin });
-    socket.on("userList", ({ users, hostId, pin: pinFromSocket }) => {
-      if (pinFromSocket === pin) {
-        setUsers(users);
-        setHostId(hostId);
-      }
-    });
-    socket.on("gameStarted", ({ roundId, gameId, pin: pinFromSocket }) => {
-      if (pinFromSocket === pin) {
-        router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
-      }
-    });
+
+    function onUserList({ users, hostId }: { users: User[]; hostId: string }) {
+      setUsers(users);
+      setHostId(hostId);
+    }
+
+    function onGameStarted({
+      roundId,
+      gameId,
+    }: {
+      roundId: string;
+      gameId: string;
+    }) {
+      router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
+    }
+
+    socket.on("userList", onUserList);
+    socket.on("gameStarted", onGameStarted);
 
     return () => {
-      socket.off("userList");
-      socket.off("gameStarted");
+      socket.off("userList", onUserList);
+      socket.off("gameStarted", onGameStarted);
     };
-  }, []);
+  }, [pin]);
 
   async function handleStartGame() {
     socket.emit("startGame", { pin });

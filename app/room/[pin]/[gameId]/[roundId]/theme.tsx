@@ -7,7 +7,7 @@ import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 
 export default function RoundTheme() {
@@ -39,17 +39,17 @@ export default function RoundTheme() {
     return () => clearTimeout(timer);
   });
 
-  useFocusEffect(() => {
-    socket.on("themePicked", ({ roundId, pin: pinFromSocket }) => {
-      if (pinFromSocket === pin) {
-        router.replace(`/room/${pin}/${gameId}/${roundId}/song`);
-      }
-    });
+  useEffect(() => {
+    function onThemePicked({ roundId }: { roundId: string }) {
+      router.replace(`/room/${pin}/${gameId}/${roundId}/song`);
+    }
+
+    socket.on("themePicked", onThemePicked);
 
     return () => {
-      socket.off("themePicked");
+      socket.off("themePicked", onThemePicked);
     };
-  });
+  }, [pin, gameId]);
 
   if (isGameLoading || !game || !user) {
     return (
