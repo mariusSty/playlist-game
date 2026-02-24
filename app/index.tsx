@@ -5,15 +5,13 @@ import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import { Image } from "expo-image";
 import { Link, router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
 
 export default function Main() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  const { user, setUser } = useUserStore();
-  const [nameInput, setNameInput] = useState(user.name || "");
+  const { user, setName } = useUserStore();
   const createRoom = useCreateRoom();
 
   async function handleCreateRoom() {
@@ -23,16 +21,6 @@ export default function Main() {
     });
     router.navigate(`/room/${room.pin}`);
   }
-
-  async function handleChangeName(name: string) {
-    setNameInput(name);
-    setUser({ ...user, name });
-    await SecureStore.setItemAsync("name", name);
-  }
-
-  useEffect(() => {
-    setNameInput(user.name || "");
-  }, [user.name]);
 
   return (
     <View className="flex-1">
@@ -54,8 +42,8 @@ export default function Main() {
             />
             <View className="flex-1">
               <ThemedTextInput
-                value={nameInput}
-                onChangeText={handleChangeName}
+                value={user.name || ""}
+                onChangeText={setName}
               />
             </View>
           </View>
