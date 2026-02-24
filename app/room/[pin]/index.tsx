@@ -1,4 +1,5 @@
 import { Button } from "@/components/Button";
+import { useColorScheme } from "@/components/useColorScheme";
 import { useUserStore } from "@/stores/user-store";
 import { User } from "@/types/room";
 import { socket } from "@/utils/server";
@@ -15,6 +16,8 @@ export default function CreateRoom() {
   const [hostId, setHostId] = useState<string | null>(null);
   const user = useUserStore((state) => state.user);
   const { pin } = useLocalSearchParams();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
 
   useEffect(() => {
     socket.emit("joinRoom", { pin });
@@ -60,7 +63,7 @@ export default function CreateRoom() {
   return (
     <View className="items-center justify-between flex-1 m-10">
       <Pressable className="self-start" onPress={handleLeaveRoom}>
-        <DoorOpen size={24} className="text-black dark:text-white" />
+        <DoorOpen size={24} color={isDarkMode ? "white" : "black"} />
       </Pressable>
       <Text className="text-5xl font-bold dark:text-white">PIN : {pin}</Text>
       <ScrollView className="max-h-[50%]">

@@ -1,5 +1,6 @@
 import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
+import { useColorScheme } from "@/components/useColorScheme";
 import { useJoinRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
@@ -14,6 +15,7 @@ export default function Join() {
   const [pin, setPin] = useState("");
   const user = useUserStore((state) => state.user);
   const joinRoom = useJoinRoom();
+  const colorScheme = useColorScheme();
 
   async function handlePress() {
     try {
@@ -34,7 +36,10 @@ export default function Join() {
       onPress={() => Keyboard.dismiss()}
     >
       <Pressable className="self-start" onPress={() => router.navigate("/")}>
-        <ArrowLeft size={24} className="text-black dark:text-white" />
+        <ArrowLeft
+          size={24}
+          color={colorScheme === "dark" ? "white" : "black"}
+        />
       </Pressable>
       <View className="w-full gap-2">
         <Text className="text-xl font-bold dark:text-white">

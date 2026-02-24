@@ -1,5 +1,6 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
+import { useColorScheme } from "@/components/useColorScheme";
 import { usePick } from "@/hooks/usePick";
 import { useRoom } from "@/hooks/useRoom";
 import { useUserStore } from "@/stores/user-store";
@@ -21,6 +22,7 @@ setAudioModeAsync({ playsInSilentMode: true });
 export default function Vote() {
   const { pin, gameId, roundId, pickId } = useLocalSearchParams();
   const user = useUserStore((state) => state.user);
+  const colorScheme = useColorScheme();
   const { room } = useRoom(pin.toString());
   const { pick, isPickLoading } = usePick(pickId.toString());
   const [isVoteValidated, setIsVoteValidated] = useState(false);
@@ -112,16 +114,25 @@ export default function Vote() {
             className="w-auto p-5 bg-black rounded-lg dark:bg-white"
           >
             {isPlaying ? (
-              <Pause size={24} className="text-white dark:text-black" />
+              <Pause
+                size={24}
+                color={colorScheme === "dark" ? "black" : "white"}
+              />
             ) : (
-              <Play size={24} className="text-white dark:text-black" />
+              <Play
+                size={24}
+                color={colorScheme === "dark" ? "black" : "white"}
+              />
             )}
           </Pressable>
           <Pressable
             onPress={handleStartFromBegin}
             className="w-auto p-5 bg-black rounded-lg dark:bg-white"
           >
-            <RotateCcw size={24} className="text-white dark:text-black" />
+            <RotateCcw
+              size={24}
+              color={colorScheme === "dark" ? "black" : "white"}
+            />
           </Pressable>
         </View>
       )}
