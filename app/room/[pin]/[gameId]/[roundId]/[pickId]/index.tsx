@@ -3,14 +3,13 @@ import Container from "@/components/Container";
 import { UserContext } from "@/contexts/user-context";
 import { usePick } from "@/hooks/usePick";
 import { useRoom } from "@/hooks/useRoom";
-import { Pick } from "@/types/room";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { Audio } from "expo-av";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { Image } from "expo-image";
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useContext, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 export default function Vote() {
@@ -20,8 +19,14 @@ export default function Vote() {
   const { pick, isPickLoading } = usePick(pickId.toString());
   const [isVoteValidated, setIsVoteValidated] = useState(false);
   const [usersValidated, setUsersValidated] = useState<string[]>([]);
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+
+  const audioSource = pick?.track.previewUrl
+    ? { uri: pick.track.previewUrl }
+    : null;
+
+  const player = useAudioPlayer(audioSource);
+  const status = useAudioPlayerStatus(player);
+  const isPlaying = status.playing;
 
   function handleVote(guessId: string) {
     setIsVoteValidated(true);
@@ -42,55 +47,17 @@ export default function Vote() {
   }
 
   function handlePlay() {
-    if (!sound) return;
-    sound.playAsync();
+    player.play();
   }
 
   function handleStartFromBegin() {
-    if (!sound) return;
-    sound.playFromPositionAsync(0);
+    player.seekTo(0);
+    player.play();
   }
 
   function handlePause() {
-    if (!sound) return;
-    sound.pauseAsync();
+    player.pause();
   }
-
-  async function loadSound(pick: Pick) {
-    await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: pick.track.previewUrl },
-      { shouldPlay: false },
-      (status) => {
-        if (status.isLoaded) {
-          if (status.isPlaying) {
-            setIsPlaying(true);
-          } else {
-            setIsPlaying(false);
-          }
-          if (status.didJustFinish) {
-            setIsPlaying(false);
-          }
-        }
-      }
-    );
-
-    setSound(sound);
-  }
-
-  useFocusEffect(
-    useCallback(() => {
-      if (pick && !sound) {
-        loadSound(pick);
-      }
-
-      return () => {
-        if (sound) {
-          sound.unloadAsync();
-        }
-      };
-    }, [sound, pick])
-  );
 
   useEffect(() => {
     socket.on("voteValidated", ({ pin: pinFromSocket, users }) => {
@@ -124,7 +91,7 @@ export default function Vote() {
 
   return (
     <Container title={i18n.t("votePage.title")}>
-      {!sound ? (
+      {!status.isLoaded ? (
         <ActivityIndicator
           size="large"
           className="my-auto text-black dark:text-white"
