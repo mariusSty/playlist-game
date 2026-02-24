@@ -1,18 +1,18 @@
 import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
-import { UserContext } from "@/contexts/user-context";
+import { useUserStore } from "@/stores/user-store";
 import { Room } from "@/types/room";
 import i18n from "@/utils/translation";
 import { Image } from "expo-image";
 import { Link, router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
 
 export default function Main() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser } = useUserStore();
   const [nameInput, setNameInput] = useState(user.name || "");
 
   async function handleCreateRoom() {

@@ -1,19 +1,19 @@
 import { Button } from "@/components/Button";
-import { UserContext } from "@/contexts/user-context";
+import { useUserStore } from "@/stores/user-store";
 import { User } from "@/types/room";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export default function CreateRoom() {
   const [users, setUsers] = useState<User[]>([]);
   const [hostId, setHostId] = useState<string | null>(null);
-  const { user } = useContext(UserContext);
+  const user = useUserStore((state) => state.user);
   const { pin } = useLocalSearchParams();
 
   useEffect(() => {

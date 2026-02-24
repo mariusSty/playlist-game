@@ -1,19 +1,19 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
-import { UserContext } from "@/contexts/user-context";
 import { useRound } from "@/hooks/useRound";
+import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { Text, View } from "react-native";
 
 export default function Reveal() {
   const { roundId, pin, gameId } = useLocalSearchParams();
   const { round, isRoundLoading } = useRound(roundId.toString());
-  const { user } = useContext(UserContext);
+  const user = useUserStore((state) => state.user);
 
   function handleNextRound() {
     socket.emit("nextRound", { pin, gameId });

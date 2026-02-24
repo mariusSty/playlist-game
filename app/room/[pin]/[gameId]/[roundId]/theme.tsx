@@ -1,18 +1,18 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { themes } from "@/constants/theme";
-import { UserContext } from "@/contexts/user-context";
 import { useGame } from "@/hooks/useGame";
+import { useUserStore } from "@/stores/user-store";
 import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 
 export default function RoundTheme() {
   const [counter, setCounter] = useState(10);
-  const { user } = useContext(UserContext);
+  const user = useUserStore((state) => state.user);
   const { pin, gameId, roundId } = useLocalSearchParams();
 
   const { game, isGameLoading } = useGame(gameId.toString());

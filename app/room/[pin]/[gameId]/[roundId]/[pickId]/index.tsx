@@ -1,20 +1,20 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
-import { UserContext } from "@/contexts/user-context";
 import { usePick } from "@/hooks/usePick";
 import { useRoom } from "@/hooks/useRoom";
+import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 export default function Vote() {
   const { pin, gameId, roundId, pickId } = useLocalSearchParams();
-  const { user } = useContext(UserContext);
+  const user = useUserStore((state) => state.user);
   const { room } = useRoom(pin.toString());
   const { pick, isPickLoading } = usePick(pickId.toString());
   const [isVoteValidated, setIsVoteValidated] = useState(false);

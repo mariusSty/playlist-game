@@ -1,10 +1,10 @@
 import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
-import { UserContext } from "@/contexts/user-context";
+import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
 import Toast from "react-native-toast-message";
@@ -12,7 +12,7 @@ import Toast from "react-native-toast-message";
 export default function Join() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const [pin, setPin] = useState("");
-  const { user } = useContext(UserContext);
+  const user = useUserStore((state) => state.user);
 
   async function handlePress() {
     const res = await fetch(`${apiUrl}/room/${pin}`, {

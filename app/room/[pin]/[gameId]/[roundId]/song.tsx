@@ -1,17 +1,17 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { ThemedTextInput } from "@/components/TextInput";
-import { UserContext } from "@/contexts/user-context";
 import { useGame } from "@/hooks/useGame";
 import { useMusicApiSearch } from "@/hooks/usePick";
 import { useRoom } from "@/hooks/useRoom";
+import { useUserStore } from "@/stores/user-store";
 import { Track } from "@/types/room";
 import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { Image } from "expo-image";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function Song() {
@@ -25,7 +25,7 @@ export default function Song() {
     isTrackSelected ? null : search,
   );
 
-  const { user } = useContext(UserContext);
+  const user = useUserStore((state) => state.user);
 
   useFocusEffect(() => {
     mutateGame();

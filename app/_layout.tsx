@@ -1,5 +1,5 @@
 import { useColorScheme } from "@/components/useColorScheme";
-import { User, UserContext } from "@/contexts/user-context";
+import { useUserStore } from "@/stores/user-store";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { faker } from "@faker-js/faker";
 import {
@@ -11,7 +11,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "react-native-get-random-values";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -57,7 +57,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  const [user, setUser] = useState<User>({ id: null, name: null });
+  const setUser = useUserStore((state) => state.setUser);
   const backgroundColor =
     colorScheme === "dark"
       ? DarkTheme.colors.background
@@ -89,12 +89,10 @@ function RootLayoutNav() {
       }}
     >
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <UserContext.Provider value={{ user, setUser }}>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-          </Stack>
-        </UserContext.Provider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        </Stack>
       </ThemeProvider>
       <Toast />
     </SafeAreaView>
