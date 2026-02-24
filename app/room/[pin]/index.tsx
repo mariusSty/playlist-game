@@ -3,9 +3,9 @@ import { useUserStore } from "@/stores/user-store";
 import { User } from "@/types/room";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
-import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
+import { DoorOpen, Star } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -60,9 +60,7 @@ export default function CreateRoom() {
   return (
     <View className="items-center justify-between flex-1 m-10">
       <Pressable className="self-start" onPress={handleLeaveRoom}>
-        <Text className="dark:text-white">
-          <FontAwesome6 name="door-open" size={24} />
-        </Text>
+        <DoorOpen size={24} className="text-black dark:text-white" />
       </Pressable>
       <Text className="text-5xl font-bold dark:text-white">PIN : {pin}</Text>
       <ScrollView className="max-h-[50%]">
@@ -77,7 +75,7 @@ export default function CreateRoom() {
               />
               <Text className="text-3xl dark:text-white">{user.name}</Text>
               {user.id === hostId && (
-                <FontAwesome name="star" size={24} color="gold" />
+                <Star size={24} color="gold" fill="gold" />
               )}
             </View>
           ))}

@@ -4,9 +4,9 @@ import { useRound } from "@/hooks/useRound";
 import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
-import { FontAwesome6 } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
+import { CircleCheck, CircleX } from "lucide-react-native";
 import { useEffect } from "react";
 import { Text, View } from "react-native";
 
@@ -57,14 +57,14 @@ export default function Reveal() {
                 transition={1000}
               />
               <Text className="text-xl dark:text-white">{pick.user.name}</Text>
-              <Text className="ml-auto dark:text-white">
+              <View className="ml-auto">
                 {pick.votes.find((vote) => vote.guessUser.id === user.id)
                   ?.guessedUser.id === pick.user.id ? (
-                  <FontAwesome6 name="circle-check" color="green" size={32} />
+                  <CircleCheck color="green" size={32} />
                 ) : (
-                  <FontAwesome6 name="circle-xmark" color="red" size={32} />
+                  <CircleX color="red" size={32} />
                 )}
-              </Text>
+              </View>
             </View>
           </View>
         ))}

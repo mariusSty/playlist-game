@@ -5,10 +5,10 @@ import { useRoom } from "@/hooks/useRoom";
 import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
-import { FontAwesome6 } from "@expo/vector-icons";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
+import { Pause, Play, RotateCcw } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
@@ -105,21 +105,17 @@ export default function Vote() {
             onPress={isPlaying ? handlePause : handlePlay}
             className="w-auto p-5 bg-black rounded-lg dark:bg-white"
           >
-            <Text className="text-xl font-bold text-center text-white dark:text-black">
-              {isPlaying ? (
-                <FontAwesome6 name="pause" size={24} />
-              ) : (
-                <FontAwesome6 name="play" size={24} />
-              )}
-            </Text>
+            {isPlaying ? (
+              <Pause size={24} className="text-white dark:text-black" />
+            ) : (
+              <Play size={24} className="text-white dark:text-black" />
+            )}
           </Pressable>
           <Pressable
             onPress={handleStartFromBegin}
             className="w-auto p-5 bg-black rounded-lg dark:bg-white"
           >
-            <Text className="text-xl font-bold text-center text-white dark:text-black">
-              <FontAwesome6 name="rotate-left" size={24} />
-            </Text>
+            <RotateCcw size={24} className="text-white dark:text-black" />
           </Pressable>
         </View>
       )}

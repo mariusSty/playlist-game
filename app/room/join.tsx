@@ -2,8 +2,8 @@ import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import { FontAwesome6 } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { ArrowLeft } from "lucide-react-native";
 import { useState } from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
@@ -41,9 +41,7 @@ export default function Join() {
       onPress={() => Keyboard.dismiss()}
     >
       <Pressable className="self-start" onPress={() => router.navigate("/")}>
-        <Text className="dark:text-white">
-          <FontAwesome6 name="arrow-left" size={24} />
-        </Text>
+        <ArrowLeft size={24} className="text-black dark:text-white" />
       </Pressable>
       <View className="w-full gap-2">
         <Text className="text-xl font-bold dark:text-white">
