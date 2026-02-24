@@ -5,12 +5,18 @@ import { useRoom } from "@/hooks/useRoom";
 import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
-import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+import {
+  setAudioModeAsync,
+  useAudioPlayer,
+  useAudioPlayerStatus,
+} from "expo-audio";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { Pause, Play, RotateCcw } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
+
+setAudioModeAsync({ playsInSilentMode: true });
 
 export default function Vote() {
   const { pin, gameId, roundId, pickId } = useLocalSearchParams();
