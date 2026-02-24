@@ -11,7 +11,7 @@ import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { Image } from "expo-image";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function Song() {
@@ -22,16 +22,14 @@ export default function Song() {
   const { game, isGameLoading, mutateGame } = useGame(gameId.toString());
   const { room } = useRoom(pin.toString());
   const { tracks = [], isTracksLoading } = useMusicApiSearch(
-    isTrackSelected ? null : search
+    isTrackSelected ? null : search,
   );
 
   const { user } = useContext(UserContext);
 
-  useFocusEffect(
-    useCallback(() => {
-      mutateGame();
-    }, [])
-  );
+  useFocusEffect(() => {
+    mutateGame();
+  });
 
   useEffect(() => {
     socket.on("allSongsValidated", ({ pickId, pin: pinFromSocket }) => {

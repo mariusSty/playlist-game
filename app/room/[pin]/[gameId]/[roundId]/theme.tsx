@@ -7,7 +7,7 @@ import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 
 export default function RoundTheme() {
@@ -27,33 +27,29 @@ export default function RoundTheme() {
     }
   }
 
-  useFocusEffect(
-    useCallback(() => {
-      const timer = setTimeout(() => {
-        if (counter > 0) {
-          setCounter(counter - 1);
-        } else {
-          handleChoose(themes[Math.round(Math.random() * themes.length)]);
-          clearTimeout(timer);
-        }
-      }, 1000);
-      return () => clearTimeout(timer);
-    }, [counter])
-  );
+  useFocusEffect(() => {
+    const timer = setTimeout(() => {
+      if (counter > 0) {
+        setCounter(counter - 1);
+      } else {
+        handleChoose(themes[Math.round(Math.random() * themes.length)]);
+        clearTimeout(timer);
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  });
 
-  useFocusEffect(
-    useCallback(() => {
-      socket.on("themePicked", ({ roundId, pin: pinFromSocket }) => {
-        if (pinFromSocket === pin) {
-          router.navigate(`/room/${pin}/${gameId}/${roundId}/song`);
-        }
-      });
+  useFocusEffect(() => {
+    socket.on("themePicked", ({ roundId, pin: pinFromSocket }) => {
+      if (pinFromSocket === pin) {
+        router.navigate(`/room/${pin}/${gameId}/${roundId}/song`);
+      }
+    });
 
-      return () => {
-        socket.off("themePicked");
-      };
-    }, [])
-  );
+    return () => {
+      socket.off("themePicked");
+    };
+  });
 
   if (isGameLoading || !game || !user) {
     return (
