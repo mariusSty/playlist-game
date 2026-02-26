@@ -40,8 +40,8 @@ export default function RoundTheme() {
   });
 
   useEffect(() => {
-    function onThemePicked({ roundId }: { roundId: string }) {
-      router.replace(`/room/${pin}/${gameId}/${roundId}/song`);
+    function onThemePicked({ roundId, theme }: { roundId: string; theme: string }) {
+      router.replace(`/room/${pin}/${gameId}/${roundId}/song?theme=${theme}`);
     }
 
     socket.on("themePicked", onThemePicked);

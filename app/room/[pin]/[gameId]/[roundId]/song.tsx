@@ -1,39 +1,28 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { ThemedTextInput } from "@/components/TextInput";
-import { gameQueryKey, useGame } from "@/hooks/useGame";
 import { useMusicApiSearch } from "@/hooks/usePick";
 import { useRoom } from "@/hooks/useRoom";
 import { useUserStore } from "@/stores/user-store";
 import { Track } from "@/types/room";
-import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
-import { useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function Song() {
-  const { pin, gameId, roundId } = useLocalSearchParams();
+  const { pin, gameId, roundId, theme } = useLocalSearchParams();
   const [search, setSearch] = useState("");
   const [isTrackSelected, setIsTrackSelected] = useState(false);
   const [usersValidated, setUsersValidated] = useState<string[]>([]);
-  const { game, isGameLoading } = useGame(gameId.toString());
   const { room } = useRoom(pin.toString());
   const { tracks = [], isTracksLoading } = useMusicApiSearch(
     isTrackSelected ? null : search,
   );
 
   const user = useUserStore((state) => state.user);
-  const queryClient = useQueryClient();
-
-  useFocusEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: gameQueryKey(gameId.toString()),
-    });
-  });
 
   useEffect(() => {
     function onAllSongsValidated({ pickId }: { pickId: string }) {
@@ -85,10 +74,7 @@ export default function Song() {
     });
   }
 
-  if (isGameLoading || !game) return;
-
-  const currentTheme = getCurrentRound(game, Number(roundId))?.theme;
-  const translatedTheme = i18n.t(`themePage.themes.${currentTheme}`);
+  const translatedTheme = i18n.t(`themePage.themes.${theme}`);
 
   return (
     <Container title={i18n.t("pickPage.title", { theme: translatedTheme })}>

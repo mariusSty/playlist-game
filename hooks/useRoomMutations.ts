@@ -21,6 +21,9 @@ export function useCreateRoom() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(params),
       });
+      if (!res.ok) {
+        throw new Error("Failed to create room");
+      }
       return res.json();
     },
   });

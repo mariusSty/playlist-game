@@ -8,17 +8,26 @@ import { Link, router } from "expo-router";
 import React from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
+import Toast from "react-native-toast-message";
 
 export default function Main() {
   const { user, setName } = useUserStore();
   const createRoom = useCreateRoom();
 
   async function handleCreateRoom() {
-    const room = await createRoom.mutateAsync({
-      name: user.name,
-      id: user.id,
-    });
-    router.navigate(`/room/${room.pin}`);
+    try {
+      const room = await createRoom.mutateAsync({
+        name: user.name,
+        id: user.id,
+      });
+      router.navigate(`/room/${room.pin}`);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: i18n.t("toast.createRoomError.title"),
+        text2: i18n.t("toast.createRoomError.description"),
+      });
+    }
   }
 
   return (
