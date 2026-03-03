@@ -40,7 +40,13 @@ export default function RoundTheme() {
   });
 
   useEffect(() => {
-    function onThemePicked({ roundId, theme }: { roundId: string; theme: string }) {
+    function onThemePicked({
+      roundId,
+      theme,
+    }: {
+      roundId: string;
+      theme: string;
+    }) {
       router.replace(`/room/${pin}/${gameId}/${roundId}/song?theme=${theme}`);
     }
 
@@ -51,7 +57,7 @@ export default function RoundTheme() {
     };
   }, [pin, gameId]);
 
-  if (isGameLoading || !game || !user) {
+  if (isGameLoading || !game) {
     return (
       <Container title={i18n.t("themePage.title")}>
         <View>

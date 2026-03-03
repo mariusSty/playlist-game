@@ -9,7 +9,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { DoorOpen, Star } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 export default function CreateRoom() {
   const [users, setUsers] = useState<User[]>([]);
@@ -52,11 +51,6 @@ export default function CreateRoom() {
 
   function handleLeaveRoom() {
     socket.emit("leaveRoom", { pin, userId: user.id });
-    Toast.show({
-      type: "info",
-      text1: i18n.t("toast.gameLeft.title"),
-      text2: i18n.t("toast.gameLeft.description"),
-    });
     router.navigate("/");
   }
 

@@ -45,19 +45,5 @@
   "resultPage": {
     "title": "Results",
     "exitButton": "Exit game"
-  },
-  "toast": {
-    "gameNotFound": {
-      "title": "Game not found",
-      "description": "The pin is incorrect, try again"
-    },
-    "gameLeft": {
-      "title": "Game left",
-      "description": "The game has already started, please join the game"
-    },
-    "gameStarted": {
-      "title": "Game started",
-      "description": "The game has already started, please join the game"
-    }
   }
 }

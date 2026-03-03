@@ -9,7 +9,6 @@ import { ArrowLeft } from "lucide-react-native";
 import { useState } from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
-import Toast from "react-native-toast-message";
 
 export default function Join() {
   const [pin, setPin] = useState("");
@@ -22,11 +21,7 @@ export default function Join() {
       await joinRoom.mutateAsync({ pin, id: user.id, name: user.name });
       router.navigate(`/room/${pin}`);
     } catch {
-      Toast.show({
-        type: "error",
-        text1: i18n.t("toast.gameNotFound.title"),
-        text2: i18n.t("toast.gameNotFound.description"),
-      });
+      console.error("Failed to join room");
     }
   }
 
@@ -56,6 +51,7 @@ export default function Join() {
         text={i18n.t("joinPage.joinButton")}
         onPress={handlePress}
         classNames="w-full"
+        disabled={!user.name || !pin}
       />
     </Pressable>
   );

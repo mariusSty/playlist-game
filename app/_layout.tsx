@@ -1,6 +1,5 @@
 import { useColorScheme } from "@/components/useColorScheme";
 import { useUserStore } from "@/stores/user-store";
-import { faker } from "@faker-js/faker";
 import {
   DarkTheme,
   DefaultTheme,
@@ -12,15 +11,11 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { Stack } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import type { AppStateStatus } from "react-native";
 import { AppState, Platform } from "react-native";
-import "react-native-get-random-values";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
-import { v4 as uuidv4 } from "uuid";
 import "../global.css";
 
 const queryClient = new QueryClient({
@@ -68,29 +63,20 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  const setUser = useUserStore((state) => state.setUser);
+  const init = useUserStore((state) => state.init);
+  const isReady = useUserStore((state) => state.isReady);
   const backgroundColor =
     colorScheme === "dark"
       ? DarkTheme.colors.background
       : DefaultTheme.colors.background;
 
-  async function getUserInfos() {
-    let uuidStored = await SecureStore.getItemAsync("uuid");
-    let nameStored = await SecureStore.getItemAsync("name");
-    if (!uuidStored) {
-      uuidStored = uuidv4();
-      await SecureStore.setItemAsync("uuid", uuidStored);
-    }
-    if (!nameStored) {
-      nameStored = faker.animal.cat();
-      await SecureStore.setItemAsync("name", nameStored);
-    }
-    setUser({ id: uuidStored, name: nameStored });
-  }
-
   useEffect(() => {
-    getUserInfos();
+    init();
   }, []);
+
+  if (!isReady) {
+    return null;
+  }
 
   return (
     <SafeAreaView
@@ -102,7 +88,6 @@ function RootLayoutNav() {
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack screenOptions={{ headerShown: false }} />
       </ThemeProvider>
-      <Toast />
     </SafeAreaView>
   );
 }

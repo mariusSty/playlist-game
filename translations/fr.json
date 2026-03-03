@@ -45,19 +45,5 @@
   "resultPage": {
     "title": "Résultats",
     "exitButton": "Quitter la partie"
-  },
-  "toast": {
-    "gameNotFound": {
-      "title": "Partie non trouvée",
-      "description": "Le code PIN est incorrect, essayez à nouveau"
-    },
-    "gameLeft": {
-      "title": "Partie quittée",
-      "description": "La partie a déjà commencé, veuillez rejoindre la partie"
-    },
-    "gameStarted": {
-      "title": "Partie commencée",
-      "description": "La partie a déjà commencé, veuillez rejoindre la partie"
-    }
   }
 }

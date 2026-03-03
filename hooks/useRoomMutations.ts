@@ -3,14 +3,14 @@ import { apiUrl } from "@/utils/server";
 import { useMutation } from "@tanstack/react-query";
 
 type CreateRoomParams = {
-  name: string | null;
-  id: string | null;
+  name: string;
+  id: string;
 };
 
 type JoinRoomParams = {
   pin: string;
-  id: string | null;
-  name: string | null;
+  id: string;
+  name: string;
 };
 
 export function useCreateRoom() {

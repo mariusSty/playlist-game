@@ -8,7 +8,6 @@ import { Link, router } from "expo-router";
 import React from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
-import Toast from "react-native-toast-message";
 
 export default function Main() {
   const { user, setName } = useUserStore();
@@ -22,11 +21,7 @@ export default function Main() {
       });
       router.navigate(`/room/${room.pin}`);
     } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: i18n.t("toast.createRoomError.title"),
-        text2: i18n.t("toast.createRoomError.description"),
-      });
+      console.error(error);
     }
   }
 
@@ -48,7 +43,10 @@ export default function Main() {
               transition={1000}
             />
             <View className="flex-1">
-              <ThemedTextInput value={user.name || ""} onChangeText={setName} />
+              <ThemedTextInput
+                value={user.name}
+                onChangeText={setName}
+              />
             </View>
           </View>
         </View>
@@ -56,9 +54,10 @@ export default function Main() {
           <Button
             text={i18n.t("homePage.createButton")}
             onPress={handleCreateRoom}
+            disabled={!user.name}
           />
           <Link href="/room/join" asChild>
-            <Button text={i18n.t("homePage.joinButton")} />
+            <Button text={i18n.t("homePage.joinButton")} disabled={!user.name} />
           </Link>
         </View>
       </Pressable>
