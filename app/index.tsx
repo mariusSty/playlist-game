@@ -43,10 +43,7 @@ export default function Main() {
               transition={1000}
             />
             <View className="flex-1">
-              <ThemedTextInput
-                value={user.name}
-                onChangeText={setName}
-              />
+              <ThemedTextInput value={user.name} onChangeText={setName} />
             </View>
           </View>
         </View>
@@ -54,10 +51,13 @@ export default function Main() {
           <Button
             text={i18n.t("homePage.createButton")}
             onPress={handleCreateRoom}
-            disabled={!user.name}
+            disabled={!user.name || createRoom.isPending}
           />
           <Link href="/room/join" asChild>
-            <Button text={i18n.t("homePage.joinButton")} disabled={!user.name} />
+            <Button
+              text={i18n.t("homePage.joinButton")}
+              disabled={!user.name}
+            />
           </Link>
         </View>
       </Pressable>

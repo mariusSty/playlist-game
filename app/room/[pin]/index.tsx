@@ -97,6 +97,7 @@ export default function RoomScreen() {
           <Button
             onPress={handleStartGame}
             text={i18n.t("startPage.startButton")}
+            disabled={startGame.isPending}
           />
         </View>
       )}

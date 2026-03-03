@@ -4,9 +4,11 @@ import { useColorScheme } from "@/components/useColorScheme";
 import { usePick } from "@/hooks/usePick";
 import { useCancelVote, useVote } from "@/hooks/usePickMutations";
 import { useRoom } from "@/hooks/useRoom";
+import { roundQueryKey } from "@/hooks/useRound";
 import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   setAudioModeAsync,
   useAudioPlayer,
@@ -28,6 +30,7 @@ export default function Vote() {
   const { pick, isPickLoading } = usePick(pickId.toString());
   const voteMutation = useVote();
   const cancelVoteMutation = useCancelVote();
+  const queryClient = useQueryClient();
   const [usersValidated, setUsersValidated] = useState<string[]>([]);
 
   const hasVoted = usersValidated.includes(user.id);
@@ -72,7 +75,7 @@ export default function Vote() {
   }
 
   useEffect(() => {
-    function onVoteUpdated({
+    async function onVoteUpdated({
       users,
       nextPickId,
     }: {
@@ -83,6 +86,9 @@ export default function Vote() {
 
       // All users have voted → navigate to next pick or reveal
       if (nextPickId === null) {
+        await queryClient.invalidateQueries({
+          queryKey: roundQueryKey(roundId.toString()),
+        });
         router.replace(`/room/${pin}/${gameId}/${roundId}/reveal`);
       }
       if (nextPickId) {

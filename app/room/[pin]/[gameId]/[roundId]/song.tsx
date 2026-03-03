@@ -121,6 +121,7 @@ export default function Song() {
               <Button
                 text={i18n.t("pickPage.cancelButton")}
                 onPress={handleCancelSong}
+                disabled={cancelPick.isPending}
               />
             </>
           ) : (

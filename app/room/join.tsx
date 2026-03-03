@@ -51,7 +51,7 @@ export default function Join() {
         text={i18n.t("joinPage.joinButton")}
         onPress={handlePress}
         classNames="w-full"
-        disabled={!user.name || !pin}
+        disabled={!user.name || !pin || joinRoom.isPending}
       />
     </Pressable>
   );

@@ -28,20 +28,12 @@ export default function Reveal() {
   }
 
   useEffect(() => {
-    async function onRoundCompleted({
-      nextRoundId,
-    }: {
-      nextRoundId?: number;
-    }) {
+    async function onRoundCompleted({ nextRoundId }: { nextRoundId?: number }) {
       if (nextRoundId != null) {
         router.replace(`/room/${pin}/${gameId}/${nextRoundId}/theme`);
       } else {
-        try {
-          await finishGame.mutateAsync(gameId.toString());
-          router.replace(`/room/${pin}/${gameId}/result`);
-        } catch (error) {
-          console.error(error);
-        }
+        await finishGame.mutateAsync(gameId.toString());
+        router.replace(`/room/${pin}/${gameId}/result`);
       }
     }
 
@@ -88,6 +80,7 @@ export default function Reveal() {
         <Button
           text={i18n.t("revealPage.nextRoundButton")}
           onPress={handleNextRound}
+          disabled={nextRound.isPending}
         />
       )}
     </Container>

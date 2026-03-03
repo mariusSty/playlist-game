@@ -93,6 +93,7 @@ export default function RoundTheme() {
               key={index}
               onPress={() => handleChoose(theme)}
               text={i18n.t(`themePage.themes.${theme}`)}
+              disabled={pickTheme.isPending}
             />
           ))}
         </View>
