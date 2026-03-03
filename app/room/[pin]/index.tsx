@@ -1,6 +1,7 @@
 import { Button } from "@/components/Button";
 import { useColorScheme } from "@/components/useColorScheme";
 import { roomQueryKey, useRoom } from "@/hooks/useRoom";
+import { useStartGame } from "@/hooks/useGameMutations";
 import { useLeaveRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
@@ -19,6 +20,7 @@ export default function RoomScreen() {
   const isDarkMode = colorScheme === "dark";
   const { room } = useRoom(pin);
   const leaveRoom = useLeaveRoom();
+  const startGame = useStartGame();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -46,7 +48,12 @@ export default function RoomScreen() {
   }, [pin, queryClient]);
 
   async function handleStartGame() {
-    socket.emit("startGame", { pin });
+    try {
+      const { gameId, roundId } = await startGame.mutateAsync({ pin });
+      router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async function handleLeaveRoom() {
