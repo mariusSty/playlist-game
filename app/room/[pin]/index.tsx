@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import { useColorScheme } from "@/components/useColorScheme";
-import { roomQueryKey, useRoom } from "@/hooks/useRoom";
 import { useStartGame } from "@/hooks/useGameMutations";
+import { roomQueryKey, useRoom } from "@/hooks/useRoom";
 import { useLeaveRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";

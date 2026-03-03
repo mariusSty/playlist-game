@@ -1,11 +1,12 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { themes } from "@/constants/theme";
-import { useGame } from "@/hooks/useGame";
+import { roundQueryKey, useRound } from "@/hooks/useRound";
+import { usePickTheme } from "@/hooks/useRoundMutations";
 import { useUserStore } from "@/stores/user-store";
-import { getCurrentRound } from "@/utils/game";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
+import { useQueryClient } from "@tanstack/react-query";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
@@ -13,17 +14,28 @@ import { ActivityIndicator, Text, View } from "react-native";
 export default function RoundTheme() {
   const [counter, setCounter] = useState(10);
   const user = useUserStore((state) => state.user);
-  const { pin, gameId, roundId } = useLocalSearchParams();
+  const { pin, gameId, roundId } = useLocalSearchParams<{
+    pin: string;
+    gameId: string;
+    roundId: string;
+  }>();
 
-  const { game, isGameLoading } = useGame(gameId.toString());
+  const { round, isRoundLoading } = useRound(roundId);
+  const pickTheme = usePickTheme();
+  const queryClient = useQueryClient();
 
-  function handleChoose(theme: string) {
-    if (game) {
-      socket.emit("pickTheme", {
+  async function handleChoose(theme: string) {
+    try {
+      await pickTheme.mutateAsync({
         roundId,
         theme,
+        userId: user.id,
         pin,
       });
+      await queryClient.invalidateQueries({ queryKey: roundQueryKey(roundId) });
+      router.replace(`/room/${pin}/${gameId}/${roundId}/song`);
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -40,24 +52,19 @@ export default function RoundTheme() {
   });
 
   useEffect(() => {
-    function onThemePicked({
-      roundId,
-      theme,
-    }: {
-      roundId: string;
-      theme: string;
-    }) {
-      router.replace(`/room/${pin}/${gameId}/${roundId}/song?theme=${theme}`);
+    async function onThemeUpdated() {
+      await queryClient.invalidateQueries({ queryKey: roundQueryKey(roundId) });
+      router.replace(`/room/${pin}/${gameId}/${roundId}/song`);
     }
 
-    socket.on("themePicked", onThemePicked);
+    socket.on("round:themeUpdated", onThemeUpdated);
 
     return () => {
-      socket.off("themePicked", onThemePicked);
+      socket.off("round:themeUpdated", onThemeUpdated);
     };
-  }, [pin, gameId]);
+  }, [pin, gameId, roundId]);
 
-  if (isGameLoading || !game) {
+  if (isRoundLoading || !round) {
     return (
       <Container title={i18n.t("themePage.title")}>
         <View>
@@ -67,8 +74,7 @@ export default function RoundTheme() {
     );
   }
 
-  const currentRound = getCurrentRound(game, Number(roundId));
-  const isThemeMaster = currentRound?.themeMaster.id === user.id;
+  const isThemeMaster = round.themeMaster.id === user.id;
 
   if (isThemeMaster) {
     return (
@@ -95,11 +101,11 @@ export default function RoundTheme() {
   }
 
   return (
-    <Container title="Round 1">
+    <Container title={i18n.t("themePage.title")}>
       <View className="gap-5">
         <Text className="text-xl dark:text-white">
           {i18n.t("themePage.waiting", {
-            name: currentRound?.themeMaster.name,
+            name: round.themeMaster.name,
           })}
         </Text>
         <Text className="text-center dark:text-white text-9xl">{counter}</Text>

@@ -3,6 +3,7 @@ import Container from "@/components/Container";
 import { ThemedTextInput } from "@/components/TextInput";
 import { useMusicApiSearch } from "@/hooks/usePick";
 import { useRoom } from "@/hooks/useRoom";
+import { useRound } from "@/hooks/useRound";
 import { useUserStore } from "@/stores/user-store";
 import { Track } from "@/types/room";
 import { socket } from "@/utils/server";
@@ -13,11 +14,17 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function Song() {
-  const { pin, gameId, roundId, theme } = useLocalSearchParams();
+  const { pin, gameId, roundId } = useLocalSearchParams<{
+    pin: string;
+    gameId: string;
+    roundId: string;
+  }>();
   const [search, setSearch] = useState("");
   const [isTrackSelected, setIsTrackSelected] = useState(false);
   const [usersValidated, setUsersValidated] = useState<string[]>([]);
-  const { room } = useRoom(pin.toString());
+  const { room } = useRoom(pin);
+  const { round, isRoundLoading } = useRound(roundId);
+
   const { tracks = [], isTracksLoading } = useMusicApiSearch(
     isTrackSelected ? null : search,
   );
@@ -74,7 +81,17 @@ export default function Song() {
     });
   }
 
-  const translatedTheme = i18n.t(`themePage.themes.${theme}`);
+  const translatedTheme = i18n.t(`themePage.themes.${round?.theme}`);
+
+  if (isRoundLoading || !round) {
+    return (
+      <Container title={i18n.t("pickPage.title", { theme: "" })}>
+        <View className="justify-center flex-1">
+          <ActivityIndicator size="large" color="#000000" />
+        </View>
+      </Container>
+    );
+  }
 
   return (
     <Container title={i18n.t("pickPage.title", { theme: translatedTheme })}>
