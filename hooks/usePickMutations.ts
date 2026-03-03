@@ -47,3 +47,49 @@ export function useCancelPick() {
     },
   });
 }
+
+type VoteParams = {
+  pin: string;
+  pickId: string;
+  guessId: string;
+  userId: string;
+};
+
+type CancelVoteParams = {
+  pin: string;
+  pickId: string;
+  userId: string;
+};
+
+export function useVote() {
+  return useMutation({
+    mutationFn: async (params: VoteParams): Promise<void> => {
+      const res = await fetch(`${apiUrl}/vote?pin=${params.pin}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pickId: params.pickId,
+          guessId: params.guessId,
+          userId: params.userId,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to vote");
+      }
+    },
+  });
+}
+
+export function useCancelVote() {
+  return useMutation({
+    mutationFn: async (params: CancelVoteParams): Promise<void> => {
+      const res = await fetch(
+        `${apiUrl}/vote/${params.pickId}/${params.userId}?pin=${params.pin}`,
+        { method: "DELETE" },
+      );
+      if (!res.ok) {
+        throw new Error("Failed to cancel vote");
+      }
+    },
+  });
+}

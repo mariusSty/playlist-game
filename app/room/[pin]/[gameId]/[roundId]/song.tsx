@@ -35,11 +35,17 @@ export default function Song() {
   const user = useUserStore((state) => state.user);
 
   useEffect(() => {
-    function onPickUpdated({ users }: { users: string[] }) {
+    function onPickUpdated({
+      users,
+      firstPickId,
+    }: {
+      users: string[];
+      firstPickId?: string;
+    }) {
       setUsersValidated(users);
 
-      if (room && users.length === room.users.length) {
-        router.replace(`/room/${pin}/${gameId}/${roundId}/vote`);
+      if (firstPickId) {
+        router.replace(`/room/${pin}/${gameId}/${roundId}/${firstPickId}`);
         return;
       }
 

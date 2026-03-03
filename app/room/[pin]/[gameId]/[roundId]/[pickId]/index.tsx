@@ -2,6 +2,7 @@ import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { useColorScheme } from "@/components/useColorScheme";
 import { usePick } from "@/hooks/usePick";
+import { useCancelVote, useVote } from "@/hooks/usePickMutations";
 import { useRoom } from "@/hooks/useRoom";
 import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
@@ -25,10 +26,14 @@ export default function Vote() {
   const colorScheme = useColorScheme();
   const { room } = useRoom(pin.toString());
   const { pick, isPickLoading } = usePick(pickId.toString());
-  const [isVoteValidated, setIsVoteValidated] = useState(false);
+  const voteMutation = useVote();
+  const cancelVoteMutation = useCancelVote();
   const [usersValidated, setUsersValidated] = useState<string[]>([]);
 
-  const audioSource = pick?.track.previewUrl
+  const hasVoted = usersValidated.includes(user.id);
+  const isMutating = voteMutation.isPending || cancelVoteMutation.isPending;
+
+  const audioSource = pick?.track?.previewUrl
     ? { uri: pick.track.previewUrl }
     : null;
 
@@ -37,20 +42,19 @@ export default function Vote() {
   const isPlaying = status.playing;
 
   function handleVote(guessId: string) {
-    setIsVoteValidated(true);
-    socket.emit("vote", {
+    voteMutation.mutate({
+      pin: pin.toString(),
+      pickId: pickId.toString(),
       guessId,
       userId: user.id,
-      pickId,
-      pin,
     });
   }
 
   function handleCancelVote() {
-    socket.emit("cancelVote", {
-      pickId,
+    cancelVoteMutation.mutate({
+      pin: pin.toString(),
+      pickId: pickId.toString(),
       userId: user.id,
-      pin,
     });
   }
 
@@ -68,31 +72,28 @@ export default function Vote() {
   }
 
   useEffect(() => {
-    function onVoteValidated({ users }: { users: string[] }) {
+    function onVoteUpdated({
+      users,
+      nextPickId,
+    }: {
+      users: string[];
+      nextPickId: string | null;
+    }) {
       setUsersValidated(users);
-    }
 
-    function onAllVotesValidated({ pickId: nextPickId }: { pickId?: string }) {
+      // All users have voted → navigate to next pick or reveal
+      if (nextPickId === null) {
+        router.replace(`/room/${pin}/${gameId}/${roundId}/reveal`);
+      }
       if (nextPickId) {
         router.replace(`/room/${pin}/${gameId}/${roundId}/${nextPickId}`);
-      } else {
-        router.replace(`/room/${pin}/${gameId}/${roundId}/reveal`);
       }
     }
 
-    function onVoteCanceled({ users }: { users: string[] }) {
-      setUsersValidated(users);
-      setIsVoteValidated(false);
-    }
-
-    socket.on("voteValidated", onVoteValidated);
-    socket.on("allVotesValidated", onAllVotesValidated);
-    socket.on("voteCanceled", onVoteCanceled);
+    socket.on("vote:updated", onVoteUpdated);
 
     return () => {
-      socket.off("voteValidated", onVoteValidated);
-      socket.off("allVotesValidated", onAllVotesValidated);
-      socket.off("voteCanceled", onVoteCanceled);
+      socket.off("vote:updated", onVoteUpdated);
     };
   }, [pin, gameId, roundId]);
 
@@ -137,10 +138,11 @@ export default function Vote() {
         </View>
       )}
       <View className="justify-center flex-1">
-        {isVoteValidated ? (
+        {hasVoted ? (
           <Button
             text={i18n.t("votePage.cancelButton")}
             onPress={handleCancelVote}
+            disabled={isMutating}
           />
         ) : (
           <>
@@ -156,9 +158,11 @@ export default function Vote() {
                   transition={1000}
                 />
                 <Text className="text-lg dark:text-white">{player.name}</Text>
-                {!isVoteValidated && (
-                  <Button text="Vote" onPress={() => handleVote(player.id)} />
-                )}
+                <Button
+                  text="Vote"
+                  onPress={() => handleVote(player.id)}
+                  disabled={isMutating}
+                />
               </View>
             ))}
           </>
