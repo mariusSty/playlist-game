@@ -2,6 +2,7 @@ import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { ThemedTextInput } from "@/components/TextInput";
 import { useMusicApiSearch } from "@/hooks/usePick";
+import { useCancelPick, useValidatePick } from "@/hooks/usePickMutations";
 import { useRoom } from "@/hooks/useRoom";
 import { useRound } from "@/hooks/useRound";
 import { useUserStore } from "@/stores/user-store";
@@ -24,6 +25,8 @@ export default function Song() {
   const [usersValidated, setUsersValidated] = useState<string[]>([]);
   const { room } = useRoom(pin);
   const { round, isRoundLoading } = useRound(roundId);
+  const validatePick = useValidatePick();
+  const cancelPick = useCancelPick();
 
   const { tracks = [], isTracksLoading } = useMusicApiSearch(
     isTrackSelected ? null : search,
@@ -32,53 +35,59 @@ export default function Song() {
   const user = useUserStore((state) => state.user);
 
   useEffect(() => {
-    function onAllSongsValidated({ pickId }: { pickId: string }) {
-      router.replace(`/room/${pin}/${gameId}/${roundId}/${pickId}`);
+    function onPickUpdated({ users }: { users: string[] }) {
+      setUsersValidated(users);
+
+      if (room && users.length === room.users.length) {
+        router.replace(`/room/${pin}/${gameId}/${roundId}/vote`);
+        return;
+      }
+
+      if (!users.includes(user.id)) {
+        setIsTrackSelected(false);
+        setSearch("");
+      }
     }
 
-    function onSongValidated({ users }: { users: string[] }) {
-      setUsersValidated(users);
-    }
+    socket.on("pick:updated", onPickUpdated);
 
-    function onSongCanceled({ users }: { users: string[] }) {
-      setUsersValidated(users);
+    return () => {
+      socket.off("pick:updated", onPickUpdated);
+    };
+  }, [pin, gameId, roundId, room, user.id]);
+
+  async function handleSelectTrack(track: Track) {
+    setIsTrackSelected(true);
+    setSearch(track.title + " - " + track.artist);
+    try {
+      await validatePick.mutateAsync({
+        pin,
+        roundId,
+        userId: user.id,
+        track: {
+          id: track.id,
+          title: track.title,
+          artist: track.artist,
+          previewUrl: track.previewUrl,
+        },
+      });
+    } catch (error) {
+      console.error(error);
       setIsTrackSelected(false);
       setSearch("");
     }
-
-    socket.on("allSongsValidated", onAllSongsValidated);
-    socket.on("songValidated", onSongValidated);
-    socket.on("songCanceled", onSongCanceled);
-
-    return () => {
-      socket.off("allSongsValidated", onAllSongsValidated);
-      socket.off("songValidated", onSongValidated);
-      socket.off("songCanceled", onSongCanceled);
-    };
-  }, [pin, gameId, roundId]);
-
-  function handleSelectTrack(track: Track) {
-    setIsTrackSelected(true);
-    setSearch(track.title + " - " + track.artist);
-    socket.emit("validSong", {
-      track: {
-        id: track.id,
-        title: track.title,
-        artist: track.artist,
-        previewUrl: track.previewUrl,
-      },
-      roundId,
-      userId: user.id,
-      pin,
-    });
   }
 
-  function handleCancelSong() {
-    socket.emit("cancelSong", {
-      roundId,
-      userId: user.id,
-      pin,
-    });
+  async function handleCancelSong() {
+    try {
+      await cancelPick.mutateAsync({
+        pin,
+        roundId,
+        userId: user.id,
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const translatedTheme = i18n.t(`themePage.themes.${round?.theme}`);
