@@ -2,6 +2,28 @@ import { Round } from "@/types/room";
 import { apiUrl } from "@/utils/server";
 import { useMutation } from "@tanstack/react-query";
 
+type NextRoundParams = {
+  pin: string;
+};
+
+type NextRoundResponse = {
+  nextRoundId: number | null;
+};
+
+export function useNextRound() {
+  return useMutation({
+    mutationFn: async (params: NextRoundParams): Promise<NextRoundResponse> => {
+      const res = await fetch(`${apiUrl}/round/next?pin=${params.pin}`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        throw new Error("Failed to go to next round");
+      }
+      return res.json();
+    },
+  });
+}
+
 type PickThemeParams = {
   roundId: string;
   theme: string;

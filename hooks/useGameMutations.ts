@@ -1,6 +1,20 @@
 import { apiUrl } from "@/utils/server";
 import { useMutation } from "@tanstack/react-query";
 
+export function useFinishGame() {
+  return useMutation({
+    mutationFn: async (gameId: string): Promise<{ finished: true }> => {
+      const res = await fetch(`${apiUrl}/game/${gameId}/finish`, {
+        method: "PATCH",
+      });
+      if (!res.ok) {
+        throw new Error("Failed to finish game");
+      }
+      return res.json();
+    },
+  });
+}
+
 type StartGameParams = {
   pin: string;
 };

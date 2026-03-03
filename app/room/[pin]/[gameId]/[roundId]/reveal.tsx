@@ -1,6 +1,8 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
+import { useFinishGame } from "@/hooks/useGameMutations";
 import { useRound } from "@/hooks/useRound";
+import { useNextRound } from "@/hooks/useRoundMutations";
 import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
@@ -14,26 +16,39 @@ export default function Reveal() {
   const { roundId, pin, gameId } = useLocalSearchParams();
   const { round, isRoundLoading } = useRound(roundId.toString());
   const user = useUserStore((state) => state.user);
+  const nextRound = useNextRound();
+  const finishGame = useFinishGame();
 
-  function handleNextRound() {
-    socket.emit("nextRound", { pin, gameId });
+  async function handleNextRound() {
+    try {
+      await nextRound.mutateAsync({ pin: pin.toString() });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useEffect(() => {
-    function onNewRound({ roundId }: { roundId: string }) {
-      router.replace(`/room/${pin}/${gameId}/${roundId}/theme`);
+    async function onRoundCompleted({
+      nextRoundId,
+    }: {
+      nextRoundId?: number;
+    }) {
+      if (nextRoundId != null) {
+        router.replace(`/room/${pin}/${gameId}/${nextRoundId}/theme`);
+      } else {
+        try {
+          await finishGame.mutateAsync(gameId.toString());
+          router.replace(`/room/${pin}/${gameId}/result`);
+        } catch (error) {
+          console.error(error);
+        }
+      }
     }
 
-    function onGoToResult() {
-      router.replace(`/room/${pin}/${gameId}/result`);
-    }
-
-    socket.on("newRound", onNewRound);
-    socket.on("goToResult", onGoToResult);
+    socket.on("round:completed", onRoundCompleted);
 
     return () => {
-      socket.off("newRound", onNewRound);
-      socket.off("goToResult", onGoToResult);
+      socket.off("round:completed", onRoundCompleted);
     };
   }, [pin, gameId]);
 
