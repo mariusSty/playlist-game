@@ -13,6 +13,11 @@ type JoinRoomParams = {
   name: string;
 };
 
+type LeaveRoomParams = {
+  pin: string;
+  userId: string;
+};
+
 export function useCreateRoom() {
   return useMutation({
     mutationFn: async (params: CreateRoomParams): Promise<Room> => {
@@ -32,16 +37,31 @@ export function useCreateRoom() {
 export function useJoinRoom() {
   return useMutation({
     mutationFn: async (params: JoinRoomParams): Promise<Room> => {
-      const res = await fetch(`${apiUrl}/room/${params.pin}`, {
+      const { pin, id, name } = params;
+      const res = await fetch(`${apiUrl}/room/${pin}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(params),
+        body: JSON.stringify({ id, name }),
       });
       const data = await res.json();
       if (data.message) {
         throw new Error(data.message);
       }
       return data;
+    },
+  });
+}
+
+export function useLeaveRoom() {
+  return useMutation({
+    mutationFn: async (params: LeaveRoomParams): Promise<void> => {
+      const res = await fetch(
+        `${apiUrl}/room/${params.pin}/users/${params.userId}`,
+        { method: "DELETE" },
+      );
+      if (!res.ok) {
+        throw new Error("Failed to leave room");
+      }
     },
   });
 }

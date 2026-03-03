@@ -1,29 +1,29 @@
 import { Button } from "@/components/Button";
 import { useColorScheme } from "@/components/useColorScheme";
+import { roomQueryKey, useRoom } from "@/hooks/useRoom";
+import { useLeaveRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
-import { User } from "@/types/room";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { DoorOpen, Star } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
-export default function CreateRoom() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [hostId, setHostId] = useState<string | null>(null);
+export default function RoomScreen() {
+  const { pin } = useLocalSearchParams<{ pin: string }>();
   const user = useUserStore((state) => state.user);
-  const { pin } = useLocalSearchParams();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
+  const { room } = useRoom(pin);
+  const leaveRoom = useLeaveRoom();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    socket.emit("joinRoom", { pin });
-
-    function onUserList({ users, hostId }: { users: User[]; hostId: string }) {
-      setUsers(users);
-      setHostId(hostId);
+    function onRoomUpdated() {
+      queryClient.invalidateQueries({ queryKey: roomQueryKey(pin) });
     }
 
     function onGameStarted({
@@ -36,23 +36,30 @@ export default function CreateRoom() {
       router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
     }
 
-    socket.on("userList", onUserList);
+    socket.on("room:updated", onRoomUpdated);
     socket.on("gameStarted", onGameStarted);
 
     return () => {
-      socket.off("userList", onUserList);
+      socket.off("room:updated", onRoomUpdated);
       socket.off("gameStarted", onGameStarted);
     };
-  }, [pin]);
+  }, [pin, queryClient]);
 
   async function handleStartGame() {
     socket.emit("startGame", { pin });
   }
 
-  function handleLeaveRoom() {
-    socket.emit("leaveRoom", { pin, userId: user.id });
-    router.navigate("/");
+  async function handleLeaveRoom() {
+    try {
+      await leaveRoom.mutateAsync({ pin, userId: user.id });
+      router.navigate("/");
+    } catch (error) {
+      console.error(error);
+    }
   }
+
+  const users = room?.users ?? [];
+  const hostId = room?.host?.id;
 
   return (
     <View className="items-center justify-between flex-1 m-10">
