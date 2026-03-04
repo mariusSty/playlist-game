@@ -7,12 +7,11 @@ import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { useQueryClient } from "@tanstack/react-query";
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect } from "react";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function RoundTheme() {
-  const [counter, setCounter] = useState(10);
   const user = useUserStore((state) => state.user);
   const { pin, gameId, roundId } = useLocalSearchParams<{
     pin: string;
@@ -38,18 +37,6 @@ export default function RoundTheme() {
       console.error(error);
     }
   }
-
-  useFocusEffect(() => {
-    const timer = setTimeout(() => {
-      if (counter > 0) {
-        setCounter(counter - 1);
-      } else {
-        handleChoose(themes[Math.round(Math.random() * themes.length)]);
-        clearTimeout(timer);
-      }
-    }, 1000);
-    return () => clearTimeout(timer);
-  });
 
   useEffect(() => {
     async function onThemeUpdated() {
@@ -79,15 +66,13 @@ export default function RoundTheme() {
   if (isThemeMaster) {
     return (
       <Container title={i18n.t("themePage.title")}>
-        <View className="gap-5">
-          <Text className="text-xl dark:text-white">
-            {i18n.t("themePage.themeMaster")}
-          </Text>
-          <Text className="text-center dark:text-white text-9xl">
-            {counter}
-          </Text>
-        </View>
-        <View className="items-stretch gap-y-5">
+        <Text className="py-8 text-xl dark:text-white">
+          {i18n.t("themePage.themeMaster")}
+        </Text>
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="items-stretch gap-y-5"
+        >
           {themes.map((theme, index) => (
             <Button
               key={index}
@@ -96,21 +81,18 @@ export default function RoundTheme() {
               disabled={pickTheme.isPending}
             />
           ))}
-        </View>
+        </ScrollView>
       </Container>
     );
   }
 
   return (
     <Container title={i18n.t("themePage.title")}>
-      <View className="gap-5">
-        <Text className="text-xl dark:text-white">
-          {i18n.t("themePage.waiting", {
-            name: round.themeMaster.name,
-          })}
-        </Text>
-        <Text className="text-center dark:text-white text-9xl">{counter}</Text>
-      </View>
+      <Text className="text-xl dark:text-white">
+        {i18n.t("themePage.waiting", {
+          name: round.themeMaster.name,
+        })}
+      </Text>
     </Container>
   );
 }
