@@ -141,7 +141,7 @@ Accueil (index.tsx)
   ├── Créer un salon → POST /room → Lobby ([pin]/index.tsx)
   └── Rejoindre (join.tsx) → PATCH /room/:pin → Lobby
                                     │
-                          Socket: gameStarted
+                          Socket: game:started
                                     ▼
                         Choix du thème (theme.tsx)
                           🎤 Le meneur choisit parmi 5 thèmes
@@ -187,7 +187,7 @@ L'app communique avec le [backend Playlist Game](https://github.com/) via :
 | `room:subscribe`     | Client → Serveur | Rejoindre la room Socket.IO (à la connexion)                       |
 | `room:unsubscribe`   | Client → Serveur | Quitter la room (à la déconnexion)                                 |
 | `room:updated`       | Serveur → Client | Liste des joueurs mise à jour (join/leave/host transfer)           |
-| `gameStarted`        | Serveur → Client | La partie a démarré (contient `roundId` + `gameId`)                |
+| `game:started`       | Serveur → Client | La partie a démarré (contient `roundId` + `gameId`)                |
 | `round:themeUpdated` | Serveur → Client | Le thème du round a été choisi                                     |
 | `pick:updated`       | Serveur → Client | Un joueur a validé/annulé sa chanson (`firstPickId` si tous prêts) |
 | `vote:updated`       | Serveur → Client | Un vote enregistré/annulé (`nextPickId` ou `null` si fin du round) |

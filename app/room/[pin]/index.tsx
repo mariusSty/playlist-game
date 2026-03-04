@@ -39,11 +39,11 @@ export default function RoomScreen() {
     }
 
     socket.on("room:updated", onRoomUpdated);
-    socket.on("gameStarted", onGameStarted);
+    socket.on("game:started", onGameStarted);
 
     return () => {
       socket.off("room:updated", onRoomUpdated);
-      socket.off("gameStarted", onGameStarted);
+      socket.off("game:started", onGameStarted);
     };
   }, [pin, queryClient]);
 
