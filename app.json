@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "playlist-game",
+    "name": "Playlist Game",
     "slug": "playlist-game",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon-black.png",
-    "scheme": "myapp",
+    "scheme": "playlistgame",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/icon-black.png",
