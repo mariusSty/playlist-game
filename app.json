@@ -46,9 +46,10 @@
         }
       ],
       "expo-localization",
-      "expo-asset"
+      "expo-asset",
+      "expo-image",
+      "expo-web-browser"
     ],
-    "newArchEnabled": true,
     "experiments": {
       "typedRoutes": true
     },

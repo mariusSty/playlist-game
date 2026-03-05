@@ -36,9 +36,7 @@ export default function Vote() {
   const hasVoted = usersValidated.includes(user.id);
   const isMutating = voteMutation.isPending || cancelVoteMutation.isPending;
 
-  const audioSource = pick?.track?.previewUrl
-    ? { uri: pick.track.previewUrl }
-    : null;
+  const audioSource = pick?.track?.previewUrl ?? null;
 
   const player = useAudioPlayer(audioSource);
   const status = useAudioPlayerStatus(player);
