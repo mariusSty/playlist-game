@@ -42,16 +42,21 @@ export default function Song() {
       users: string[];
       firstPickId?: string;
     }) {
-      setUsersValidated(users);
+      setUsersValidated((prev) => {
+        const wasPreviouslyValidated = prev.includes(user.id);
+        const isNowValidated = users.includes(user.id);
+
+        // Only reset if the current user's own pick was cancelled
+        if (wasPreviouslyValidated && !isNowValidated) {
+          setIsTrackSelected(false);
+          setSearch("");
+        }
+
+        return users;
+      });
 
       if (firstPickId) {
         router.replace(`/room/${pin}/${gameId}/${roundId}/${firstPickId}`);
-        return;
-      }
-
-      if (!users.includes(user.id)) {
-        setIsTrackSelected(false);
-        setSearch("");
       }
     }
 
