@@ -14,7 +14,8 @@
   "themePage": {
     "title": "Choix du thème",
     "themeMaster": "Vous êtes le maître du thème, veuillez choisir le thème pour ce tour",
-    "waiting": "%{name} est en train de choisir le thème...",
+    "waiting": "%{name}",
+    "waitingSubtitle": "est en train de choisir le thème...",
     "themes": {
       "gultyPleasure": "😏 Votre guilty pleasure",
       "sleepyTime": "😴 Le titre parfait pour s'endormir",

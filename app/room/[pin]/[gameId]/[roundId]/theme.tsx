@@ -7,6 +7,7 @@ import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { useQueryClient } from "@tanstack/react-query";
+import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
@@ -89,11 +90,22 @@ export default function RoundTheme() {
 
   return (
     <Container title={i18n.t("themePage.title")}>
-      <Text className="text-xl dark:text-white">
-        {i18n.t("themePage.waiting", {
-          name: round.themeMaster.name,
-        })}
-      </Text>
+      <View className="items-center py-8 gap-y-2">
+        <Image
+          style={{ width: 50, height: 50, borderRadius: 5 }}
+          source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${round.themeMaster.name}`}
+          contentFit="cover"
+          transition={1000}
+        />
+        <Text className="text-xl font-bold dark:text-white">
+          {i18n.t("themePage.waiting", {
+            name: round.themeMaster.name,
+          })}
+        </Text>
+        <Text className="text-lg dark:text-white/70">
+          {i18n.t("themePage.waitingSubtitle")}
+        </Text>
+      </View>
     </Container>
   );
 }

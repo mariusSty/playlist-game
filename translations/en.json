@@ -14,7 +14,8 @@
   "themePage": {
     "title": "Theme choice",
     "themeMaster": "You are the theme master, please choose the theme for the round",
-    "waiting": "%{name} is choosing the theme...",
+    "waiting": "%{name}",
+    "waitingSubtitle": "is choosing the theme...",
     "themes": {
       "gultyPleasure": "😏 Your guilty pleasure",
       "sleepyTime": "😴 Your best track to fall asleep",
@@ -35,7 +36,7 @@
       "sunrise": "🌅 The perfect track for watching the sunrise",
       "chill": "😌 Your ultimate chill jam",
       "danceFloor": "🕺 The banger that owns the dancefloor",
-      "nostalgia": "📼 The one that takes you back to your teen years"
+      "nostalgia": "📼 Your favorite track from 2020"
     }
   },
   "pickPage": {
