@@ -16,11 +16,26 @@
     "themeMaster": "You are the theme master, please choose the theme for the round",
     "waiting": "%{name} is choosing the theme...",
     "themes": {
-      "gultyPleasure": "Your best song to seduce",
-      "sleepyTime": "Your best song to sleep",
-      "partyTime": "Your best song to party",
-      "sadness": "The song that lifts your spirits",
-      "now": "The song you listen to in loop right now"
+      "gultyPleasure": "😏 Your guilty pleasure",
+      "sleepyTime": "😴 Your best track to fall asleep",
+      "partyTime": "🎉 Your ultimate party banger",
+      "sadness": "🥹 The tune that lifts your spirits",
+      "now": "🔁 The one you play on repeat right now",
+      "roadTrip": "🚗 Your ultimate road trip anthem",
+      "workout": "💪 The track that pushes you at the gym",
+      "shower": "🚿 The one you sing in the shower",
+      "throwback": "👶 The tune that reminds you of childhood",
+      "karaoke": "🎤 Your go-to karaoke hit",
+      "cooking": "🍳 The jam you blast while cooking",
+      "rainyDay": "🌧️ Your perfect rainy day track",
+      "summer": "☀️ The one that screams summer",
+      "funeral": "⚰️ The track you want played at your funeral",
+      "motivation": "⏰ The track that gets you out of bed",
+      "loveStory": "💕 The soundtrack to your love story",
+      "sunrise": "🌅 The perfect track for watching the sunrise",
+      "chill": "😌 Your ultimate chill jam",
+      "danceFloor": "🕺 The banger that owns the dancefloor",
+      "nostalgia": "📼 The one that takes you back to your teen years"
     }
   },
   "pickPage": {

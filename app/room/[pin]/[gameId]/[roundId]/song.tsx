@@ -114,8 +114,11 @@ export default function Song() {
   }
 
   return (
-    <Container title={i18n.t("pickPage.title", { theme: translatedTheme })}>
+    <Container title={i18n.t("pickPage.title")}>
       <View className="w-full gap-10">
+        <Text className="py-4 text-4xl font-bold dark:text-white">
+          {translatedTheme}
+        </Text>
         <View className="w-full gap-2">
           {isTrackSelected ? (
             <>

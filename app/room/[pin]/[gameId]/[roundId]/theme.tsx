@@ -1,6 +1,6 @@
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
-import { themes } from "@/constants/theme";
+import { getRandomThemes } from "@/constants/theme";
 import { roundQueryKey, useRound } from "@/hooks/useRound";
 import { usePickTheme } from "@/hooks/useRoundMutations";
 import { useUserStore } from "@/stores/user-store";
@@ -8,7 +8,7 @@ import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function RoundTheme() {
@@ -22,6 +22,7 @@ export default function RoundTheme() {
   const { round, isRoundLoading } = useRound(roundId);
   const pickTheme = usePickTheme();
   const queryClient = useQueryClient();
+  const themes = useMemo(() => getRandomThemes(5), []);
 
   async function handleChoose(theme: string) {
     try {
