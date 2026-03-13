@@ -4,6 +4,7 @@ import { useStartGame } from "@/hooks/useGameMutations";
 import { roomQueryKey, useRoom } from "@/hooks/useRoom";
 import { useLeaveRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
+import { cn } from "@/utils/cn";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -70,7 +71,11 @@ export default function RoomScreen() {
 
   return (
     <View className="items-center justify-between flex-1 m-10">
-      <Pressable className="self-start" onPress={handleLeaveRoom}>
+      <Pressable
+        className={cn(["self-start", leaveRoom.isPending && "opacity-50"])}
+        onPress={handleLeaveRoom}
+        disabled={leaveRoom.isPending}
+      >
         <DoorOpen size={24} color={isDarkMode ? "white" : "black"} />
       </Pressable>
       <Text className="text-5xl font-bold dark:text-white">PIN : {pin}</Text>
