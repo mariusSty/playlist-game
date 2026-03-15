@@ -13,12 +13,12 @@
   },
   "themePage": {
     "title": "Theme choice",
-    "themeMaster": "You are the theme master, please choose the theme for the round",
+    "themeMaster": "You are the theme master, please choose the theme for this round",
     "waiting": "%{name}",
     "waitingSubtitle": "is choosing the theme...",
     "themes": {
       "gultyPleasure": "😏 Your guilty pleasure",
-      "sleepyTime": "😴 Your best track to fall asleep",
+      "sleepyTime": "😴 The perfect track to fall asleep",
       "partyTime": "🎉 Your ultimate party banger",
       "sadness": "🥹 The tune that lifts your spirits",
       "now": "🔁 The one you play on repeat right now",
@@ -40,22 +40,22 @@
     }
   },
   "pickPage": {
-    "title": "The theme is '%{theme}', it's time to pick a song",
-    "yourSong": "You picked :",
+    "title": "Choose a song associated with the theme:",
+    "yourSong": "You chose:",
     "cancelButton": "Cancel",
     "chooseSong": "Choose a song",
-    "notChosen": "Not chosen yet :",
-    "alreadyChosen": "Already chosen :"
+    "notChosen": "Not chosen yet:",
+    "alreadyChosen": "Already chosen:"
   },
   "votePage": {
-    "title": "Listen and Vote !",
+    "title": "Listen and Vote!",
     "voteButton": "Vote",
     "cancelButton": "Cancel vote",
-    "notVoted": "Not voted yet :",
-    "alreadyVoted": "Already voted :"
+    "notVoted": "Not voted yet:",
+    "alreadyVoted": "Already voted:"
   },
   "revealPage": {
-    "title": "Round reveal",
+    "title": "Round Reveal",
     "nextRoundButton": "Next round"
   },
   "resultPage": {
