@@ -33,8 +33,6 @@ export default function RoundTheme() {
         userId: user.id,
         pin,
       });
-      await queryClient.invalidateQueries({ queryKey: roundQueryKey(roundId) });
-      router.replace(`/room/${pin}/${gameId}/${roundId}/song`);
     } catch (error) {
       console.error(error);
     }
