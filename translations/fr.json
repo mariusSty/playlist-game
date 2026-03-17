@@ -47,9 +47,10 @@
     "yourSong": "Vous avez choisi :",
     "cancelButton": "Annuler",
     "cancellingButton": "Annulation...",
-    "chooseSong": "Choisir une chanson",
+    "chooseSong": "Choisissez une chanson en rapport avec le thème",
     "chooseButton": "Choisir",
     "choosingButton": "Sélection...",
+    "waitingForPlayers": "En attente des autres joueurs...",
     "notChosen": "Pas encore choisi :",
     "alreadyChosen": "Déjà choisi :"
   },

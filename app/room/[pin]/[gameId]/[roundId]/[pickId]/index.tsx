@@ -1,7 +1,8 @@
 import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
-import { useColorScheme } from "@/components/useColorScheme";
+import { PlayersStatus } from "@/components/PlayersStatus";
+import { TrackCard } from "@/components/TrackCard";
 import { usePick } from "@/hooks/usePick";
 import { useCancelVote, useVote } from "@/hooks/usePickMutations";
 import { useRoom } from "@/hooks/useRoom";
@@ -10,22 +11,13 @@ import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  setAudioModeAsync,
-  useAudioPlayer,
-  useAudioPlayerStatus,
-} from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
-import { Pause, Play, RotateCcw } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
-
-setAudioModeAsync({ playsInSilentMode: true });
+import { Text, View } from "react-native";
 
 export default function Vote() {
   const { pin, gameId, roundId, pickId } = useLocalSearchParams();
   const user = useUserStore((state) => state.user);
-  const colorScheme = useColorScheme();
   const { room } = useRoom(pin.toString());
   const { pick, isPickLoading } = usePick(pickId.toString());
   const voteMutation = useVote();
@@ -36,12 +28,6 @@ export default function Vote() {
 
   const hasVoted = usersValidated.includes(user.id);
   const isMutating = voteMutation.isPending || cancelVoteMutation.isPending;
-
-  const audioSource = pick?.track?.previewUrl ?? null;
-
-  const player = useAudioPlayer(audioSource);
-  const status = useAudioPlayerStatus(player);
-  const isPlaying = status.playing;
 
   function handleVote(guessId: string) {
     setSelectedVoteId(guessId);
@@ -59,19 +45,6 @@ export default function Vote() {
       pickId: pickId.toString(),
       userId: user.id,
     });
-  }
-
-  function handlePlay() {
-    player.play();
-  }
-
-  function handleStartFromBegin() {
-    player.seekTo(0);
-    player.play();
-  }
-
-  function handlePause() {
-    player.pause();
   }
 
   useEffect(() => {
@@ -109,40 +82,7 @@ export default function Vote() {
 
   return (
     <Container title={i18n.t("votePage.title")}>
-      {!status.isLoaded ? (
-        <ActivityIndicator
-          size="large"
-          className="my-auto text-black dark:text-white"
-        />
-      ) : (
-        <View className="flex-row items-center justify-center gap-5">
-          <Pressable
-            onPress={isPlaying ? handlePause : handlePlay}
-            className="w-auto p-5 bg-black rounded-lg dark:bg-white"
-          >
-            {isPlaying ? (
-              <Pause
-                size={24}
-                color={colorScheme === "dark" ? "black" : "white"}
-              />
-            ) : (
-              <Play
-                size={24}
-                color={colorScheme === "dark" ? "black" : "white"}
-              />
-            )}
-          </Pressable>
-          <Pressable
-            onPress={handleStartFromBegin}
-            className="w-auto p-5 bg-black rounded-lg dark:bg-white"
-          >
-            <RotateCcw
-              size={24}
-              color={colorScheme === "dark" ? "black" : "white"}
-            />
-          </Pressable>
-        </View>
-      )}
+      <TrackCard track={pick.track} />
       <View className="justify-center flex-1">
         {hasVoted ? (
           <Button
@@ -174,28 +114,12 @@ export default function Vote() {
           </>
         )}
       </View>
-      <View className="w-full gap-2">
-        <View className="flex-row gap-2">
-          <Text className="text-xl dark:text-white">
-            {i18n.t("votePage.notVoted")}
-          </Text>
-          {room?.users
-            .filter((user) => !usersValidated.includes(user.id))
-            .map((user) => (
-              <Avatar key={user.id} name={user.name} size="small" />
-            ))}
-        </View>
-        <View className="flex-row gap-2">
-          <Text className="text-xl dark:text-white">
-            {i18n.t("votePage.alreadyVoted")}
-          </Text>
-          {room?.users
-            .filter((user) => usersValidated.includes(user.id))
-            .map((user) => (
-              <Avatar key={user.id} name={user.name} size="small" />
-            ))}
-        </View>
-      </View>
+      <PlayersStatus
+        users={room?.users ?? []}
+        validatedUserIds={usersValidated}
+        notValidatedLabel={i18n.t("votePage.notVoted")}
+        validatedLabel={i18n.t("votePage.alreadyVoted")}
+      />
     </Container>
   );
 }

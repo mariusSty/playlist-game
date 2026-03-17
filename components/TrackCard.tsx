@@ -1,3 +1,4 @@
+import { PlayPauseButton } from "@/components/PlayPauseButton";
 import { Track } from "@/types/room";
 import { Image } from "expo-image";
 import { ReactNode } from "react";
@@ -14,12 +15,17 @@ export function TrackCard({ track, header, children }: TrackCardProps) {
     <View className="w-full gap-3 p-3 border border-black rounded-xl dark:border-white">
       {header}
       <View className="flex-row items-center gap-3">
-        <Image
-          source={track.cover}
-          style={{ width: 64, height: 64, borderRadius: 8 }}
-          contentFit="cover"
-          transition={200}
-        />
+        <View>
+          <Image
+            source={track.cover}
+            style={{ width: 64, height: 64, borderRadius: 8 }}
+            contentFit="cover"
+            transition={200}
+          />
+          <View className="absolute inset-0 items-center justify-center">
+            <PlayPauseButton previewUrl={track.previewUrl} size={16} />
+          </View>
+        </View>
         <View className="flex-1 gap-1">
           <Text
             className="text-base font-bold dark:text-white"

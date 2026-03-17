@@ -1,6 +1,6 @@
-import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
+import { PlayersStatus } from "@/components/PlayersStatus";
 import { ThemedTextInput } from "@/components/TextInput";
 import { TrackCard } from "@/components/TrackCard";
 import { useMusicApiSearch } from "@/hooks/usePick";
@@ -22,7 +22,7 @@ export default function Song() {
     roundId: string;
   }>();
   const [search, setSearch] = useState("");
-  const [isTrackSelected, setIsTrackSelected] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
   const [usersValidated, setUsersValidated] = useState<string[]>([]);
   const { room } = useRoom(pin);
   const { round, isRoundLoading } = useRound(roundId);
@@ -30,7 +30,7 @@ export default function Song() {
   const cancelPick = useCancelPick();
 
   const { tracks = [], isTracksLoading } = useMusicApiSearch(
-    isTrackSelected ? null : search,
+    selectedTrack ? null : search,
   );
 
   const user = useUserStore((state) => state.user);
@@ -49,7 +49,7 @@ export default function Song() {
 
         // Only reset if the current user's own pick was cancelled
         if (wasPreviouslyValidated && !isNowValidated) {
-          setIsTrackSelected(false);
+          setSelectedTrack(null);
           setSearch("");
         }
 
@@ -69,7 +69,7 @@ export default function Song() {
   }, [pin, gameId, roundId, room, user.id]);
 
   async function handleSelectTrack(track: Track) {
-    setIsTrackSelected(true);
+    setSelectedTrack(track);
     setSearch(track.title + " - " + track.artist);
     try {
       await validatePick.mutateAsync({
@@ -87,7 +87,7 @@ export default function Song() {
       });
     } catch (error) {
       console.error(error);
-      setIsTrackSelected(false);
+      setSelectedTrack(null);
       setSearch("");
     }
   }
@@ -117,83 +117,67 @@ export default function Song() {
   }
 
   return (
-    <Container title={i18n.t("pickPage.title")}>
-      <View className="w-full gap-10">
-        <Text className="py-4 text-4xl font-bold dark:text-white">
-          {translatedTheme}
-        </Text>
-        <View className="w-full gap-2">
-          {isTrackSelected ? (
-            <>
-              <Text className="text-xl dark:text-white">
-                {i18n.t("pickPage.yourSong")}
-              </Text>
-              <Text className="text-xl dark:text-white">{search}</Text>
+    <Container title={translatedTheme}>
+      <View className="justify-between flex-1 w-full">
+        {selectedTrack ? (
+          <View className="w-full gap-3">
+            <Text className="text-xl font-bold dark:text-white">
+              {i18n.t("pickPage.yourSong")}
+            </Text>
+            <TrackCard track={selectedTrack}>
               <Button
                 text={i18n.t("pickPage.cancelButton")}
                 activeText={i18n.t("pickPage.cancellingButton")}
                 onPress={handleCancelSong}
                 isPending={cancelPick.isPending}
               />
-            </>
-          ) : (
-            <>
+            </TrackCard>
+          </View>
+        ) : (
+          <>
+            <View className="w-full gap-2">
               <Text className="text-xl font-bold dark:text-white">
                 {i18n.t("pickPage.chooseSong")}
               </Text>
               <ThemedTextInput value={search} onChangeText={setSearch} />
-            </>
-          )}
-        </View>
-      </View>
-      <View className="flex-1">
-        {isTracksLoading ? (
-          <ActivityIndicator
-            size="large"
-            className="my-auto text-black dark:text-white"
-          />
-        ) : (
-          <ScrollView className="gap-4 py-2">
-            <View className="flex-1 gap-3">
-              {tracks?.map((track) => (
-                <TrackCard key={track.id} track={track}>
-                  <Button
-                    text={i18n.t("pickPage.chooseButton")}
-                    activeText={i18n.t("pickPage.choosingButton")}
-                    onPress={() => handleSelectTrack(track)}
-                    isPending={
-                      validatePick.isPending &&
-                      search === track.title + " - " + track.artist
-                    }
-                    disabled={validatePick.isPending || cancelPick.isPending}
-                  />
-                </TrackCard>
-              ))}
             </View>
-          </ScrollView>
+            <View className="flex-1">
+              {isTracksLoading ? (
+                <ActivityIndicator
+                  size="large"
+                  className="my-auto text-black dark:text-white"
+                />
+              ) : (
+                <ScrollView className="gap-4 py-2">
+                  <View className="flex-1 gap-3">
+                    {tracks?.map((track) => (
+                      <TrackCard key={track.id} track={track}>
+                        <Button
+                          text={i18n.t("pickPage.chooseButton")}
+                          activeText={i18n.t("pickPage.choosingButton")}
+                          onPress={() => handleSelectTrack(track)}
+                          isPending={
+                            validatePick.isPending &&
+                            search === track.title + " - " + track.artist
+                          }
+                          disabled={
+                            validatePick.isPending || cancelPick.isPending
+                          }
+                        />
+                      </TrackCard>
+                    ))}
+                  </View>
+                </ScrollView>
+              )}
+            </View>
+          </>
         )}
-      </View>
-      <View className="w-full gap-2">
-        <View className="flex-row gap-2">
-          <Text className="text-xl dark:text-white">
-            {i18n.t("pickPage.notChosen")}
-          </Text>
-          {room?.users
-            .filter((user) => !usersValidated.includes(user.id))
-            .map((user) => (
-              <Avatar key={user.id} name={user.name} size="small" />
-            ))}
-        </View>
-        <View className="flex-row gap-2">
-          <Text className="text-xl dark:text-white">
-            {i18n.t("pickPage.alreadyChosen")}
-          </Text>
-          {room?.users
-            .filter((user) => usersValidated.includes(user.id))
-            .map((user) => (
-              <Avatar key={user.id} name={user.name} size="small" />
-            ))}
-        </View>
+        <PlayersStatus
+          users={room?.users ?? []}
+          validatedUserIds={usersValidated}
+          notValidatedLabel={i18n.t("pickPage.notChosen")}
+          validatedLabel={i18n.t("pickPage.alreadyChosen")}
+        />
       </View>
     </Container>
   );

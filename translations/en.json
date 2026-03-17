@@ -47,9 +47,10 @@
     "yourSong": "You chose:",
     "cancelButton": "Cancel",
     "cancellingButton": "Cancelling...",
-    "chooseSong": "Choose a song",
+    "chooseSong": "Pick a song that matches the theme",
     "chooseButton": "Choose",
     "choosingButton": "Selecting...",
+    "waitingForPlayers": "Waiting for other players...",
     "notChosen": "Not chosen yet:",
     "alreadyChosen": "Already chosen:"
   },
