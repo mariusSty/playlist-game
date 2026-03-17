@@ -1,3 +1,4 @@
+import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { useColorScheme } from "@/components/useColorScheme";
@@ -14,7 +15,6 @@ import {
   useAudioPlayer,
   useAudioPlayerStatus,
 } from "expo-audio";
-import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { Pause, Play, RotateCcw } from "lucide-react-native";
 import { useEffect, useState } from "react";
@@ -159,12 +159,7 @@ export default function Vote() {
                 key={player.id}
                 className="flex-row items-center justify-between w-full py-2"
               >
-                <Image
-                  style={{ width: 50, height: 50, borderRadius: 5 }}
-                  source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${player.name}`}
-                  contentFit="cover"
-                  transition={1000}
-                />
+                <Avatar name={player.name} />
                 <Text className="text-lg dark:text-white">{player.name}</Text>
                 <Button
                   text="Vote"
@@ -187,13 +182,7 @@ export default function Vote() {
           {room?.users
             .filter((user) => !usersValidated.includes(user.id))
             .map((user) => (
-              <Image
-                key={user.id}
-                style={{ width: 20, height: 20, borderRadius: 5 }}
-                source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
-                contentFit="cover"
-                transition={1000}
-              />
+              <Avatar key={user.id} name={user.name} size="small" />
             ))}
         </View>
         <View className="flex-row gap-2">
@@ -203,13 +192,7 @@ export default function Vote() {
           {room?.users
             .filter((user) => usersValidated.includes(user.id))
             .map((user) => (
-              <Image
-                key={user.id}
-                style={{ width: 20, height: 20, borderRadius: 5 }}
-                source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
-                contentFit="cover"
-                transition={1000}
-              />
+              <Avatar key={user.id} name={user.name} size="small" />
             ))}
         </View>
       </View>

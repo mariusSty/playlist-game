@@ -46,5 +46,7 @@ export type Track = {
   id: string;
   title: string;
   artist: string;
+  album: string;
+  cover: string;
   previewUrl: string;
 };

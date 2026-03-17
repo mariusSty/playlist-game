@@ -1,3 +1,4 @@
+import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { getRandomThemes } from "@/constants/theme";
@@ -7,7 +8,6 @@ import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { useQueryClient } from "@tanstack/react-query";
-import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
@@ -54,7 +54,7 @@ export default function RoundTheme() {
     };
   }, [pin, gameId, roundId]);
 
-  if (isRoundLoading || !round) {
+  if (isRoundLoading || !round || !round.themeMaster) {
     return (
       <Container title={i18n.t("themePage.title")}>
         <View>
@@ -94,12 +94,7 @@ export default function RoundTheme() {
   return (
     <Container title={i18n.t("themePage.title")}>
       <View className="items-center py-8 gap-y-2">
-        <Image
-          style={{ width: 50, height: 50, borderRadius: 5 }}
-          source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${round.themeMaster.name}`}
-          contentFit="cover"
-          transition={1000}
-        />
+        <Avatar name={round.themeMaster.name} />
         <Text className="text-xl font-bold dark:text-white">
           {i18n.t("themePage.waiting", {
             name: round.themeMaster.name,

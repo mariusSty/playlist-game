@@ -1,6 +1,8 @@
+import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { ThemedTextInput } from "@/components/TextInput";
+import { TrackCard } from "@/components/TrackCard";
 import { useMusicApiSearch } from "@/hooks/usePick";
 import { useCancelPick, useValidatePick } from "@/hooks/usePickMutations";
 import { useRoom } from "@/hooks/useRoom";
@@ -9,7 +11,6 @@ import { useUserStore } from "@/stores/user-store";
 import { Track } from "@/types/room";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
-import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
@@ -79,6 +80,8 @@ export default function Song() {
           id: track.id,
           title: track.title,
           artist: track.artist,
+          album: track.album,
+          cover: track.cover,
           previewUrl: track.previewUrl,
         },
       });
@@ -151,15 +154,20 @@ export default function Song() {
           />
         ) : (
           <ScrollView className="gap-4 py-2">
-            <View className="flex-1 gap-2">
+            <View className="flex-1 gap-3">
               {tracks?.map((track) => (
-                <Button
-                  key={track.id}
-                  text={track.title + " - " + track.artist}
-                  onPress={() => handleSelectTrack(track)}
-                  classNames="w-full"
-                  disabled={validatePick.isPending || cancelPick.isPending}
-                />
+                <TrackCard key={track.id} track={track}>
+                  <Button
+                    text={i18n.t("pickPage.chooseButton")}
+                    activeText={i18n.t("pickPage.choosingButton")}
+                    onPress={() => handleSelectTrack(track)}
+                    isPending={
+                      validatePick.isPending &&
+                      search === track.title + " - " + track.artist
+                    }
+                    disabled={validatePick.isPending || cancelPick.isPending}
+                  />
+                </TrackCard>
               ))}
             </View>
           </ScrollView>
@@ -173,13 +181,7 @@ export default function Song() {
           {room?.users
             .filter((user) => !usersValidated.includes(user.id))
             .map((user) => (
-              <Image
-                key={user.id}
-                style={{ width: 20, height: 20, borderRadius: 5 }}
-                source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
-                contentFit="cover"
-                transition={1000}
-              />
+              <Avatar key={user.id} name={user.name} size="small" />
             ))}
         </View>
         <View className="flex-row gap-2">
@@ -189,13 +191,7 @@ export default function Song() {
           {room?.users
             .filter((user) => usersValidated.includes(user.id))
             .map((user) => (
-              <Image
-                key={user.id}
-                style={{ width: 20, height: 20, borderRadius: 5 }}
-                source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
-                contentFit="cover"
-                transition={1000}
-              />
+              <Avatar key={user.id} name={user.name} size="small" />
             ))}
         </View>
       </View>

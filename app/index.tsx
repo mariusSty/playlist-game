@@ -1,9 +1,9 @@
+import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
 import { useCreateRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import { Image } from "expo-image";
 import { router } from "expo-router";
 import React from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
@@ -36,12 +36,7 @@ export default function Main() {
             {i18n.t("homePage.title")}
           </Text>
           <View className="flex-row items-center gap-5">
-            <Image
-              style={{ width: 50, height: 50, borderRadius: 5 }}
-              source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
-              contentFit="cover"
-              transition={1000}
-            />
+            <Avatar name={user.name} />
             <View className="flex-1">
               <ThemedTextInput value={user.name} onChangeText={setName} />
             </View>

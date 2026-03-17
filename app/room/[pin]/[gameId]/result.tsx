@@ -1,8 +1,8 @@
+import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { useResult } from "@/hooks/useGame";
 import i18n from "@/utils/translation";
-import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { Text, View } from "react-native";
 
@@ -24,12 +24,7 @@ export default function Result() {
             >
               <View className="flex-row items-center gap-4">
                 <Text className="text-xl dark:text-white">{index + 1}</Text>
-                <Image
-                  style={{ width: 50, height: 50, borderRadius: 5 }}
-                  source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${result.user.name}`}
-                  contentFit="cover"
-                  transition={1000}
-                />
+                <Avatar name={result.user.name} />
                 <Text className="text-xl dark:text-white">
                   {result.user.name}
                 </Text>

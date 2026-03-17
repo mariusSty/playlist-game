@@ -1,16 +1,17 @@
+import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
+import { TrackCard } from "@/components/TrackCard";
 import { useFinishGame } from "@/hooks/useGameMutations";
 import { useRound } from "@/hooks/useRound";
 import { useNextRound } from "@/hooks/useRoundMutations";
 import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
-import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { CircleCheck, CircleX } from "lucide-react-native";
 import { useEffect } from "react";
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 export default function Reveal() {
   const { roundId, pin, gameId } = useLocalSearchParams();
@@ -50,32 +51,56 @@ export default function Reveal() {
 
   return (
     <Container title={i18n.t("revealPage.title")}>
-      <View className="gap-4 my-auto">
+      <ScrollView contentContainerClassName="gap-8 py-4">
         {round.picks.map((pick, index) => (
-          <View key={index}>
-            <Text className="text-xl font-bold dark:text-white">
-              {pick.track.title} - {pick.track.artist}
-            </Text>
-            <View className="flex-row items-center w-full gap-4 py-2">
-              <Image
-                style={{ width: 50, height: 50, borderRadius: 5 }}
-                source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${pick.user.name}`}
-                contentFit="cover"
-                transition={1000}
-              />
-              <Text className="text-xl dark:text-white">{pick.user.name}</Text>
-              <View className="ml-auto">
-                {pick.votes.find((vote) => vote.guessUser.id === user.id)
-                  ?.guessedUser.id === pick.user.id ? (
-                  <CircleCheck color="green" size={32} />
-                ) : (
-                  <CircleX color="red" size={32} />
-                )}
+          <View key={index} className="gap-2">
+            {index > 0 && (
+              <View className="mb-2 border-b border-black/10 dark:border-white/10" />
+            )}
+            <TrackCard
+              track={pick.track}
+              header={
+                <View className="flex-row items-center gap-3">
+                  <Avatar name={pick.user.name} size="small" />
+                  <Text className="text-base font-bold dark:text-white">
+                    {pick.user.name}
+                  </Text>
+                </View>
+              }
+            />
+            <View className="gap-1 px-2">
+              <View className="flex-row items-center gap-2">
+                <CircleCheck color="green" size={20} />
+                <View className="flex-row flex-wrap gap-2">
+                  {pick.votes
+                    .filter((vote) => vote.guessedUser.id === pick.user.id)
+                    .map((vote) => (
+                      <Avatar
+                        key={vote.id}
+                        name={vote.guessUser.name}
+                        size="small"
+                      />
+                    ))}
+                </View>
+              </View>
+              <View className="flex-row items-center gap-2">
+                <CircleX color="red" size={20} />
+                <View className="flex-row flex-wrap gap-2">
+                  {pick.votes
+                    .filter((vote) => vote.guessedUser.id !== pick.user.id)
+                    .map((vote) => (
+                      <Avatar
+                        key={vote.id}
+                        name={vote.guessUser.name}
+                        size="small"
+                      />
+                    ))}
+                </View>
               </View>
             </View>
           </View>
         ))}
-      </View>
+      </ScrollView>
       {round.themeMaster.id === user.id && (
         <Button
           text={i18n.t("revealPage.nextRoundButton")}

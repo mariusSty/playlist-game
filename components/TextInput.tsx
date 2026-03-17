@@ -13,6 +13,9 @@ export function ThemedTextInput({
       value={value}
       onChangeText={onChangeText}
       placeholder={placeholder}
+      autoCorrect={false}
+      autoCapitalize="none"
+      spellCheck={false}
       className={cn([
         "w-full py-3 text-xl text-center text-black dark:text-white border rounded-lg border-black dark:border-white",
         className,

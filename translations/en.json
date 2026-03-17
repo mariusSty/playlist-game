@@ -48,6 +48,8 @@
     "cancelButton": "Cancel",
     "cancellingButton": "Cancelling...",
     "chooseSong": "Choose a song",
+    "chooseButton": "Choose",
+    "choosingButton": "Selecting...",
     "notChosen": "Not chosen yet:",
     "alreadyChosen": "Already chosen:"
   },

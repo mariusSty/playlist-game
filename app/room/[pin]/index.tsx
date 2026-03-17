@@ -1,3 +1,4 @@
+import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useStartGame } from "@/hooks/useGameMutations";
@@ -7,7 +8,6 @@ import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { useQueryClient } from "@tanstack/react-query";
-import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { DoorOpen, Star } from "lucide-react-native";
 import { useEffect } from "react";
@@ -83,12 +83,7 @@ export default function RoomScreen() {
         <View className="gap-7">
           {users.map((user, index) => (
             <View key={index} className="flex-row items-center w-full gap-5">
-              <Image
-                style={{ width: 50, height: 50, borderRadius: 5 }}
-                source={`https://api.dicebear.com/8.x/fun-emoji/svg?seed=${user.name}`}
-                contentFit="cover"
-                transition={1000}
-              />
+              <Avatar name={user.name} />
               <Text className="text-3xl dark:text-white">{user.name}</Text>
               {user.id === hostId && (
                 <Star size={24} color="gold" fill="gold" />
