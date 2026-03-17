@@ -55,7 +55,7 @@
     "alreadyChosen": "Already chosen:"
   },
   "votePage": {
-    "title": "Listen and Vote!",
+    "title": "Who chose this song?",
     "voteButton": "Vote",
     "cancelButton": "Cancel vote",
     "cancellingButton": "Cancelling...",

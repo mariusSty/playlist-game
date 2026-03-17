@@ -55,7 +55,7 @@
     "alreadyChosen": "Déjà choisi :"
   },
   "votePage": {
-    "title": "Écoutez et Votez !",
+    "title": "Qui a choisi cette chanson ?",
     "voteButton": "Voter",
     "cancelButton": "Annuler le vote",
     "cancellingButton": "Annulation...",

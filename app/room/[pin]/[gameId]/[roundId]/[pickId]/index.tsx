@@ -84,25 +84,29 @@ export default function Vote() {
     <Container title={i18n.t("votePage.title")}>
       <TrackCard track={pick.track} />
       <View className="justify-center flex-1">
-        {hasVoted ? (
-          <Button
-            text={i18n.t("votePage.cancelButton")}
-            activeText={i18n.t("votePage.cancellingButton")}
-            onPress={handleCancelVote}
-            isPending={cancelVoteMutation.isPending}
-            disabled={voteMutation.isPending}
-          />
-        ) : (
-          <>
-            {room?.users.map((player) => (
+        {room?.users.map((player) => (
+          <View
+            key={player.id}
+            className="flex-row items-center w-full gap-3 py-2"
+          >
+            <Avatar name={player.name} />
+            <Text className="flex-1 text-lg dark:text-white">
+              {player.name}
+            </Text>
+            {hasVoted && selectedVoteId === player.id ? (
+              <Button
+                text={i18n.t("votePage.cancelButton")}
+                activeText={i18n.t("votePage.cancellingButton")}
+                onPress={handleCancelVote}
+                isPending={cancelVoteMutation.isPending}
+              />
+            ) : (
               <View
-                key={player.id}
-                className="flex-row items-center justify-between w-full py-2"
+                className={hasVoted ? "opacity-0" : ""}
+                pointerEvents={hasVoted ? "none" : "auto"}
               >
-                <Avatar name={player.name} />
-                <Text className="text-lg dark:text-white">{player.name}</Text>
                 <Button
-                  text="Vote"
+                  text={i18n.t("votePage.voteButton")}
                   onPress={() => handleVote(player.id)}
                   isPending={
                     voteMutation.isPending && selectedVoteId === player.id
@@ -110,9 +114,9 @@ export default function Vote() {
                   disabled={isMutating && selectedVoteId !== player.id}
                 />
               </View>
-            ))}
-          </>
-        )}
+            )}
+          </View>
+        ))}
       </View>
       <PlayersStatus
         users={room?.users ?? []}
