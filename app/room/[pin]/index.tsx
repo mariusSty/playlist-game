@@ -4,7 +4,6 @@ import { useStartGame } from "@/hooks/useGameMutations";
 import { roomQueryKey, useRoom } from "@/hooks/useRoom";
 import { useLeaveRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
-import { cn } from "@/utils/cn";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -68,13 +67,14 @@ export default function RoomScreen() {
 
   const users = room?.users ?? [];
   const hostId = room?.host?.id;
+  const anyPending = startGame.isPending || leaveRoom.isPending;
 
   return (
     <View className="items-center justify-between flex-1 m-10">
       <Pressable
-        className={cn(["self-start", leaveRoom.isPending && "opacity-50"])}
+        className="self-start"
         onPress={handleLeaveRoom}
-        disabled={leaveRoom.isPending}
+        disabled={anyPending}
       >
         <DoorOpen size={24} color={isDarkMode ? "white" : "black"} />
       </Pressable>
@@ -102,7 +102,9 @@ export default function RoomScreen() {
           <Button
             onPress={handleStartGame}
             text={i18n.t("startPage.startButton")}
-            disabled={startGame.isPending}
+            activeText={i18n.t("startPage.startingButton")}
+            isPending={startGame.isPending}
+            disabled={leaveRoom.isPending}
           />
         </View>
       )}

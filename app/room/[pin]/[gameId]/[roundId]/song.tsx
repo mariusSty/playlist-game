@@ -128,8 +128,9 @@ export default function Song() {
               <Text className="text-xl dark:text-white">{search}</Text>
               <Button
                 text={i18n.t("pickPage.cancelButton")}
+                activeText={i18n.t("pickPage.cancellingButton")}
                 onPress={handleCancelSong}
-                disabled={cancelPick.isPending}
+                isPending={cancelPick.isPending}
               />
             </>
           ) : (
@@ -157,6 +158,7 @@ export default function Song() {
                   text={track.title + " - " + track.artist}
                   onPress={() => handleSelectTrack(track)}
                   classNames="w-full"
+                  disabled={validatePick.isPending || cancelPick.isPending}
                 />
               ))}
             </View>

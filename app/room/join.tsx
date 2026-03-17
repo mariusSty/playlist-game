@@ -49,9 +49,11 @@ export default function Join() {
       </View>
       <Button
         text={i18n.t("joinPage.joinButton")}
+        activeText={i18n.t("joinPage.joiningButton")}
         onPress={handlePress}
         classNames="w-full"
-        disabled={!user.name || !pin || joinRoom.isPending}
+        isPending={joinRoom.isPending}
+        disabled={!user.name || !pin}
       />
     </Pressable>
   );

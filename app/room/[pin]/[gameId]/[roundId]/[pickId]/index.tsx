@@ -32,6 +32,7 @@ export default function Vote() {
   const cancelVoteMutation = useCancelVote();
   const queryClient = useQueryClient();
   const [usersValidated, setUsersValidated] = useState<string[]>([]);
+  const [selectedVoteId, setSelectedVoteId] = useState<string | null>(null);
 
   const hasVoted = usersValidated.includes(user.id);
   const isMutating = voteMutation.isPending || cancelVoteMutation.isPending;
@@ -43,6 +44,7 @@ export default function Vote() {
   const isPlaying = status.playing;
 
   function handleVote(guessId: string) {
+    setSelectedVoteId(guessId);
     voteMutation.mutate({
       pin: pin.toString(),
       pickId: pickId.toString(),
@@ -145,8 +147,10 @@ export default function Vote() {
         {hasVoted ? (
           <Button
             text={i18n.t("votePage.cancelButton")}
+            activeText={i18n.t("votePage.cancellingButton")}
             onPress={handleCancelVote}
-            disabled={isMutating}
+            isPending={cancelVoteMutation.isPending}
+            disabled={voteMutation.isPending}
           />
         ) : (
           <>
@@ -165,7 +169,10 @@ export default function Vote() {
                 <Button
                   text="Vote"
                   onPress={() => handleVote(player.id)}
-                  disabled={isMutating}
+                  isPending={
+                    voteMutation.isPending && selectedVoteId === player.id
+                  }
+                  disabled={isMutating && selectedVoteId !== player.id}
                 />
               </View>
             ))}

@@ -4,7 +4,7 @@ import { useCreateRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import { Image } from "expo-image";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import React from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
@@ -50,15 +50,16 @@ export default function Main() {
         <View className="gap-5">
           <Button
             text={i18n.t("homePage.createButton")}
+            activeText={i18n.t("homePage.creatingButton")}
             onPress={handleCreateRoom}
+            isPending={createRoom.isPending}
+            disabled={!user.name}
+          />
+          <Button
+            text={i18n.t("homePage.joinButton")}
+            onPress={() => router.push("/room/join")}
             disabled={!user.name || createRoom.isPending}
           />
-          <Link href="/room/join" asChild>
-            <Button
-              text={i18n.t("homePage.joinButton")}
-              disabled={!user.name}
-            />
-          </Link>
         </View>
       </Pressable>
     </View>

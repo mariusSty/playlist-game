@@ -9,7 +9,7 @@ import i18n from "@/utils/translation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function RoundTheme() {
@@ -24,8 +24,10 @@ export default function RoundTheme() {
   const pickTheme = usePickTheme();
   const queryClient = useQueryClient();
   const themes = useMemo(() => getRandomThemes(5), []);
+  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
 
   async function handleChoose(theme: string) {
+    setSelectedTheme(theme);
     try {
       await pickTheme.mutateAsync({
         roundId,
@@ -34,6 +36,7 @@ export default function RoundTheme() {
         pin,
       });
     } catch (error) {
+      setSelectedTheme(null);
       console.error(error);
     }
   }
@@ -72,13 +75,15 @@ export default function RoundTheme() {
         <ScrollView
           className="flex-1"
           contentContainerClassName="items-stretch gap-y-5"
+          style={{ overflow: "visible" }}
         >
           {themes.map((theme, index) => (
             <Button
               key={index}
               onPress={() => handleChoose(theme)}
               text={i18n.t(`themePage.themes.${theme}`)}
-              disabled={pickTheme.isPending}
+              isPending={pickTheme.isPending && selectedTheme === theme}
+              disabled={pickTheme.isPending && selectedTheme !== theme}
             />
           ))}
         </ScrollView>

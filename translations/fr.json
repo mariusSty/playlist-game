@@ -2,14 +2,17 @@
   "homePage": {
     "title": "Playlist Game",
     "createButton": "Créer une partie",
+    "creatingButton": "Création...",
     "joinButton": "Rejoindre une partie"
   },
   "joinPage": {
     "joinButton": "Rejoindre la partie",
+    "joiningButton": "Connexion...",
     "pinInputPlaceholder": "Entrez le code PIN"
   },
   "startPage": {
-    "startButton": "Commencer la partie"
+    "startButton": "Commencer la partie",
+    "startingButton": "Démarrage..."
   },
   "themePage": {
     "title": "Choix du thème",
@@ -43,6 +46,7 @@
     "title": "Choississez une chanson associée au thème :",
     "yourSong": "Vous avez choisi :",
     "cancelButton": "Annuler",
+    "cancellingButton": "Annulation...",
     "chooseSong": "Choisir une chanson",
     "notChosen": "Pas encore choisi :",
     "alreadyChosen": "Déjà choisi :"
@@ -51,12 +55,14 @@
     "title": "Écoutez et Votez !",
     "voteButton": "Voter",
     "cancelButton": "Annuler le vote",
+    "cancellingButton": "Annulation...",
     "notVoted": "Pas encore voté :",
     "alreadyVoted": "Déjà voté :"
   },
   "revealPage": {
     "title": "Révélation du tour",
-    "nextRoundButton": "Tour suivant"
+    "nextRoundButton": "Tour suivant",
+    "nextRoundLoading": "Chargement..."
   },
   "resultPage": {
     "title": "Résultats",
