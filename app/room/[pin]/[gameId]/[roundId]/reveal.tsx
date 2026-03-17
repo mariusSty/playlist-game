@@ -8,6 +8,7 @@ import { useNextRound } from "@/hooks/useRoundMutations";
 import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
+import * as Sentry from "@sentry/react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { CircleCheck, CircleX } from "lucide-react-native";
 import { useEffect } from "react";
@@ -21,18 +22,43 @@ export default function Reveal() {
   const finishGame = useFinishGame();
 
   async function handleNextRound() {
+    Sentry.logger.info("Next round requested", {
+      pin: pin.toString(),
+      userId: user.id,
+      userName: user.name,
+      roundId: roundId.toString(),
+    });
     try {
       await nextRound.mutateAsync({ pin: pin.toString() });
     } catch (error) {
-      console.error(error);
+      Sentry.logger.error("Next round failed", {
+        pin: pin.toString(),
+        userId: user.id,
+        userName: user.name,
+        roundId: roundId.toString(),
+        error: String(error),
+      });
     }
   }
 
   useEffect(() => {
     async function onRoundCompleted({ nextRoundId }: { nextRoundId?: number }) {
       if (nextRoundId != null) {
+        Sentry.logger.info("Next round started", {
+          pin: pin.toString(),
+          userId: user.id,
+          userName: user.name,
+          gameId: gameId.toString(),
+          nextRoundId,
+        });
         router.replace(`/room/${pin}/${gameId}/${nextRoundId}/theme`);
       } else {
+        Sentry.logger.info("Game finished", {
+          pin: pin.toString(),
+          userId: user.id,
+          userName: user.name,
+          gameId: gameId.toString(),
+        });
         await finishGame.mutateAsync(gameId.toString());
         router.replace(`/room/${pin}/${gameId}/result`);
       }

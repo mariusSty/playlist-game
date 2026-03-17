@@ -10,6 +10,7 @@ import { roundQueryKey } from "@/hooks/useRound";
 import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
+import * as Sentry from "@sentry/react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -30,6 +31,14 @@ export default function Vote() {
   const isMutating = voteMutation.isPending || cancelVoteMutation.isPending;
 
   function handleVote(guessId: string) {
+    Sentry.logger.info("Vote cast", {
+      pin: pin.toString(),
+      userId: user.id,
+      userName: user.name,
+      roundId: roundId.toString(),
+      pickId: pickId.toString(),
+      guessId,
+    });
     setSelectedVoteId(guessId);
     voteMutation.mutate({
       pin: pin.toString(),
@@ -40,6 +49,13 @@ export default function Vote() {
   }
 
   function handleCancelVote() {
+    Sentry.logger.info("Vote cancelled", {
+      pin: pin.toString(),
+      userId: user.id,
+      userName: user.name,
+      roundId: roundId.toString(),
+      pickId: pickId.toString(),
+    });
     cancelVoteMutation.mutate({
       pin: pin.toString(),
       pickId: pickId.toString(),
@@ -59,13 +75,38 @@ export default function Vote() {
 
       // All users have voted → navigate to next pick or reveal
       if (nextPickId === null) {
+        Sentry.logger.info("All votes done, moving to reveal", {
+          pin: pin.toString(),
+          userId: user.id,
+          userName: user.name,
+          gameId: gameId.toString(),
+          roundId: roundId.toString(),
+          pickId: pickId.toString(),
+        });
         await queryClient.invalidateQueries({
           queryKey: roundQueryKey(roundId.toString()),
         });
         router.replace(`/room/${pin}/${gameId}/${roundId}/reveal`);
-      }
-      if (nextPickId) {
+      } else if (nextPickId) {
+        Sentry.logger.info("All votes done, moving to next pick", {
+          pin: pin.toString(),
+          userId: user.id,
+          userName: user.name,
+          gameId: gameId.toString(),
+          roundId: roundId.toString(),
+          nextPickId,
+        });
         router.replace(`/room/${pin}/${gameId}/${roundId}/${nextPickId}`);
+      } else {
+        Sentry.logger.info("Someone voted or cancelled a vote", {
+          pin: pin.toString(),
+          userId: user.id,
+          userName: user.name,
+          gameId: gameId.toString(),
+          roundId: roundId.toString(),
+          pickId: pickId.toString(),
+          usersVotedCount: users.length,
+        });
       }
     }
 

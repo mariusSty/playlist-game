@@ -7,6 +7,7 @@ import { useLeaveRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
+import * as Sentry from "@sentry/react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { DoorOpen, Star } from "lucide-react-native";
@@ -25,6 +26,11 @@ export default function RoomScreen() {
 
   useEffect(() => {
     function onRoomUpdated() {
+      Sentry.logger.info("Someone joined or left the room", {
+        pin,
+        userId: user.id,
+        userName: user.name,
+      });
       queryClient.invalidateQueries({ queryKey: roomQueryKey(pin) });
     }
 
@@ -35,6 +41,13 @@ export default function RoomScreen() {
       roundId: string;
       gameId: string;
     }) {
+      Sentry.logger.info("Game started", {
+        pin,
+        userId: user.id,
+        userName: user.name,
+        gameId,
+        roundId,
+      });
       router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
     }
 
@@ -50,18 +63,40 @@ export default function RoomScreen() {
   async function handleStartGame() {
     try {
       const { gameId, roundId } = await startGame.mutateAsync({ pin });
+      Sentry.logger.info("Game started", {
+        pin,
+        userId: user.id,
+        userName: user.name,
+        gameId,
+        roundId,
+      });
       router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
     } catch (error) {
-      console.error(error);
+      Sentry.logger.error("Game start failed", {
+        pin,
+        userId: user.id,
+        userName: user.name,
+        error: String(error),
+      });
     }
   }
 
   async function handleLeaveRoom() {
     try {
       await leaveRoom.mutateAsync({ pin, userId: user.id });
+      Sentry.logger.info("Room left", {
+        pin,
+        userId: user.id,
+        userName: user.name,
+      });
       router.navigate("/");
     } catch (error) {
-      console.error(error);
+      Sentry.logger.error("Room leave failed", {
+        pin,
+        userId: user.id,
+        userName: user.name,
+        error: String(error),
+      });
     }
   }
 

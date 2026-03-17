@@ -6,6 +6,7 @@ import { useColorScheme } from "@/components/useColorScheme";
 import { useCreateRoom, useJoinRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
+import * as Sentry from "@sentry/react-native";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
@@ -31,17 +32,37 @@ export default function Main() {
         name: user.name,
         id: user.id,
       });
+      Sentry.logger.info("Room created", {
+        pin: room.pin,
+        userId: user.id,
+        userName: user.name,
+      });
       router.navigate(`/room/${room.pin}`);
     } catch (error) {
-      console.error(error);
+      Sentry.logger.error("Room creation failed", {
+        userId: user.id,
+        userName: user.name,
+        error: String(error),
+      });
     }
   }
 
   async function handleJoinRoom(pin: string) {
     try {
       await joinRoom.mutateAsync({ pin, id: user.id, name: user.name });
+      Sentry.logger.info("Room joined", {
+        pin,
+        userId: user.id,
+        userName: user.name,
+      });
       router.navigate(`/room/${pin}`);
-    } catch {
+    } catch (error) {
+      Sentry.logger.error("Room join failed", {
+        pin,
+        userId: user.id,
+        userName: user.name,
+        error: String(error),
+      });
       setOtpError(true);
     }
   }

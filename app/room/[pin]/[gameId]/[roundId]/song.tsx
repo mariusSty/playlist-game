@@ -11,6 +11,7 @@ import { useUserStore } from "@/stores/user-store";
 import { Track } from "@/types/room";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
+import * as Sentry from "@sentry/react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
@@ -57,7 +58,24 @@ export default function Song() {
       });
 
       if (firstPickId) {
+        Sentry.logger.info("All picks done, moving to vote", {
+          pin,
+          userId: user.id,
+          userName: user.name,
+          gameId,
+          roundId,
+          firstPickId,
+        });
         router.replace(`/room/${pin}/${gameId}/${roundId}/${firstPickId}`);
+      } else {
+        Sentry.logger.info("Someone picked or cancelled a song", {
+          pin,
+          userId: user.id,
+          userName: user.name,
+          gameId,
+          roundId,
+          usersPickedCount: users.length,
+        });
       }
     }
 
@@ -71,6 +89,16 @@ export default function Song() {
   async function handleSelectTrack(track: Track) {
     setSelectedTrack(track);
     setSearch(track.title + " - " + track.artist);
+    Sentry.logger.info("Song picked", {
+      pin,
+      userId: user.id,
+      userName: user.name,
+      gameId,
+      roundId,
+      trackId: track.id,
+      trackTitle: track.title,
+      trackArtist: track.artist,
+    });
     try {
       await validatePick.mutateAsync({
         pin,
@@ -86,13 +114,26 @@ export default function Song() {
         },
       });
     } catch (error) {
-      console.error(error);
+      Sentry.logger.error("Song pick failed", {
+        pin,
+        userId: user.id,
+        userName: user.name,
+        roundId,
+        error: String(error),
+      });
       setSelectedTrack(null);
       setSearch("");
     }
   }
 
   async function handleCancelSong() {
+    Sentry.logger.info("Song pick cancelled", {
+      pin,
+      userId: user.id,
+      userName: user.name,
+      gameId,
+      roundId,
+    });
     try {
       await cancelPick.mutateAsync({
         pin,
@@ -100,7 +141,13 @@ export default function Song() {
         userId: user.id,
       });
     } catch (error) {
-      console.error(error);
+      Sentry.logger.error("Song cancel failed", {
+        pin,
+        userId: user.id,
+        userName: user.name,
+        roundId,
+        error: String(error),
+      });
     }
   }
 

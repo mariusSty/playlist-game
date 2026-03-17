@@ -7,9 +7,10 @@ import { usePickTheme } from "@/hooks/useRoundMutations";
 import { useUserStore } from "@/stores/user-store";
 import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
+import * as Sentry from "@sentry/react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function RoundTheme() {
@@ -24,10 +25,17 @@ export default function RoundTheme() {
   const pickTheme = usePickTheme();
   const queryClient = useQueryClient();
   const themes = useMemo(() => getRandomThemes(5), []);
-  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
 
   async function handleChoose(theme: string) {
-    setSelectedTheme(theme);
+    if (pickTheme.isPending) return;
+    Sentry.logger.info("Theme chosen", {
+      pin,
+      userId: user.id,
+      userName: user.name,
+      gameId,
+      roundId,
+      theme,
+    });
     try {
       await pickTheme.mutateAsync({
         roundId,
@@ -36,13 +44,25 @@ export default function RoundTheme() {
         pin,
       });
     } catch (error) {
-      setSelectedTheme(null);
-      console.error(error);
+      Sentry.logger.error("Theme pick failed", {
+        pin,
+        userId: user.id,
+        userName: user.name,
+        roundId,
+        error: String(error),
+      });
     }
   }
 
   useEffect(() => {
     async function onThemeUpdated() {
+      Sentry.logger.info("Someone chose the theme", {
+        pin,
+        userId: user.id,
+        userName: user.name,
+        gameId,
+        roundId,
+      });
       await queryClient.invalidateQueries({ queryKey: roundQueryKey(roundId) });
       router.replace(`/room/${pin}/${gameId}/${roundId}/song`);
     }
@@ -82,8 +102,12 @@ export default function RoundTheme() {
               key={index}
               onPress={() => handleChoose(theme)}
               text={i18n.t(`themePage.themes.${theme}`)}
-              isPending={pickTheme.isPending && selectedTheme === theme}
-              disabled={pickTheme.isPending && selectedTheme !== theme}
+              isPending={
+                pickTheme.isPending && pickTheme.variables?.theme === theme
+              }
+              disabled={
+                pickTheme.isPending && pickTheme.variables?.theme !== theme
+              }
             />
           ))}
         </ScrollView>
