@@ -3,7 +3,12 @@
     "title": "Playlist Game",
     "createButton": "Create a game",
     "creatingButton": "Creating...",
-    "joinButton": "Join a game"
+    "joinButton": "Join a game",
+    "cancelButton": "Cancel",
+    "pinInputTitle": "Enter the PIN",
+    "joiningButton": "Joining...",
+    "pseudoPlaceholder": "Your nickname",
+    "joinError": "Invalid PIN. Please try again."
   },
   "joinPage": {
     "joinButton": "Join game",
