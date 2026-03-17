@@ -13,6 +13,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@sentry/react-native": "^8.4.0",
     "@tanstack/react-query": "^5.90.21",
     "clsx": "^2.1.1",
     "expo": "^55.0.0",

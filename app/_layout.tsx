@@ -17,6 +17,26 @@ import type { AppStateStatus } from "react-native";
 import { AppState, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import "../global.css";
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://4333ae524482c6f6864321c3471f7a32@o4510985865396224.ingest.de.sentry.io/4511059969638480',
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+
+  // Enable Logs
+  enableLogs: true,
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [Sentry.mobileReplayIntegration()],
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,7 +64,7 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+export default Sentry.wrap(function RootLayout() {
   useEffect(() => {
     SplashScreen.hideAsync();
   }, []);
@@ -59,7 +79,7 @@ export default function RootLayout() {
       <RootLayoutNav />
     </QueryClientProvider>
   );
-}
+});
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
