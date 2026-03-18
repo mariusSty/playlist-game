@@ -6,28 +6,24 @@ import { TrackCard } from "@/components/TrackCard";
 import { usePick } from "@/hooks/usePick";
 import { useCancelVote, useVote } from "@/hooks/usePickMutations";
 import { useRoom } from "@/hooks/useRoom";
-import { roundQueryKey } from "@/hooks/useRound";
 import { useUserStore } from "@/stores/user-store";
-import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
-import { useQueryClient } from "@tanstack/react-query";
-import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
 import { Text, View } from "react-native";
 
 export default function Vote() {
-  const { pin, gameId, roundId, pickId } = useLocalSearchParams();
+  const { pin, roundId, pickId } = useLocalSearchParams();
   const user = useUserStore((state) => state.user);
   const { room } = useRoom(pin.toString());
   const { pick, isPickLoading } = usePick(pickId.toString());
   const voteMutation = useVote();
   const cancelVoteMutation = useCancelVote();
-  const queryClient = useQueryClient();
-  const [usersValidated, setUsersValidated] = useState<string[]>([]);
-  const [selectedVoteId, setSelectedVoteId] = useState<string | null>(null);
 
+  const usersValidated = pick?.votes?.map((v) => v.guessUser.id) ?? [];
   const hasVoted = usersValidated.includes(user.id);
+  const userGuessedId = pick?.votes?.find((v) => v.guessUser.id === user.id)
+    ?.guessedUser.id;
   const isMutating = voteMutation.isPending || cancelVoteMutation.isPending;
 
   function handleVote(guessId: string) {
@@ -39,7 +35,6 @@ export default function Vote() {
       pickId: pickId.toString(),
       guessId,
     });
-    setSelectedVoteId(guessId);
     voteMutation.mutate({
       pin: pin.toString(),
       pickId: pickId.toString(),
@@ -63,60 +58,6 @@ export default function Vote() {
     });
   }
 
-  useEffect(() => {
-    async function onVoteUpdated({
-      users,
-      nextPickId,
-    }: {
-      users: string[];
-      nextPickId: string | null;
-    }) {
-      setUsersValidated(users);
-
-      // All users have voted → navigate to next pick or reveal
-      if (nextPickId === null) {
-        Sentry.logger.info("All votes done, moving to reveal", {
-          pin: pin.toString(),
-          userId: user.id,
-          userName: user.name,
-          gameId: gameId.toString(),
-          roundId: roundId.toString(),
-          pickId: pickId.toString(),
-        });
-        await queryClient.invalidateQueries({
-          queryKey: roundQueryKey(roundId.toString()),
-        });
-        router.replace(`/room/${pin}/${gameId}/${roundId}/reveal`);
-      } else if (nextPickId) {
-        Sentry.logger.info("All votes done, moving to next pick", {
-          pin: pin.toString(),
-          userId: user.id,
-          userName: user.name,
-          gameId: gameId.toString(),
-          roundId: roundId.toString(),
-          nextPickId,
-        });
-        router.replace(`/room/${pin}/${gameId}/${roundId}/${nextPickId}`);
-      } else {
-        Sentry.logger.info("Someone voted or cancelled a vote", {
-          pin: pin.toString(),
-          userId: user.id,
-          userName: user.name,
-          gameId: gameId.toString(),
-          roundId: roundId.toString(),
-          pickId: pickId.toString(),
-          usersVotedCount: users.length,
-        });
-      }
-    }
-
-    socket.on("vote:updated", onVoteUpdated);
-
-    return () => {
-      socket.off("vote:updated", onVoteUpdated);
-    };
-  }, [pin, gameId, roundId]);
-
   if (isPickLoading || !pick) {
     return <Text>Loading...</Text>;
   }
@@ -134,27 +75,29 @@ export default function Vote() {
             <Text className="flex-1 text-lg dark:text-white">
               {player.name}
             </Text>
-            {hasVoted && selectedVoteId === player.id ? (
-              <Button
-                text={i18n.t("votePage.cancelButton")}
-                activeText={i18n.t("votePage.cancellingButton")}
-                onPress={handleCancelVote}
-                isPending={cancelVoteMutation.isPending}
-              />
+            {hasVoted ? (
+              <>
+                {userGuessedId === player.id && (
+                  <Button
+                    text={i18n.t("votePage.cancelButton")}
+                    activeText={i18n.t("votePage.cancellingButton")}
+                    onPress={handleCancelVote}
+                    isPending={cancelVoteMutation.isPending}
+                  />
+                )}
+              </>
             ) : (
-              <View
-                className={hasVoted ? "opacity-0" : ""}
-                pointerEvents={hasVoted ? "none" : "auto"}
-              >
-                <Button
-                  text={i18n.t("votePage.voteButton")}
-                  onPress={() => handleVote(player.id)}
-                  isPending={
-                    voteMutation.isPending && selectedVoteId === player.id
-                  }
-                  disabled={isMutating && selectedVoteId !== player.id}
-                />
-              </View>
+              <Button
+                text={i18n.t("votePage.voteButton")}
+                onPress={() => handleVote(player.id)}
+                isPending={
+                  voteMutation.isPending &&
+                  voteMutation.variables.guessId === player.id
+                }
+                disabled={
+                  isMutating && voteMutation.variables?.guessId !== player.id
+                }
+              />
             )}
           </View>
         ))}

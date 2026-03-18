@@ -26,11 +26,13 @@ type StartGameResponse = {
 
 export function useStartGame() {
   return useMutation({
-    mutationFn: async (params: StartGameParams): Promise<StartGameResponse> => {
+    mutationFn: async ({
+      pin,
+    }: StartGameParams): Promise<StartGameResponse> => {
       const res = await fetch(`${apiUrl}/game`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pin: params.pin }),
+        body: JSON.stringify({ pin }),
       });
       if (!res.ok) {
         throw new Error("Failed to start game");

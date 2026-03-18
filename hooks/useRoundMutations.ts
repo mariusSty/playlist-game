@@ -1,9 +1,11 @@
 import { Round } from "@/types/room";
 import { apiUrl } from "@/utils/server";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { gamePhaseQueryKey } from "./useGamePhase";
 
 type NextRoundParams = {
   pin: string;
+  gameId: string;
 };
 
 type NextRoundResponse = {
@@ -11,6 +13,7 @@ type NextRoundResponse = {
 };
 
 export function useNextRound() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (params: NextRoundParams): Promise<NextRoundResponse> => {
       const res = await fetch(`${apiUrl}/round/next?pin=${params.pin}`, {
@@ -20,6 +23,11 @@ export function useNextRound() {
         throw new Error("Failed to go to next round");
       }
       return res.json();
+    },
+    onSuccess: (_, params) => {
+      queryClient.invalidateQueries({
+        queryKey: gamePhaseQueryKey(params.gameId),
+      });
     },
   });
 }

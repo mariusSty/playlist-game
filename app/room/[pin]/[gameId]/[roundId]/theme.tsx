@@ -2,15 +2,13 @@ import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { getRandomThemes } from "@/constants/theme";
-import { roundQueryKey, useRound } from "@/hooks/useRound";
+import { useRound } from "@/hooks/useRound";
 import { usePickTheme } from "@/hooks/useRoundMutations";
 import { useUserStore } from "@/stores/user-store";
-import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
-import { useQueryClient } from "@tanstack/react-query";
-import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { useMemo } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function RoundTheme() {
@@ -23,11 +21,9 @@ export default function RoundTheme() {
 
   const { round, isRoundLoading } = useRound(roundId);
   const pickTheme = usePickTheme();
-  const queryClient = useQueryClient();
   const themes = useMemo(() => getRandomThemes(5), []);
 
   async function handleChoose(theme: string) {
-    if (pickTheme.isPending) return;
     Sentry.logger.info("Theme chosen", {
       pin,
       userId: user.id,
@@ -36,43 +32,13 @@ export default function RoundTheme() {
       roundId,
       theme,
     });
-    try {
-      await pickTheme.mutateAsync({
-        roundId,
-        theme,
-        userId: user.id,
-        pin,
-      });
-    } catch (error) {
-      Sentry.logger.error("Theme pick failed", {
-        pin,
-        userId: user.id,
-        userName: user.name,
-        roundId,
-        error: String(error),
-      });
-    }
+    await pickTheme.mutate({
+      roundId,
+      theme,
+      userId: user.id,
+      pin,
+    });
   }
-
-  useEffect(() => {
-    async function onThemeUpdated() {
-      Sentry.logger.info("Someone chose the theme", {
-        pin,
-        userId: user.id,
-        userName: user.name,
-        gameId,
-        roundId,
-      });
-      await queryClient.invalidateQueries({ queryKey: roundQueryKey(roundId) });
-      router.replace(`/room/${pin}/${gameId}/${roundId}/song`);
-    }
-
-    socket.on("round:themeUpdated", onThemeUpdated);
-
-    return () => {
-      socket.off("round:themeUpdated", onThemeUpdated);
-    };
-  }, [pin, gameId, roundId]);
 
   if (isRoundLoading || !round || !round.themeMaster) {
     return (

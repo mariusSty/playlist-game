@@ -2,102 +2,38 @@ import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useStartGame } from "@/hooks/useGameMutations";
-import { roomQueryKey, useRoom } from "@/hooks/useRoom";
+import { useRoom } from "@/hooks/useRoom";
 import { useLeaveRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
-import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
-import { useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { DoorOpen, Star } from "lucide-react-native";
-import { useEffect } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
 export default function RoomScreen() {
   const { pin } = useLocalSearchParams<{ pin: string }>();
   const user = useUserStore((state) => state.user);
+  const clearCurrentRoom = useUserStore((state) => state.clearCurrentRoom);
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
   const { room } = useRoom(pin);
   const leaveRoom = useLeaveRoom();
   const startGame = useStartGame();
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    function onRoomUpdated() {
-      Sentry.logger.info("Someone joined or left the room", {
-        pin,
-        userId: user.id,
-        userName: user.name,
-      });
-      queryClient.invalidateQueries({ queryKey: roomQueryKey(pin) });
-    }
-
-    function onGameStarted({
-      roundId,
-      gameId,
-    }: {
-      roundId: string;
-      gameId: string;
-    }) {
-      Sentry.logger.info("Game started", {
-        pin,
-        userId: user.id,
-        userName: user.name,
-        gameId,
-        roundId,
-      });
-      router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
-    }
-
-    socket.on("room:updated", onRoomUpdated);
-    socket.on("game:started", onGameStarted);
-
-    return () => {
-      socket.off("room:updated", onRoomUpdated);
-      socket.off("game:started", onGameStarted);
-    };
-  }, [pin, queryClient]);
 
   async function handleStartGame() {
-    try {
-      const { gameId, roundId } = await startGame.mutateAsync({ pin });
-      Sentry.logger.info("Game started", {
-        pin,
-        userId: user.id,
-        userName: user.name,
-        gameId,
-        roundId,
-      });
-      router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
-    } catch (error) {
-      Sentry.logger.error("Game start failed", {
-        pin,
-        userId: user.id,
-        userName: user.name,
-        error: String(error),
-      });
-    }
+    await startGame.mutate({ pin });
   }
 
   async function handleLeaveRoom() {
-    try {
-      await leaveRoom.mutateAsync({ pin, userId: user.id });
-      Sentry.logger.info("Room left", {
-        pin,
-        userId: user.id,
-        userName: user.name,
-      });
-      router.navigate("/");
-    } catch (error) {
-      Sentry.logger.error("Room leave failed", {
-        pin,
-        userId: user.id,
-        userName: user.name,
-        error: String(error),
-      });
-    }
+    await leaveRoom.mutate({ pin, userId: user.id });
+    Sentry.logger.info("Room left", {
+      pin,
+      userId: user.id,
+      userName: user.name,
+    });
+    clearCurrentRoom();
+    router.navigate("/");
   }
 
   const users = room?.users ?? [];

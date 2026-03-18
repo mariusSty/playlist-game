@@ -4,11 +4,12 @@ import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useCreateRoom, useJoinRoom } from "@/hooks/useRoomMutations";
+import { useRoomPhase } from "@/hooks/useRoomPhase";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -16,55 +17,60 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 type Screen = "home" | "joining";
 
 export default function Main() {
-  const { user, setName } = useUserStore();
+  const { user, setName, currentRoom, setCurrentRoom } = useUserStore();
   const createRoom = useCreateRoom();
   const joinRoom = useJoinRoom();
   const colorScheme = useColorScheme();
   const [screen, setScreen] = useState<Screen>("home");
   const [otpError, setOtpError] = useState(false);
+  const { roomPhase } = useRoomPhase(currentRoom?.pin);
 
   const isDark = colorScheme === "dark";
   const hasName = user.name.trim().length > 0;
 
+  useEffect(() => {
+    if (!currentRoom) return;
+    if (roomPhase) {
+      router.replace(`/room/${currentRoom.pin}`);
+    }
+  }, [roomPhase, currentRoom]);
+
   async function handleCreateRoom() {
-    try {
-      const room = await createRoom.mutateAsync({
+    await createRoom.mutate(
+      {
         name: user.name,
         id: user.id,
-      });
-      Sentry.logger.info("Room created", {
-        pin: room.pin,
-        userId: user.id,
-        userName: user.name,
-      });
-      router.navigate(`/room/${room.pin}`);
-    } catch (error) {
-      Sentry.logger.error("Room creation failed", {
-        userId: user.id,
-        userName: user.name,
-        error: String(error),
-      });
-    }
+      },
+      {
+        onSuccess: (room) => {
+          Sentry.logger.info("Room created", {
+            pin: room.pin,
+            userId: user.id,
+            userName: user.name,
+          });
+          setCurrentRoom({ pin: room.pin });
+        },
+      },
+    );
   }
 
   async function handleJoinRoom(pin: string) {
-    try {
-      await joinRoom.mutateAsync({ pin, id: user.id, name: user.name });
-      Sentry.logger.info("Room joined", {
-        pin,
-        userId: user.id,
-        userName: user.name,
-      });
-      router.navigate(`/room/${pin}`);
-    } catch (error) {
-      Sentry.logger.error("Room join failed", {
-        pin,
-        userId: user.id,
-        userName: user.name,
-        error: String(error),
-      });
-      setOtpError(true);
-    }
+    await joinRoom.mutate(
+      { pin, id: user.id, name: user.name },
+      {
+        onError: () => {
+          setOtpError(true);
+        },
+        onSuccess: ({ pin }) => {
+          Sentry.logger.info("Room join successful", {
+            pin,
+            userId: user.id,
+            userName: user.name,
+          });
+          setCurrentRoom({ pin });
+        },
+      },
+    );
   }
 
   return (

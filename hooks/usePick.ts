@@ -12,6 +12,7 @@ export function usePick(pickId: string) {
   } = useQuery<Pick>({
     queryKey: pickQueryKey(pickId),
     queryFn: () => fetch(`${apiUrl}/pick/${pickId}`).then((res) => res.json()),
+    refetchInterval: 10_000,
   });
 
   return { pick, isPickLoading, refetchPick };

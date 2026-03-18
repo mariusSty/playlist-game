@@ -2,74 +2,34 @@ import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { TrackCard } from "@/components/TrackCard";
-import { useFinishGame } from "@/hooks/useGameMutations";
 import { useRound } from "@/hooks/useRound";
 import { useNextRound } from "@/hooks/useRoundMutations";
 import { useUserStore } from "@/stores/user-store";
-import { socket } from "@/utils/server";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { CircleCheck, CircleX } from "lucide-react-native";
-import { useEffect } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 export default function Reveal() {
-  const { roundId, pin, gameId } = useLocalSearchParams();
-  const { round, isRoundLoading } = useRound(roundId.toString());
+  const { roundId, pin, gameId } = useLocalSearchParams<{
+    roundId: string;
+    pin: string;
+    gameId: string;
+  }>();
+  const { round, isRoundLoading } = useRound(roundId);
   const user = useUserStore((state) => state.user);
   const nextRound = useNextRound();
-  const finishGame = useFinishGame();
 
   async function handleNextRound() {
+    await nextRound.mutate({ pin, gameId });
     Sentry.logger.info("Next round requested", {
-      pin: pin.toString(),
+      pin,
       userId: user.id,
       userName: user.name,
-      roundId: roundId.toString(),
+      roundId,
     });
-    try {
-      await nextRound.mutateAsync({ pin: pin.toString() });
-    } catch (error) {
-      Sentry.logger.error("Next round failed", {
-        pin: pin.toString(),
-        userId: user.id,
-        userName: user.name,
-        roundId: roundId.toString(),
-        error: String(error),
-      });
-    }
   }
-
-  useEffect(() => {
-    async function onRoundCompleted({ nextRoundId }: { nextRoundId?: number }) {
-      if (nextRoundId != null) {
-        Sentry.logger.info("Next round started", {
-          pin: pin.toString(),
-          userId: user.id,
-          userName: user.name,
-          gameId: gameId.toString(),
-          nextRoundId,
-        });
-        router.replace(`/room/${pin}/${gameId}/${nextRoundId}/theme`);
-      } else {
-        Sentry.logger.info("Game finished", {
-          pin: pin.toString(),
-          userId: user.id,
-          userName: user.name,
-          gameId: gameId.toString(),
-        });
-        await finishGame.mutateAsync(gameId.toString());
-        router.replace(`/room/${pin}/${gameId}/result`);
-      }
-    }
-
-    socket.on("round:completed", onRoundCompleted);
-
-    return () => {
-      socket.off("round:completed", onRoundCompleted);
-    };
-  }, [pin, gameId]);
 
   if (isRoundLoading || !round) {
     return <Text>Loading...</Text>;

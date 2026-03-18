@@ -50,3 +50,14 @@ export type Track = {
   cover: string;
   previewUrl: string;
 };
+
+export type RoomPhase =
+  | { phase: "lobby" }
+  | { phase: "playing"; gameId: string };
+
+export type GamePhase =
+  | { phase: "theme"; roundId: string }
+  | { phase: "song"; roundId: string }
+  | { phase: "vote"; roundId: string; pickId: string }
+  | { phase: "reveal"; roundId: string }
+  | { phase: "result" };
