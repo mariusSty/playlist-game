@@ -3,7 +3,7 @@ import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import { create } from "zustand";
 
-export type User = {
+type User = {
   id: string;
   name: string;
 };
