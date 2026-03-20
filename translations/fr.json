@@ -40,7 +40,6 @@
     }
   },
   "pickPage": {
-    "title": "Choississez une chanson associée au thème :",
     "yourSong": "Vous avez choisi :",
     "cancelButton": "Annuler",
     "chooseSong": "Choisissez une chanson en rapport avec le thème",

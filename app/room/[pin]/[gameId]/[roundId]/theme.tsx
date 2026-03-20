@@ -44,7 +44,7 @@ export default function RoundTheme() {
     );
   }
 
-  if (isRoundLoading || !round || !round.themeMaster) {
+  if (isRoundLoading || !round) {
     return (
       <Container title={i18n.t("themePage.title")}>
         <View>

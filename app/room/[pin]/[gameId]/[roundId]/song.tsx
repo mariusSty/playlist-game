@@ -95,11 +95,9 @@ export default function Song() {
 
   if (isRoundLoading || !round) {
     return (
-      <Container title={i18n.t("pickPage.title", { theme: "" })}>
-        <View className="justify-center flex-1">
-          <ActivityIndicator size="large" color="#000000" />
-        </View>
-      </Container>
+      <View className="justify-center flex-1">
+        <ActivityIndicator size="large" color="#000000" />
+      </View>
     );
   }
 

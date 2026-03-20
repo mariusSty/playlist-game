@@ -9,7 +9,7 @@ import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
 import { useLocalSearchParams } from "expo-router";
 import { CircleCheck, CircleX } from "lucide-react-native";
-import { ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function Reveal() {
   const { roundId, pin, gameId } = useLocalSearchParams<{
@@ -38,7 +38,13 @@ export default function Reveal() {
   }
 
   if (isRoundLoading || !round) {
-    return <Text>Loading...</Text>;
+    return (
+      <Container title={i18n.t("revealPage.title")}>
+        <View className="justify-center flex-1">
+          <ActivityIndicator size="large" color="#000000" />
+        </View>
+      </Container>
+    );
   }
 
   return (

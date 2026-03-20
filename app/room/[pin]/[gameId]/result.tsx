@@ -16,7 +16,7 @@ export default function Result() {
     pin: string;
     gameId: string;
   }>();
-  const { result, isResultLoading } = useResult(gameId);
+  const { result = [] } = useResult(gameId);
   const finishGame = useFinishGame();
   const userId = useUserStore((state) => state.user.id);
   const queryClient = useQueryClient();
@@ -34,8 +34,6 @@ export default function Result() {
       },
     });
   }
-
-  if (isResultLoading || !result) return <Text>Loading...</Text>;
 
   return (
     <Container title={i18n.t("resultPage.title")}>

@@ -70,13 +70,9 @@ export default function Vote() {
     );
   }
 
-  if (isPickLoading || !pick) {
-    return <Text>Loading...</Text>;
-  }
-
   return (
     <Container title={i18n.t("votePage.title")}>
-      <TrackCard track={pick.track} />
+      {pick && <TrackCard track={pick.track} />}
       <View className="justify-center flex-1">
         {room?.users.map((player) => (
           <View
