@@ -2,22 +2,14 @@
   "homePage": {
     "title": "Playlist Game",
     "createButton": "Créer une partie",
-    "creatingButton": "Création...",
     "joinButton": "Rejoindre une partie",
     "cancelButton": "Annuler",
     "pinInputTitle": "Entrez le code PIN",
-    "joiningButton": "Connexion...",
     "pseudoPlaceholder": "Votre pseudo",
     "joinError": "Code PIN invalide. Veuillez réessayer."
   },
-  "joinPage": {
-    "joinButton": "Rejoindre la partie",
-    "joiningButton": "Connexion...",
-    "pinInputPlaceholder": "Entrez le code PIN"
-  },
   "startPage": {
-    "startButton": "Commencer la partie",
-    "startingButton": "Démarrage..."
+    "startButton": "Commencer la partie"
   },
   "themePage": {
     "title": "Choix du thème",
@@ -51,11 +43,8 @@
     "title": "Choississez une chanson associée au thème :",
     "yourSong": "Vous avez choisi :",
     "cancelButton": "Annuler",
-    "cancellingButton": "Annulation...",
     "chooseSong": "Choisissez une chanson en rapport avec le thème",
     "chooseButton": "Choisir",
-    "choosingButton": "Sélection...",
-    "waitingForPlayers": "En attente des autres joueurs...",
     "notChosen": "Pas encore choisi :",
     "alreadyChosen": "Déjà choisi :"
   },
@@ -63,14 +52,12 @@
     "title": "Qui a choisi cette chanson ?",
     "voteButton": "Voter",
     "cancelButton": "Annuler le vote",
-    "cancellingButton": "Annulation...",
     "notVoted": "Pas encore voté :",
     "alreadyVoted": "Déjà voté :"
   },
   "revealPage": {
     "title": "Révélation du tour",
-    "nextRoundButton": "Tour suivant",
-    "nextRoundLoading": "Chargement..."
+    "nextRoundButton": "Tour suivant"
   },
   "resultPage": {
     "title": "Résultats",
