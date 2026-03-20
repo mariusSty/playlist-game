@@ -114,7 +114,6 @@ export default function Song() {
             <TrackCard track={userPick.track}>
               <Button
                 text={i18n.t("pickPage.cancelButton")}
-                activeText={i18n.t("pickPage.cancellingButton")}
                 onPress={handleCancelSong}
                 isPending={cancelPick.isPending}
               />
@@ -141,7 +140,6 @@ export default function Song() {
                       <TrackCard key={track.id} track={track}>
                         <Button
                           text={i18n.t("pickPage.chooseButton")}
-                          activeText={i18n.t("pickPage.choosingButton")}
                           onPress={() => handleSelectTrack(track)}
                           isPending={
                             validatePick.isPending &&

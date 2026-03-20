@@ -17,12 +17,12 @@ interface CircularLoaderProps {
   readonly duration?: number;
 }
 
-export const CircularLoader: React.FC<CircularLoaderProps> = ({
+export function CircularLoader({
   size = 20,
   strokeWidth = 1.6,
   activeColor = "#FFFFFF",
   duration = 800,
-}) => {
+}: CircularLoaderProps) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
@@ -62,4 +62,4 @@ export const CircularLoader: React.FC<CircularLoaderProps> = ({
       />
     </Svg>
   );
-};
+}

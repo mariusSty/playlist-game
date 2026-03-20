@@ -1,11 +1,10 @@
-import SpinButton from "@/components/micro-interactions/spin-button/spin-button";
+import { SpinButton } from "@/components/SpinButton";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
 import { View } from "react-native";
 
 type ButtonProps = {
   text: string;
-  activeText?: string;
   onPress?: () => void;
   classNames?: string;
   disabled?: boolean;
@@ -14,7 +13,6 @@ type ButtonProps = {
 
 export function Button({
   text,
-  activeText,
   classNames,
   onPress,
   disabled,
@@ -27,7 +25,6 @@ export function Button({
   const button = (
     <SpinButton
       idleText={text}
-      activeText={activeText ?? text}
       controlled
       isActive={isPending}
       disabled={disabled || isPending}

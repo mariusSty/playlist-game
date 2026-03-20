@@ -92,7 +92,6 @@ export default function Vote() {
                 {userGuessedId === player.id && (
                   <Button
                     text={i18n.t("votePage.cancelButton")}
-                    activeText={i18n.t("votePage.cancellingButton")}
                     onPress={handleCancelVote}
                     isPending={cancelVoteMutation.isPending}
                   />

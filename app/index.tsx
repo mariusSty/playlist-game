@@ -105,7 +105,6 @@ export default function Main() {
               >
                 <Button
                   text={i18n.t("homePage.createButton")}
-                  activeText={i18n.t("homePage.creatingButton")}
                   onPress={handleCreateRoom}
                   isPending={createRoom.isPending}
                   disabled={!user.name}

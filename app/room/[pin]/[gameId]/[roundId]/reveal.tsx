@@ -96,7 +96,6 @@ export default function Reveal() {
       {round.themeMaster.id === user.id && (
         <Button
           text={i18n.t("revealPage.nextRoundButton")}
-          activeText={i18n.t("revealPage.nextRoundLoading")}
           onPress={handleNextRound}
           isPending={nextRound.isPending}
         />
