@@ -4,9 +4,11 @@ import { useColorScheme } from "@/components/useColorScheme";
 import { useStartGame } from "@/hooks/useGameMutations";
 import { useRoom } from "@/hooks/useRoom";
 import { useLeaveRoom } from "@/hooks/useRoomMutations";
+import { userSessionQueryKey } from "@/hooks/useUserSession";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
+import { useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { DoorOpen, Star } from "lucide-react-native";
 import { Pressable, ScrollView, Text, View } from "react-native";
@@ -14,7 +16,7 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 export default function RoomScreen() {
   const { pin } = useLocalSearchParams<{ pin: string }>();
   const user = useUserStore((state) => state.user);
-  const clearCurrentRoom = useUserStore((state) => state.clearCurrentRoom);
+  const queryClient = useQueryClient();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
   const { room } = useRoom(pin);
@@ -22,18 +24,37 @@ export default function RoomScreen() {
   const startGame = useStartGame();
 
   async function handleStartGame() {
-    await startGame.mutate({ pin });
+    await startGame.mutate(
+      { pin },
+      {
+        onSuccess: () => {
+          Sentry.logger.info("Game started", {
+            pin,
+            userId: user.id,
+            userName: user.name,
+          });
+        },
+      },
+    );
   }
 
   async function handleLeaveRoom() {
-    await leaveRoom.mutate({ pin, userId: user.id });
-    Sentry.logger.info("Room left", {
-      pin,
-      userId: user.id,
-      userName: user.name,
-    });
-    clearCurrentRoom();
-    router.navigate("/");
+    await leaveRoom.mutate(
+      { pin, userId: user.id },
+      {
+        onSuccess: () => {
+          Sentry.logger.info("Room left", {
+            pin,
+            userId: user.id,
+            userName: user.name,
+          });
+          queryClient.invalidateQueries({
+            queryKey: userSessionQueryKey(user.id),
+          });
+          router.navigate("/");
+        },
+      },
+    );
   }
 
   const users = room?.users ?? [];

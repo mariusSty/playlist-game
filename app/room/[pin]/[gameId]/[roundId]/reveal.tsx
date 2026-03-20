@@ -22,13 +22,19 @@ export default function Reveal() {
   const nextRound = useNextRound();
 
   async function handleNextRound() {
-    await nextRound.mutate({ pin, gameId });
-    Sentry.logger.info("Next round requested", {
-      pin,
-      userId: user.id,
-      userName: user.name,
-      roundId,
-    });
+    await nextRound.mutate(
+      { pin, gameId, userId: user.id },
+      {
+        onSuccess: () => {
+          Sentry.logger.info("Next round loaded", {
+            pin,
+            userId: user.id,
+            userName: user.name,
+            roundId,
+          });
+        },
+      },
+    );
   }
 
   if (isRoundLoading || !round) {

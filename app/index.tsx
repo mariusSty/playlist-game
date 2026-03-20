@@ -4,12 +4,12 @@ import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useCreateRoom, useJoinRoom } from "@/hooks/useRoomMutations";
-import { useRoomPhase } from "@/hooks/useRoomPhase";
+import { userSessionQueryKey } from "@/hooks/useUserSession";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
-import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import React, { useState } from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -17,23 +17,16 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 type Screen = "home" | "joining";
 
 export default function Main() {
-  const { user, setName, currentRoom, setCurrentRoom } = useUserStore();
+  const { user, setName } = useUserStore();
   const createRoom = useCreateRoom();
   const joinRoom = useJoinRoom();
   const colorScheme = useColorScheme();
+  const queryClient = useQueryClient();
   const [screen, setScreen] = useState<Screen>("home");
   const [otpError, setOtpError] = useState(false);
-  const { roomPhase } = useRoomPhase(currentRoom?.pin);
 
   const isDark = colorScheme === "dark";
   const hasName = user.name.trim().length > 0;
-
-  useEffect(() => {
-    if (!currentRoom) return;
-    if (roomPhase) {
-      router.replace(`/room/${currentRoom.pin}`);
-    }
-  }, [roomPhase, currentRoom]);
 
   async function handleCreateRoom() {
     await createRoom.mutate(
@@ -48,7 +41,9 @@ export default function Main() {
             userId: user.id,
             userName: user.name,
           });
-          setCurrentRoom({ pin: room.pin });
+          queryClient.invalidateQueries({
+            queryKey: userSessionQueryKey(user.id),
+          });
         },
       },
     );
@@ -61,13 +56,15 @@ export default function Main() {
         onError: () => {
           setOtpError(true);
         },
-        onSuccess: ({ pin }) => {
-          Sentry.logger.info("Room join successful", {
+        onSuccess: () => {
+          Sentry.logger.info("Room joined", {
             pin,
             userId: user.id,
             userName: user.name,
           });
-          setCurrentRoom({ pin });
+          queryClient.invalidateQueries({
+            queryKey: userSessionQueryKey(user.id),
+          });
         },
       },
     );

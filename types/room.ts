@@ -51,13 +51,17 @@ export type Track = {
   previewUrl: string;
 };
 
-export type RoomPhase =
-  | { phase: "lobby" }
-  | { phase: "playing"; gameId: string };
-
-export type GamePhase =
-  | { phase: "theme"; roundId: string }
-  | { phase: "song"; roundId: string }
-  | { phase: "vote"; roundId: string; pickId: string }
-  | { phase: "reveal"; roundId: string }
-  | { phase: "result" };
+export type UserSession =
+  | { phase: "home" }
+  | { phase: "lobby"; pin: string }
+  | { phase: "theme"; pin: string; gameId: number; roundId: number }
+  | { phase: "song"; pin: string; gameId: number; roundId: number }
+  | {
+      phase: "vote";
+      pin: string;
+      gameId: number;
+      roundId: number;
+      pickId: number;
+    }
+  | { phase: "result"; pin: string; gameId: number }
+  | { phase: "reveal"; pin: string; gameId: number; roundId: number };

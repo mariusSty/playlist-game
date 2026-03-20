@@ -1,26 +1,29 @@
 import { useColorScheme } from "@/components/useColorScheme";
+import { useSessionSocket } from "@/hooks/useSessionSocket";
+import { useUserSession } from "@/hooks/useUserSession";
 import { useUserStore } from "@/stores/user-store";
+import { sessionToRoute } from "@/utils/navigation";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
+import * as Sentry from "@sentry/react-native";
 import {
   focusManager,
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { Href, router, Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import type { AppStateStatus } from "react-native";
 import { AppState, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import "../global.css";
-import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
-  dsn: 'https://4333ae524482c6f6864321c3471f7a32@o4510985865396224.ingest.de.sentry.io/4511059969638480',
+  dsn: "https://4333ae524482c6f6864321c3471f7a32@o4510985865396224.ingest.de.sentry.io/4511059969638480",
 
   // Adds more context data to events (IP address, cookies, user, etc.)
   // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
@@ -66,10 +69,6 @@ SplashScreen.preventAutoHideAsync();
 
 export default Sentry.wrap(function RootLayout() {
   useEffect(() => {
-    SplashScreen.hideAsync();
-  }, []);
-
-  useEffect(() => {
     const subscription = AppState.addEventListener("change", onAppStateChange);
     return () => subscription.remove();
   }, []);
@@ -85,16 +84,35 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const init = useUserStore((state) => state.init);
   const isReady = useUserStore((state) => state.isReady);
+  const userId = useUserStore((state) => state.user.id);
+  const pathname = usePathname();
+  const { userSession, isUserSessionLoading } = useUserSession(
+    isReady ? userId : undefined,
+  );
+  const pin =
+    userSession && userSession.phase !== "home" ? userSession.pin : undefined;
   const backgroundColor =
     colorScheme === "dark"
       ? DarkTheme.colors.background
       : DefaultTheme.colors.background;
 
+  useSessionSocket(userId, pin);
+
   useEffect(() => {
     init();
   }, []);
 
-  if (!isReady) {
+  useEffect(() => {
+    if (!isReady || isUserSessionLoading || !userSession) return;
+
+    const route = sessionToRoute(userSession);
+    if (route !== pathname) {
+      router.replace(route as Href);
+    }
+    SplashScreen.hideAsync();
+  }, [isReady, isUserSessionLoading, userSession]);
+
+  if (!isReady || isUserSessionLoading) {
     return null;
   }
 

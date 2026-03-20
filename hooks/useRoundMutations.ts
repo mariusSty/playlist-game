@@ -1,11 +1,12 @@
 import { Round } from "@/types/room";
 import { apiUrl } from "@/utils/server";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { gamePhaseQueryKey } from "./useGamePhase";
+import { userSessionQueryKey } from "./useUserSession";
 
 type NextRoundParams = {
   pin: string;
   gameId: string;
+  userId: string;
 };
 
 type NextRoundResponse = {
@@ -26,7 +27,7 @@ export function useNextRound() {
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries({
-        queryKey: gamePhaseQueryKey(params.gameId),
+        queryKey: userSessionQueryKey(params.userId),
       });
     },
   });

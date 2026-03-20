@@ -27,35 +27,47 @@ export default function Vote() {
   const isMutating = voteMutation.isPending || cancelVoteMutation.isPending;
 
   function handleVote(guessId: string) {
-    Sentry.logger.info("Vote cast", {
-      pin: pin.toString(),
-      userId: user.id,
-      userName: user.name,
-      roundId: roundId.toString(),
-      pickId: pickId.toString(),
-      guessId,
-    });
-    voteMutation.mutate({
-      pin: pin.toString(),
-      pickId: pickId.toString(),
-      guessId,
-      userId: user.id,
-    });
+    voteMutation.mutate(
+      {
+        pin: pin.toString(),
+        pickId: pickId.toString(),
+        guessId,
+        userId: user.id,
+      },
+      {
+        onSuccess: () => {
+          Sentry.logger.info("Vote successful", {
+            pin: pin.toString(),
+            userId: user.id,
+            userName: user.name,
+            roundId: roundId.toString(),
+            pickId: pickId.toString(),
+            guessId,
+          });
+        },
+      },
+    );
   }
 
   function handleCancelVote() {
-    Sentry.logger.info("Vote cancelled", {
-      pin: pin.toString(),
-      userId: user.id,
-      userName: user.name,
-      roundId: roundId.toString(),
-      pickId: pickId.toString(),
-    });
-    cancelVoteMutation.mutate({
-      pin: pin.toString(),
-      pickId: pickId.toString(),
-      userId: user.id,
-    });
+    cancelVoteMutation.mutate(
+      {
+        pin: pin.toString(),
+        pickId: pickId.toString(),
+        userId: user.id,
+      },
+      {
+        onSuccess: () => {
+          Sentry.logger.info("Vote cancelled", {
+            pin: pin.toString(),
+            userId: user.id,
+            userName: user.name,
+            roundId: roundId.toString(),
+            pickId: pickId.toString(),
+          });
+        },
+      },
+    );
   }
 
   if (isPickLoading || !pick) {

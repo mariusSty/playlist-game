@@ -24,20 +24,24 @@ export default function RoundTheme() {
   const themes = useMemo(() => getRandomThemes(5), []);
 
   async function handleChoose(theme: string) {
-    Sentry.logger.info("Theme chosen", {
-      pin,
-      userId: user.id,
-      userName: user.name,
-      gameId,
-      roundId,
-      theme,
-    });
-    await pickTheme.mutate({
-      roundId,
-      theme,
-      userId: user.id,
-      pin,
-    });
+    await pickTheme.mutate(
+      {
+        roundId,
+        theme,
+        userId: user.id,
+        pin,
+      },
+      {
+        onSuccess: () => {
+          Sentry.logger.info("Theme picked", {
+            pin,
+            userId: user.id,
+            userName: user.name,
+            theme,
+          });
+        },
+      },
+    );
   }
 
   if (isRoundLoading || !round || !round.themeMaster) {

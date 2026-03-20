@@ -1,20 +1,20 @@
-import { GamePhase } from "@/types/room";
+import { UserSession } from "@/types/room";
 
-export function gamePhaseToRoute(
-  pin: string,
-  gameId: string,
-  phase: GamePhase,
-): string {
-  switch (phase.phase) {
+export function sessionToRoute(session: UserSession): string {
+  switch (session.phase) {
+    case "home":
+      return "/";
+    case "lobby":
+      return `/room/${session.pin}`;
     case "theme":
-      return `/room/${pin}/${gameId}/${phase.roundId}/theme`;
+      return `/room/${session.pin}/${session.gameId}/${session.roundId}/theme`;
     case "song":
-      return `/room/${pin}/${gameId}/${phase.roundId}/song`;
+      return `/room/${session.pin}/${session.gameId}/${session.roundId}/song`;
     case "vote":
-      return `/room/${pin}/${gameId}/${phase.roundId}/${phase.pickId}`;
-    case "reveal":
-      return `/room/${pin}/${gameId}/${phase.roundId}/reveal`;
+      return `/room/${session.pin}/${session.gameId}/${session.roundId}/${session.pickId}`;
     case "result":
-      return `/room/${pin}/${gameId}/result`;
+      return `/room/${session.pin}/${session.gameId}/result`;
+    case "reveal":
+      return `/room/${session.pin}/${session.gameId}/${session.roundId}/reveal`;
   }
 }

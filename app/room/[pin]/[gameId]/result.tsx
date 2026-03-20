@@ -3,8 +3,11 @@ import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { useResult } from "@/hooks/useGame";
 import { useFinishGame } from "@/hooks/useGameMutations";
+import { userSessionQueryKey } from "@/hooks/useUserSession";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
+import * as Sentry from "@sentry/react-native";
+import { useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import { Text, View } from "react-native";
 
@@ -15,12 +18,19 @@ export default function Result() {
   }>();
   const { result, isResultLoading } = useResult(gameId);
   const finishGame = useFinishGame();
-  const clearCurrentRoom = useUserStore((state) => state.clearCurrentRoom);
+  const userId = useUserStore((state) => state.user.id);
+  const queryClient = useQueryClient();
 
   function handleFinishGame() {
     finishGame.mutate(gameId, {
       onSuccess: () => {
-        clearCurrentRoom();
+        Sentry.logger.info("Game finished", {
+          gameId,
+          userId,
+        });
+        queryClient.invalidateQueries({
+          queryKey: userSessionQueryKey(userId),
+        });
       },
     });
   }
