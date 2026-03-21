@@ -62,7 +62,7 @@ export default function RoomScreen() {
   const anyPending = startGame.isPending || leaveRoom.isPending;
 
   return (
-    <View className="items-center justify-between flex-1 m-10">
+    <View className="items-center flex-1 gap-8 m-10">
       <Pressable
         className="self-start"
         onPress={handleLeaveRoom}
@@ -71,18 +71,19 @@ export default function RoomScreen() {
         <DoorOpen size={24} color={isDarkMode ? "white" : "black"} />
       </Pressable>
       <Text className="text-5xl font-bold dark:text-white">PIN : {pin}</Text>
-      <ScrollView className="max-h-[50%]">
-        <View className="gap-7">
-          {users.map((user, index) => (
-            <View key={index} className="flex-row items-center w-full gap-5">
-              <Avatar name={user.name} />
-              <Text className="text-3xl dark:text-white">{user.name}</Text>
-              {user.id === hostId && (
-                <Star size={24} color="gold" fill="gold" />
-              )}
-            </View>
-          ))}
-        </View>
+      <ScrollView
+        className="flex-1 w-full"
+        showsVerticalScrollIndicator={false}
+      >
+        {users.map((user, index) => (
+          <View key={index} className="flex-row items-center w-full gap-5 my-4">
+            <Avatar name={user.name} />
+            <Text className="w-full text-3xl dark:text-white text-ellipsis">
+              {user.name}
+            </Text>
+            {user.id === hostId && <Star size={24} color="gold" fill="gold" />}
+          </View>
+        ))}
       </ScrollView>
       {user.id === hostId && (
         <View className="w-full">

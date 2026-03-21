@@ -10,13 +10,13 @@ import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
 import { useLocalSearchParams } from "expo-router";
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 export default function Vote() {
   const { pin, roundId, pickId } = useLocalSearchParams();
   const user = useUserStore((state) => state.user);
   const { room } = useRoom(pin.toString());
-  const { pick, isPickLoading } = usePick(pickId.toString());
+  const { pick } = usePick(pickId.toString());
   const voteMutation = useVote();
   const cancelVoteMutation = useCancelVote();
 
@@ -73,8 +73,8 @@ export default function Vote() {
   return (
     <Container title={i18n.t("votePage.title")}>
       {pick && <TrackCard track={pick.track} />}
-      <View className="justify-center flex-1">
-        {room?.users.map((player) => (
+      <ScrollView className="flex-1 p-4" showsVerticalScrollIndicator={false}>
+        {room?.users?.map((player) => (
           <View
             key={player.id}
             className="flex-row items-center w-full gap-3 py-2"
@@ -108,7 +108,7 @@ export default function Vote() {
             )}
           </View>
         ))}
-      </View>
+      </ScrollView>
       <PlayersStatus
         users={room?.users ?? []}
         validatedUserIds={usersValidated}

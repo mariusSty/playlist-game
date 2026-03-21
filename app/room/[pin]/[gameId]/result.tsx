@@ -13,11 +13,11 @@ import { useLocalSearchParams } from "expo-router";
 import { Text, View } from "react-native";
 
 export default function Result() {
-  const { gameId } = useLocalSearchParams<{
+  const { pin, gameId } = useLocalSearchParams<{
     pin: string;
     gameId: string;
   }>();
-  const { room } = useRoom(gameId);
+  const { room } = useRoom(pin);
   const { result = [] } = useResult(gameId);
   const finishGame = useFinishGame();
   const userId = useUserStore((state) => state.user.id);

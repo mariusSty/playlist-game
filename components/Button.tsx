@@ -44,10 +44,10 @@ export function Button({
         containerBackground: scheme === "dark" ? "#aaaaaa" : "#555555",
       }}
       buttonStyle={{
-        paddingHorizontal: 20,
-        paddingVertical: 20,
+        paddingHorizontal: 16,
+        paddingVertical: 16,
         borderRadius: 8,
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: "700",
       }}
     />

@@ -50,7 +50,7 @@
   "votePage": {
     "title": "Who chose this song?",
     "voteButton": "Vote",
-    "cancelButton": "Cancel vote",
+    "cancelButton": "Cancel",
     "notVoted": "Not voted yet:",
     "alreadyVoted": "Already voted:"
   },
