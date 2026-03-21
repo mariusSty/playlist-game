@@ -3,6 +3,7 @@ import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { useResult } from "@/hooks/useGame";
 import { useFinishGame } from "@/hooks/useGameMutations";
+import { useRoom } from "@/hooks/useRoom";
 import { userSessionQueryKey } from "@/hooks/useUserSession";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
@@ -16,6 +17,7 @@ export default function Result() {
     pin: string;
     gameId: string;
   }>();
+  const { room } = useRoom(gameId);
   const { result = [] } = useResult(gameId);
   const finishGame = useFinishGame();
   const userId = useUserStore((state) => state.user.id);
@@ -58,10 +60,12 @@ export default function Result() {
             </View>
           ))}
       </View>
-      <Button
-        text={i18n.t("resultPage.exitButton")}
-        onPress={handleFinishGame}
-      />
+      {room?.host.id === userId && (
+        <Button
+          text={i18n.t("resultPage.exitButton")}
+          onPress={handleFinishGame}
+        />
+      )}
     </Container>
   );
 }

@@ -13,9 +13,8 @@ import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function RoundTheme() {
   const user = useUserStore((state) => state.user);
-  const { pin, gameId, roundId } = useLocalSearchParams<{
+  const { pin, roundId } = useLocalSearchParams<{
     pin: string;
-    gameId: string;
     roundId: string;
   }>();
 
@@ -44,7 +43,7 @@ export default function RoundTheme() {
     );
   }
 
-  if (isRoundLoading || !round) {
+  if (isRoundLoading || !round || !round.themeMaster) {
     return (
       <Container title={i18n.t("themePage.title")}>
         <View>

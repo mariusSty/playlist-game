@@ -61,5 +61,11 @@
   "resultPage": {
     "title": "Results",
     "exitButton": "Exit game"
+  },
+  "leaveGame": {
+    "confirmTitle": "Leave Game",
+    "confirmMessage": "Are you sure you want to leave the game?",
+    "confirmButton": "Leave",
+    "cancelButton": "Cancel"
   }
 }

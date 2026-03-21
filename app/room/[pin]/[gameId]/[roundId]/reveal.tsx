@@ -2,6 +2,7 @@ import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { TrackCard } from "@/components/TrackCard";
+import { useRoom } from "@/hooks/useRoom";
 import { useRound } from "@/hooks/useRound";
 import { useNextRound } from "@/hooks/useRoundMutations";
 import { useUserStore } from "@/stores/user-store";
@@ -17,6 +18,7 @@ export default function Reveal() {
     pin: string;
     gameId: string;
   }>();
+  const { room } = useRoom(pin);
   const { round, isRoundLoading } = useRound(roundId);
   const user = useUserStore((state) => state.user);
   const nextRound = useNextRound();
@@ -99,7 +101,7 @@ export default function Reveal() {
           </View>
         ))}
       </ScrollView>
-      {round.themeMaster.id === user.id && (
+      {room?.host.id === user.id && (
         <Button
           text={i18n.t("revealPage.nextRoundButton")}
           onPress={handleNextRound}
