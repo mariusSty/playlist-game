@@ -8,7 +8,6 @@ import { useRound } from "@/hooks/useRound";
 import { useUserStore } from "@/stores/user-store";
 import { Track } from "@/types/room";
 import i18n from "@/utils/translation";
-import * as Sentry from "@sentry/react-native";
 import { useLocalSearchParams } from "expo-router";
 import { Button, SearchField } from "heroui-native";
 import { useState } from "react";
@@ -35,12 +34,13 @@ export default function Song() {
     userPick ? null : search,
   );
 
-  async function handleSelectTrack(track: Track) {
-    await validatePick.mutate(
+  function handleSelectTrack(track: Track) {
+    validatePick.mutate(
       {
         pin,
         roundId,
         userId: user.id,
+        userName: user.name,
         track: {
           id: track.id,
           title: track.title,
@@ -50,43 +50,14 @@ export default function Song() {
           previewUrl: track.previewUrl,
         },
       },
-      {
-        onError: () => {
-          setSearch("");
-        },
-        onSuccess: () => {
-          Sentry.logger.info("Song picked", {
-            pin,
-            userId: user.id,
-            userName: user.name,
-            gameId,
-            roundId,
-            trackId: track.id,
-          });
-        },
-      },
+      { onError: () => setSearch("") },
     );
   }
 
-  async function handleCancelSong() {
-    await cancelPick.mutate(
-      {
-        pin,
-        roundId,
-        userId: user.id,
-      },
-      {
-        onSuccess: () => {
-          Sentry.logger.info("Song pick cancelled", {
-            pin,
-            userId: user.id,
-            userName: user.name,
-            gameId,
-            roundId,
-          });
-          setSearch("");
-        },
-      },
+  function handleCancelSong() {
+    cancelPick.mutate(
+      { pin, roundId, userId: user.id, userName: user.name },
+      { onSuccess: () => setSearch("") },
     );
   }
 

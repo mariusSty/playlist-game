@@ -6,7 +6,6 @@ import { useRound } from "@/hooks/useRound";
 import { useNextRound } from "@/hooks/useRoundMutations";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import * as Sentry from "@sentry/react-native";
 import { useLocalSearchParams } from "expo-router";
 import { Button } from "heroui-native";
 import { CircleCheck, CircleX } from "lucide-react-native";
@@ -23,20 +22,14 @@ export default function Reveal() {
   const user = useUserStore((state) => state.user);
   const nextRound = useNextRound();
 
-  async function handleNextRound() {
-    await nextRound.mutate(
-      { pin, gameId, userId: user.id },
-      {
-        onSuccess: () => {
-          Sentry.logger.info("Next round loaded", {
-            pin,
-            userId: user.id,
-            userName: user.name,
-            roundId,
-          });
-        },
-      },
-    );
+  function handleNextRound() {
+    nextRound.mutate({
+      pin,
+      gameId,
+      userId: user.id,
+      userName: user.name,
+      roundId,
+    });
   }
 
   if (isRoundLoading || !round) {

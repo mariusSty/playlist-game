@@ -7,16 +7,19 @@ import { useCancelVote, useVote } from "@/hooks/usePickMutations";
 import { useRoom } from "@/hooks/useRoom";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import * as Sentry from "@sentry/react-native";
 import { useLocalSearchParams } from "expo-router";
 import { Button } from "heroui-native";
 import { ScrollView, Text, View } from "react-native";
 
 export default function Vote() {
-  const { pin, roundId, pickId } = useLocalSearchParams();
+  const { pin, roundId, pickId } = useLocalSearchParams<{
+    pin: string;
+    roundId: string;
+    pickId: string;
+  }>();
   const user = useUserStore((state) => state.user);
-  const { room } = useRoom(pin.toString());
-  const { pick } = usePick(pickId.toString());
+  const { room } = useRoom(pin);
+  const { pick } = usePick(pickId);
   const voteMutation = useVote();
   const cancelVoteMutation = useCancelVote();
 
@@ -27,47 +30,24 @@ export default function Vote() {
   const isMutating = voteMutation.isPending || cancelVoteMutation.isPending;
 
   function handleVote(guessId: string) {
-    voteMutation.mutate(
-      {
-        pin: pin.toString(),
-        pickId: pickId.toString(),
-        guessId,
-        userId: user.id,
-      },
-      {
-        onSuccess: () => {
-          Sentry.logger.info("Vote successful", {
-            pin: pin.toString(),
-            userId: user.id,
-            userName: user.name,
-            roundId: roundId.toString(),
-            pickId: pickId.toString(),
-            guessId,
-          });
-        },
-      },
-    );
+    voteMutation.mutate({
+      pin,
+      roundId,
+      pickId,
+      guessId,
+      userId: user.id,
+      userName: user.name,
+    });
   }
 
   function handleCancelVote() {
-    cancelVoteMutation.mutate(
-      {
-        pin: pin.toString(),
-        pickId: pickId.toString(),
-        userId: user.id,
-      },
-      {
-        onSuccess: () => {
-          Sentry.logger.info("Vote cancelled", {
-            pin: pin.toString(),
-            userId: user.id,
-            userName: user.name,
-            roundId: roundId.toString(),
-            pickId: pickId.toString(),
-          });
-        },
-      },
-    );
+    cancelVoteMutation.mutate({
+      pin,
+      roundId,
+      pickId,
+      userId: user.id,
+      userName: user.name,
+    });
   }
 
   return (

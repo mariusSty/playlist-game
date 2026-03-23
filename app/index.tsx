@@ -1,11 +1,7 @@
 import { Avatar } from "@/components/Avatar";
 import { useCreateRoom, useJoinRoom } from "@/hooks/useRoomMutations";
-import { userSessionQueryKey } from "@/hooks/useUserSession";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import * as Sentry from "@sentry/react-native";
-import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
 import {
   Button,
   CloseButton,
@@ -26,55 +22,20 @@ export default function Main() {
   const { user, setName } = useUserStore();
   const createRoom = useCreateRoom();
   const joinRoom = useJoinRoom();
-  const queryClient = useQueryClient();
   const [screen, setScreen] = useState<Screen>("home");
   const [otpError, setOtpError] = useState(false);
-  const router = useRouter();
 
   const hasName = user.name.trim().length > 0;
   const foregroundColor = useThemeColor("foreground");
 
-  async function handleCreateRoom() {
-    await createRoom.mutate(
-      {
-        name: user.name,
-        id: user.id,
-      },
-      {
-        onSuccess: async (room) => {
-          Sentry.logger.info("Room created", {
-            pin: room.pin,
-            userId: user.id,
-            userName: user.name,
-          });
-          await queryClient.invalidateQueries({
-            queryKey: userSessionQueryKey(user.id),
-          });
-          router.navigate(`/room/${room.pin}`);
-        },
-      },
-    );
+  function handleCreateRoom() {
+    createRoom.mutate({ name: user.name, id: user.id });
   }
 
-  async function handleJoinRoom(pin: string) {
-    await joinRoom.mutate(
+  function handleJoinRoom(pin: string) {
+    joinRoom.mutate(
       { pin, id: user.id, name: user.name },
-      {
-        onError: () => {
-          setOtpError(true);
-        },
-        onSuccess: async () => {
-          Sentry.logger.info("Room joined", {
-            pin,
-            userId: user.id,
-            userName: user.name,
-          });
-          await queryClient.invalidateQueries({
-            queryKey: userSessionQueryKey(user.id),
-          });
-          router.navigate(`/room/${pin}`);
-        },
-      },
+      { onError: () => setOtpError(true) },
     );
   }
 

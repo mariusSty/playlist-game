@@ -3,12 +3,9 @@ import Container from "@/components/Container";
 import { useStartGame } from "@/hooks/useGameMutations";
 import { useRoom } from "@/hooks/useRoom";
 import { useLeaveRoom } from "@/hooks/useRoomMutations";
-import { userSessionQueryKey } from "@/hooks/useUserSession";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import * as Sentry from "@sentry/react-native";
-import { useQueryClient } from "@tanstack/react-query";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { Button } from "heroui-native";
 import { Star } from "lucide-react-native";
 import { ScrollView, Text, View } from "react-native";
@@ -19,26 +16,9 @@ export default function RoomScreen() {
   const { room } = useRoom(pin);
   const leaveRoom = useLeaveRoom();
   const startGame = useStartGame();
-  const queryClient = useQueryClient();
-  const router = useRouter();
 
-  async function handleStartGame() {
-    await startGame.mutate(
-      { pin },
-      {
-        onSuccess: async ({ gameId, roundId }) => {
-          Sentry.logger.info("Game started", {
-            pin,
-            userId: user.id,
-            userName: user.name,
-          });
-          await queryClient.invalidateQueries({
-            queryKey: userSessionQueryKey(user.id),
-          });
-          router.navigate(`/room/${pin}/${gameId}/${roundId}/theme`);
-        },
-      },
-    );
+  function handleStartGame() {
+    startGame.mutate({ pin, userId: user.id, userName: user.name });
   }
 
   const users = room?.users ?? [];

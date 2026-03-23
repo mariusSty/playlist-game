@@ -1,5 +1,6 @@
 import { Track } from "@/types/room";
 import { apiUrl } from "@/utils/server";
+import * as Sentry from "@sentry/react-native";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { pickQueryKey } from "./usePick";
 import { roundQueryKey } from "./useRound";
@@ -8,6 +9,7 @@ type ValidatePickParams = {
   pin: string;
   roundId: string;
   userId: string;
+  userName: string;
   track: Track;
 };
 
@@ -15,6 +17,24 @@ type CancelPickParams = {
   pin: string;
   roundId: string;
   userId: string;
+  userName: string;
+};
+
+type VoteParams = {
+  pin: string;
+  roundId: string;
+  pickId: string;
+  guessId: string;
+  userId: string;
+  userName: string;
+};
+
+type CancelVoteParams = {
+  pin: string;
+  roundId: string;
+  pickId: string;
+  userId: string;
+  userName: string;
 };
 
 export function useValidatePick() {
@@ -35,6 +55,12 @@ export function useValidatePick() {
       }
     },
     onSuccess: (_, params) => {
+      Sentry.logger.info("Song pick validated", {
+        pin: params.pin,
+        userId: params.userId,
+        userName: params.userName,
+        roundId: params.roundId,
+      });
       queryClient.invalidateQueries({
         queryKey: roundQueryKey(params.roundId),
       });
@@ -55,25 +81,18 @@ export function useCancelPick() {
       }
     },
     onSuccess: (_, params) => {
+      Sentry.logger.info("Song pick cancelled", {
+        pin: params.pin,
+        userId: params.userId,
+        userName: params.userName,
+        roundId: params.roundId,
+      });
       queryClient.invalidateQueries({
         queryKey: roundQueryKey(params.roundId),
       });
     },
   });
 }
-
-type VoteParams = {
-  pin: string;
-  pickId: string;
-  guessId: string;
-  userId: string;
-};
-
-type CancelVoteParams = {
-  pin: string;
-  pickId: string;
-  userId: string;
-};
 
 export function useVote() {
   const queryClient = useQueryClient();
@@ -93,6 +112,14 @@ export function useVote() {
       }
     },
     onSuccess: (_, params) => {
+      Sentry.logger.info("Vote successful", {
+        pin: params.pin,
+        userId: params.userId,
+        userName: params.userName,
+        roundId: params.roundId,
+        pickId: params.pickId,
+        guessId: params.guessId,
+      });
       queryClient.invalidateQueries({ queryKey: pickQueryKey(params.pickId) });
     },
   });
@@ -111,6 +138,13 @@ export function useCancelVote() {
       }
     },
     onSuccess: (_, params) => {
+      Sentry.logger.info("Vote cancelled", {
+        pin: params.pin,
+        userId: params.userId,
+        userName: params.userName,
+        roundId: params.roundId,
+        pickId: params.pickId,
+      });
       queryClient.invalidateQueries({ queryKey: pickQueryKey(params.pickId) });
     },
   });

@@ -3,12 +3,9 @@ import Container from "@/components/Container";
 import { useResult } from "@/hooks/useGame";
 import { useFinishGame } from "@/hooks/useGameMutations";
 import { useRoom } from "@/hooks/useRoom";
-import { userSessionQueryKey } from "@/hooks/useUserSession";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import * as Sentry from "@sentry/react-native";
-import { useQueryClient } from "@tanstack/react-query";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { Button } from "heroui-native";
 import { Text, View } from "react-native";
 
@@ -21,21 +18,9 @@ export default function Result() {
   const { result = [] } = useResult(gameId);
   const finishGame = useFinishGame();
   const userId = useUserStore((state) => state.user.id);
-  const queryClient = useQueryClient();
 
   function handleFinishGame() {
-    finishGame.mutate(gameId, {
-      onSuccess: async () => {
-        Sentry.logger.info("Game finished", {
-          gameId,
-          userId,
-        });
-        await queryClient.invalidateQueries({
-          queryKey: userSessionQueryKey(userId),
-        });
-        router.navigate(`/room/${pin}`);
-      },
-    });
+    finishGame.mutate({ gameId, userId });
   }
 
   return (
