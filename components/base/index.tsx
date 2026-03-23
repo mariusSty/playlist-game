@@ -60,11 +60,11 @@ const OtpItem: FC<IOtpItem> & FunctionComponent<IOtpItem> = ({
     inputHeight,
     inputWidth,
     animationVariant = "fadeSlideDown",
-    focusedBackgroundColor = "#0f0f23",
-    unfocusedBackgroundColor = "#1a1a2e",
-    focusedBorderColor = "rgba(248, 250, 252, 1)",
-    unfocusedBorderColor = "rgba(248, 250, 252, 0.3)",
-    errorBackgroundColor = "#1c0a0a",
+    focusedBackgroundColor = "#ffffff",
+    unfocusedBackgroundColor = "#f9fafb",
+    focusedBorderColor = "#000000",
+    unfocusedBorderColor = "rgba(0, 0, 0, 0.3)",
+    errorBackgroundColor = "#fef2f2",
     errorBorderColor = "#ef4444",
   }: IOtpContext = useContext<IOtpContext>(OtpContext);
 

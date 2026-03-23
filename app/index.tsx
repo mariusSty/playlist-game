@@ -2,7 +2,6 @@ import { Avatar } from "@/components/Avatar";
 import { OtpInput } from "@/components/base";
 import { Button } from "@/components/Button";
 import { ThemedTextInput } from "@/components/TextInput";
-import { useColorScheme } from "@/components/useColorScheme";
 import { useCreateRoom, useJoinRoom } from "@/hooks/useRoomMutations";
 import { userSessionQueryKey } from "@/hooks/useUserSession";
 import { useUserStore } from "@/stores/user-store";
@@ -10,7 +9,7 @@ import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { Keyboard, Pressable, Text, View } from "react-native";
+import { Keyboard, Pressable, Text, useColorScheme, View } from "react-native";
 import "react-native-get-random-values";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
@@ -83,7 +82,7 @@ export default function Main() {
             className="gap-20"
           >
             <View className="gap-5">
-              <Text className="text-5xl font-bold text-black dark:text-white">
+              <Text className="text-5xl font-bold text-foreground">
                 {i18n.t("homePage.title")}
               </Text>
               <View className="flex-row items-center gap-5">
@@ -125,7 +124,7 @@ export default function Main() {
             exiting={FadeOut.duration(200)}
             className="items-center gap-10"
           >
-            <Text className="text-2xl font-bold text-black dark:text-white">
+            <Text className="text-2xl font-bold text-foreground">
               {i18n.t("homePage.pinInputTitle")}
             </Text>
             <OtpInput
@@ -138,9 +137,11 @@ export default function Main() {
               focusedBackgroundColor={isDark ? "#000000" : "#ffffff"}
               unfocusedBackgroundColor={isDark ? "#000000" : "#ffffff"}
               focusedBorderColor={isDark ? "#ffffff" : "#000000"}
-              unfocusedBorderColor={isDark ? "#ffffff" : "#000000"}
+              unfocusedBorderColor={
+                isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.3)"
+              }
               textStyle={{
-                color: isDark ? "#f8fafc" : "#000000",
+                color: isDark ? "#ffffff" : "#000000",
                 fontSize: 22,
               }}
               onInputChange={() => otpError && setOtpError(false)}

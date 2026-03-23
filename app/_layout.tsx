@@ -1,4 +1,3 @@
-import { useColorScheme } from "@/components/useColorScheme";
 import { useSessionSocket } from "@/hooks/useSessionSocket";
 import { useUserSession } from "@/hooks/useUserSession";
 import { useUserStore } from "@/stores/user-store";
@@ -16,11 +15,36 @@ import {
 } from "@tanstack/react-query";
 import { Href, router, Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { vars } from "nativewind";
 import { useEffect } from "react";
 import type { AppStateStatus } from "react-native";
-import { AppState, Platform } from "react-native";
+import { AppState, Platform, useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import "../global.css";
+
+const lightTheme = vars({
+  "--background": "#ffffff",
+  "--foreground": "#000000",
+  "--foreground-secondary": "#6b7280",
+  "--border": "#000000",
+  "--muted": "#9ca3af",
+  "--primary": "#000000",
+  "--primary-foreground": "#ffffff",
+  "--danger": "#ef4444",
+  "--card": "#f9fafb",
+});
+
+const darkTheme = vars({
+  "--background": "#000000",
+  "--foreground": "#ffffff",
+  "--foreground-secondary": "#9ca3af",
+  "--border": "#ffffff",
+  "--muted": "#6b7280",
+  "--primary": "#ffffff",
+  "--primary-foreground": "#000000",
+  "--danger": "#ef4444",
+  "--card": "#111827",
+});
 
 Sentry.init({
   dsn: "https://4333ae524482c6f6864321c3471f7a32@o4510985865396224.ingest.de.sentry.io/4511059969638480",
@@ -91,11 +115,6 @@ function RootLayoutNav() {
   );
   const pin =
     userSession && userSession.phase !== "home" ? userSession.pin : undefined;
-  const backgroundColor =
-    colorScheme === "dark"
-      ? DarkTheme.colors.background
-      : DefaultTheme.colors.background;
-
   useSessionSocket(userId, pin);
 
   useEffect(() => {
@@ -118,10 +137,8 @@ function RootLayoutNav() {
 
   return (
     <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor,
-      }}
+      className="flex-1 bg-background"
+      style={colorScheme === "dark" ? darkTheme : lightTheme}
     >
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack screenOptions={{ headerShown: false }} />

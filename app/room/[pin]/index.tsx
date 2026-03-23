@@ -1,6 +1,5 @@
 import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
-import { useColorScheme } from "@/components/useColorScheme";
 import { useStartGame } from "@/hooks/useGameMutations";
 import { useRoom } from "@/hooks/useRoom";
 import { useLeaveRoom } from "@/hooks/useRoomMutations";
@@ -11,7 +10,13 @@ import * as Sentry from "@sentry/react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { DoorOpen, Star } from "lucide-react-native";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import {
+  Pressable,
+  ScrollView,
+  Text,
+  useColorScheme,
+  View,
+} from "react-native";
 
 export default function RoomScreen() {
   const { pin } = useLocalSearchParams<{ pin: string }>();
@@ -70,7 +75,7 @@ export default function RoomScreen() {
       >
         <DoorOpen size={24} color={isDarkMode ? "white" : "black"} />
       </Pressable>
-      <Text className="text-5xl font-bold dark:text-white">PIN : {pin}</Text>
+      <Text className="text-5xl font-bold text-foreground">PIN : {pin}</Text>
       <ScrollView
         className="flex-1 w-full"
         showsVerticalScrollIndicator={false}
@@ -78,7 +83,7 @@ export default function RoomScreen() {
         {users.map((user, index) => (
           <View key={index} className="flex-row items-center w-full gap-5 my-4">
             <Avatar name={user.name} />
-            <Text className="w-full text-3xl dark:text-white text-ellipsis">
+            <Text className="flex-1 text-3xl text-foreground text-ellipsis">
               {user.name}
             </Text>
             {user.id === hostId && <Star size={24} color="gold" fill="gold" />}

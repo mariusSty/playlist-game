@@ -17,7 +17,7 @@ export function ThemedTextInput({
       autoCapitalize="none"
       spellCheck={false}
       className={cn([
-        "w-full py-3 text-xl text-center text-black dark:text-white border rounded-lg border-black dark:border-white",
+        "w-full py-3 text-xl text-center text-foreground border rounded-lg border-foreground",
         className,
       ])}
       {...props}

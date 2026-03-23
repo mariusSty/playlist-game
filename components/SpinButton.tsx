@@ -46,16 +46,16 @@ export type SpinButtonProps = {
 };
 
 const DEFAULT_BUTTON_COLORS: ButtonColors = {
-  idle: { background: "#e6e6e6", text: "#000000" },
-  active: { background: "#121212", text: "#FFFFFF" },
+  idle: { background: "#000000", text: "#ffffff" },
+  active: { background: "#333333", text: "#ffffff" },
 };
 
 const DEFAULT_SPINNER_CONFIG: SpinnerConfig = {
   size: 20,
   strokeWidth: 1.6,
-  color: "#FFFFFF",
+  color: "#ffffff",
   containerSize: 35,
-  containerBackground: "#121212",
+  containerBackground: "#333333",
   position: { right: -12, top: -12 },
 };
 

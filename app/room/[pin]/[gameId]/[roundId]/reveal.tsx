@@ -43,7 +43,7 @@ export default function Reveal() {
     return (
       <Container title={i18n.t("revealPage.title")}>
         <View className="justify-center flex-1">
-          <ActivityIndicator size="large" color="#000000" />
+          <ActivityIndicator size="large" />
         </View>
       </Container>
     );
@@ -54,15 +54,13 @@ export default function Reveal() {
       <ScrollView contentContainerClassName="gap-8 py-4">
         {round.picks.map((pick, index) => (
           <View key={index} className="gap-2">
-            {index > 0 && (
-              <View className="mb-2 border-b border-black/10 dark:border-white/10" />
-            )}
+            {index > 0 && <View className="mb-2 border-b border-foreground" />}
             <TrackCard
               track={pick.track}
               header={
                 <View className="flex-row items-center gap-3">
                   <Avatar name={pick.user.name} size="small" />
-                  <Text className="text-base font-bold dark:text-white">
+                  <Text className="text-base font-bold text-foreground">
                     {pick.user.name}
                   </Text>
                 </View>

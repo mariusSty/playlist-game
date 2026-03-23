@@ -18,7 +18,7 @@ export function PlayersStatus({
   return (
     <View className="w-full gap-2">
       <View className="flex-row gap-2">
-        <Text className="text-xl dark:text-white">{notValidatedLabel}</Text>
+        <Text className="text-xl text-foreground">{notValidatedLabel}</Text>
         {users
           .filter((user) => !validatedUserIds.includes(user.id))
           .map((user) => (
@@ -26,7 +26,7 @@ export function PlayersStatus({
           ))}
       </View>
       <View className="flex-row gap-2">
-        <Text className="text-xl dark:text-white">{validatedLabel}</Text>
+        <Text className="text-xl text-foreground">{validatedLabel}</Text>
         {users
           .filter((user) => validatedUserIds.includes(user.id))
           .map((user) => (

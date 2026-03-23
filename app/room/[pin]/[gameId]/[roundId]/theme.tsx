@@ -47,7 +47,7 @@ export default function RoundTheme() {
     return (
       <Container title={i18n.t("themePage.title")}>
         <View>
-          <ActivityIndicator size="large" color="#000000" />
+          <ActivityIndicator size="large" />
         </View>
       </Container>
     );
@@ -58,7 +58,7 @@ export default function RoundTheme() {
   if (isThemeMaster) {
     return (
       <Container title={i18n.t("themePage.title")}>
-        <Text className="py-8 text-xl dark:text-white">
+        <Text className="py-8 text-xl text-foreground">
           {i18n.t("themePage.themeMaster")}
         </Text>
         <ScrollView
@@ -88,12 +88,12 @@ export default function RoundTheme() {
     <Container title={i18n.t("themePage.title")}>
       <View className="items-center py-8 gap-y-2">
         <Avatar name={round.themeMaster.name} />
-        <Text className="text-xl font-bold dark:text-white">
+        <Text className="text-xl font-bold text-foreground">
           {i18n.t("themePage.waiting", {
             name: round.themeMaster.name,
           })}
         </Text>
-        <Text className="text-lg dark:text-white/70">
+        <Text className="text-lg text-foreground">
           {i18n.t("themePage.waitingSubtitle")}
         </Text>
       </View>

@@ -96,7 +96,7 @@ export default function Song() {
   if (isRoundLoading || !round) {
     return (
       <View className="justify-center flex-1">
-        <ActivityIndicator size="large" color="#000000" />
+        <ActivityIndicator size="large" />
       </View>
     );
   }
@@ -106,7 +106,7 @@ export default function Song() {
       <View className="justify-between flex-1 w-full">
         {userPick ? (
           <View className="w-full gap-3">
-            <Text className="text-xl font-bold dark:text-white">
+            <Text className="text-xl font-bold text-foreground">
               {i18n.t("pickPage.yourSong")}
             </Text>
             <TrackCard track={userPick.track}>
@@ -120,17 +120,14 @@ export default function Song() {
         ) : (
           <>
             <View className="w-full gap-2">
-              <Text className="text-xl font-bold dark:text-white">
+              <Text className="text-xl font-bold text-foreground">
                 {i18n.t("pickPage.chooseSong")}
               </Text>
               <ThemedTextInput value={search} onChangeText={setSearch} />
             </View>
             <View className="flex-1">
               {isTracksLoading ? (
-                <ActivityIndicator
-                  size="large"
-                  className="my-auto text-black dark:text-white"
-                />
+                <ActivityIndicator size="large" className="my-auto" />
               ) : (
                 <ScrollView className="gap-4 py-2">
                   <View className="flex-1 gap-3">

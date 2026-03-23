@@ -1,7 +1,5 @@
 import { SpinButton } from "@/components/SpinButton";
-import { useColorScheme } from "@/components/useColorScheme";
-import Colors from "@/constants/Colors";
-import { View } from "react-native";
+import { useColorScheme, View } from "react-native";
 
 type ButtonProps = {
   text: string;
@@ -18,9 +16,7 @@ export function Button({
   disabled,
   isPending = false,
 }: ButtonProps) {
-  const colorScheme = useColorScheme();
-  const scheme = colorScheme === "dark" ? "dark" : "light";
-  const colors = Colors[scheme];
+  const isDark = useColorScheme() === "dark";
 
   const button = (
     <SpinButton
@@ -31,17 +27,17 @@ export function Button({
       onPress={() => onPress?.()}
       colors={{
         idle: {
-          background: colors.tint,
-          text: colors.background,
+          background: isDark ? "#ffffff" : "#000000",
+          text: isDark ? "#000000" : "#ffffff",
         },
         active: {
-          background: scheme === "dark" ? "#cccccc" : "#333333",
-          text: colors.background,
+          background: isDark ? "#cccccc" : "#333333",
+          text: isDark ? "#000000" : "#ffffff",
         },
       }}
       spinnerConfig={{
-        color: colors.background,
-        containerBackground: scheme === "dark" ? "#aaaaaa" : "#555555",
+        color: isDark ? "#000000" : "#ffffff",
+        containerBackground: isDark ? "#aaaaaa" : "#555555",
       }}
       buttonStyle={{
         paddingHorizontal: 16,

@@ -12,7 +12,7 @@ type TrackCardProps = {
 
 export function TrackCard({ track, header, children }: TrackCardProps) {
   return (
-    <View className="w-full gap-3 p-3 border border-black rounded-xl dark:border-white">
+    <View className="w-full gap-3 p-3 border border-foreground rounded-xl">
       {header}
       <View className="flex-row items-center gap-3">
         <View>
@@ -28,15 +28,15 @@ export function TrackCard({ track, header, children }: TrackCardProps) {
         </View>
         <View className="flex-1 gap-1">
           <Text
-            className="text-base font-bold dark:text-white"
+            className="text-base font-bold text-foreground"
             numberOfLines={1}
           >
             {track.title}
           </Text>
-          <Text className="text-sm dark:text-white/70" numberOfLines={1}>
+          <Text className="text-sm text-foreground" numberOfLines={1}>
             {track.artist}
           </Text>
-          <Text className="text-xs dark:text-white/50" numberOfLines={1}>
+          <Text className="text-xs text-foreground" numberOfLines={1}>
             {track.album}
           </Text>
         </View>

@@ -1,4 +1,3 @@
-import { useColorScheme } from "@/components/useColorScheme";
 import {
   setAudioModeAsync,
   useAudioPlayer,
@@ -6,7 +5,7 @@ import {
 } from "expo-audio";
 import { Pause, Play } from "lucide-react-native";
 import { useEffect } from "react";
-import { Pressable } from "react-native";
+import { Pressable, useColorScheme } from "react-native";
 
 setAudioModeAsync({ playsInSilentMode: true });
 
@@ -41,10 +40,7 @@ export function PlayPauseButton({
   if (!previewUrl) return null;
 
   return (
-    <Pressable
-      onPress={handlePress}
-      className="p-2 bg-black/70 rounded-full dark:bg-white/70"
-    >
+    <Pressable onPress={handlePress} className="p-2 rounded-full bg-foreground">
       {isPlaying ? (
         <Pause size={size} color={colorScheme === "dark" ? "black" : "white"} />
       ) : (

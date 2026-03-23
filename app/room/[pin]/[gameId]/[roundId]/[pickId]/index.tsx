@@ -80,7 +80,7 @@ export default function Vote() {
             className="flex-row items-center w-full gap-3 py-2"
           >
             <Avatar name={player.name} />
-            <Text className="flex-1 text-lg dark:text-white">
+            <Text className="flex-1 text-lg text-foreground">
               {player.name}
             </Text>
             {hasVoted ? (

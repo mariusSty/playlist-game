@@ -4,7 +4,19 @@ module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        "foreground-secondary": "var(--foreground-secondary)",
+        border: "var(--border)",
+        muted: "var(--muted)",
+        primary: "var(--primary)",
+        "primary-foreground": "var(--primary-foreground)",
+        danger: "var(--danger)",
+        card: "var(--card)",
+      },
+    },
   },
   plugins: [],
 };

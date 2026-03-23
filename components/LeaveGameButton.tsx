@@ -1,4 +1,3 @@
-import { useColorScheme } from "@/components/useColorScheme";
 import { useLeaveRoom } from "@/hooks/useRoomMutations";
 import { userSessionQueryKey } from "@/hooks/useUserSession";
 import { useUserStore } from "@/stores/user-store";
@@ -6,7 +5,7 @@ import i18n from "@/utils/translation";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { DoorOpen } from "lucide-react-native";
-import { Alert, Pressable } from "react-native";
+import { Alert, Pressable, useColorScheme } from "react-native";
 
 export function LeaveGameButton() {
   const { pin } = useLocalSearchParams<{ pin: string }>();

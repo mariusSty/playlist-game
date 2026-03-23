@@ -48,13 +48,13 @@ export default function Result() {
               className="flex-row items-center justify-between"
             >
               <View className="flex-row items-center gap-4">
-                <Text className="text-xl dark:text-white">{index + 1}</Text>
+                <Text className="text-xl text-foreground">{index + 1}</Text>
                 <Avatar name={result.user.name} />
-                <Text className="text-xl dark:text-white">
+                <Text className="text-xl text-foreground">
                   {result.user.name}
                 </Text>
               </View>
-              <Text className="text-xl dark:text-white">
+              <Text className="text-xl text-foreground">
                 {result.score} {result.score <= 1 ? "point" : "points"}
               </Text>
             </View>
