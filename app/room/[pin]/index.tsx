@@ -1,5 +1,4 @@
 import { Avatar } from "@/components/Avatar";
-import { Button } from "@/components/Button";
 import { useStartGame } from "@/hooks/useGameMutations";
 import { useRoom } from "@/hooks/useRoom";
 import { useLeaveRoom } from "@/hooks/useRoomMutations";
@@ -9,21 +8,15 @@ import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
+import { Button, CloseButton, useThemeColor } from "heroui-native";
 import { DoorOpen, Star } from "lucide-react-native";
-import {
-  Pressable,
-  ScrollView,
-  Text,
-  useColorScheme,
-  View,
-} from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 export default function RoomScreen() {
   const { pin } = useLocalSearchParams<{ pin: string }>();
   const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme === "dark";
+  const foregroundColor = useThemeColor("foreground");
   const { room } = useRoom(pin);
   const leaveRoom = useLeaveRoom();
   const startGame = useStartGame();
@@ -68,13 +61,9 @@ export default function RoomScreen() {
 
   return (
     <View className="items-center flex-1 gap-8 m-10">
-      <Pressable
-        className="self-start"
-        onPress={handleLeaveRoom}
-        disabled={anyPending}
-      >
-        <DoorOpen size={24} color={isDarkMode ? "white" : "black"} />
-      </Pressable>
+      <CloseButton onPress={handleLeaveRoom} isDisabled={anyPending}>
+        <DoorOpen size={20} color={foregroundColor} />
+      </CloseButton>
       <Text className="text-5xl font-bold text-foreground">PIN : {pin}</Text>
       <ScrollView
         className="flex-1 w-full"
@@ -92,12 +81,13 @@ export default function RoomScreen() {
       </ScrollView>
       {user.id === hostId && (
         <View className="w-full">
-          <Button
-            onPress={handleStartGame}
-            text={i18n.t("startPage.startButton")}
-            isPending={startGame.isPending}
-            disabled={leaveRoom.isPending}
-          />
+          <Button onPress={handleStartGame} isDisabled={anyPending}>
+            <Button.Label>
+              {startGame.isPending
+                ? i18n.t("startPage.startButtonPending")
+                : i18n.t("startPage.startButton")}
+            </Button.Label>
+          </Button>
         </View>
       )}
     </View>

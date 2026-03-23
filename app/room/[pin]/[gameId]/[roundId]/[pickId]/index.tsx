@@ -1,5 +1,4 @@
 import { Avatar } from "@/components/Avatar";
-import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { PlayersStatus } from "@/components/PlayersStatus";
 import { TrackCard } from "@/components/TrackCard";
@@ -10,6 +9,7 @@ import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
 import { useLocalSearchParams } from "expo-router";
+import { Button } from "heroui-native";
 import { ScrollView, Text, View } from "react-native";
 
 export default function Vote() {
@@ -87,24 +87,31 @@ export default function Vote() {
               <>
                 {userGuessedId === player.id && (
                   <Button
-                    text={i18n.t("votePage.cancelButton")}
                     onPress={handleCancelVote}
-                    isPending={cancelVoteMutation.isPending}
-                  />
+                    isDisabled={cancelVoteMutation.isPending}
+                  >
+                    <Button.Label>
+                      {cancelVoteMutation.isPending
+                        ? i18n.t("votePage.cancelButtonPending")
+                        : i18n.t("votePage.cancelButton")}
+                    </Button.Label>
+                  </Button>
                 )}
               </>
             ) : (
               <Button
-                text={i18n.t("votePage.voteButton")}
                 onPress={() => handleVote(player.id)}
-                isPending={
-                  voteMutation.isPending &&
-                  voteMutation.variables.guessId === player.id
-                }
-                disabled={
+                isDisabled={
                   isMutating && voteMutation.variables?.guessId !== player.id
                 }
-              />
+              >
+                <Button.Label>
+                  {voteMutation.isPending &&
+                  voteMutation.variables.guessId === player.id
+                    ? i18n.t("votePage.voteButtonPending")
+                    : i18n.t("votePage.voteButton")}
+                </Button.Label>
+              </Button>
             )}
           </View>
         ))}

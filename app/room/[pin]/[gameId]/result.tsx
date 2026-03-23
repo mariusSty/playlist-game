@@ -1,5 +1,4 @@
 import { Avatar } from "@/components/Avatar";
-import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { useResult } from "@/hooks/useGame";
 import { useFinishGame } from "@/hooks/useGameMutations";
@@ -10,6 +9,7 @@ import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
+import { Button } from "heroui-native";
 import { Text, View } from "react-native";
 
 export default function Result() {
@@ -61,10 +61,9 @@ export default function Result() {
           ))}
       </View>
       {room?.host.id === userId && (
-        <Button
-          text={i18n.t("resultPage.exitButton")}
-          onPress={handleFinishGame}
-        />
+        <Button onPress={handleFinishGame}>
+          <Button.Label>{i18n.t("resultPage.exitButton")}</Button.Label>
+        </Button>
       )}
     </Container>
   );

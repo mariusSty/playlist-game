@@ -1,5 +1,4 @@
 import { Avatar } from "@/components/Avatar";
-import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { TrackCard } from "@/components/TrackCard";
 import { useRoom } from "@/hooks/useRoom";
@@ -9,6 +8,7 @@ import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
 import { useLocalSearchParams } from "expo-router";
+import { Button } from "heroui-native";
 import { CircleCheck, CircleX } from "lucide-react-native";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
@@ -100,11 +100,13 @@ export default function Reveal() {
         ))}
       </ScrollView>
       {room?.host.id === user.id && (
-        <Button
-          text={i18n.t("revealPage.nextRoundButton")}
-          onPress={handleNextRound}
-          isPending={nextRound.isPending}
-        />
+        <Button onPress={handleNextRound} isDisabled={nextRound.isPending}>
+          <Button.Label>
+            {nextRound.isPending
+              ? i18n.t("revealPage.nextRoundButtonPending")
+              : i18n.t("revealPage.nextRoundButton")}
+          </Button.Label>
+        </Button>
       )}
     </Container>
   );

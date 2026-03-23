@@ -1,5 +1,4 @@
 import { Avatar } from "@/components/Avatar";
-import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { getRandomThemes } from "@/constants/theme";
 import { useRound } from "@/hooks/useRound";
@@ -8,6 +7,7 @@ import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
 import { useLocalSearchParams } from "expo-router";
+import { Button } from "heroui-native";
 import { useMemo } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
@@ -70,14 +70,16 @@ export default function RoundTheme() {
             <Button
               key={index}
               onPress={() => handleChoose(theme)}
-              text={i18n.t(`themePage.themes.${theme}`)}
-              isPending={
-                pickTheme.isPending && pickTheme.variables?.theme === theme
-              }
-              disabled={
+              isDisabled={
                 pickTheme.isPending && pickTheme.variables?.theme !== theme
               }
-            />
+            >
+              <Button.Label>
+                {pickTheme.isPending && pickTheme.variables?.theme === theme
+                  ? i18n.t("themePage.choosingPending")
+                  : i18n.t(`themePage.themes.${theme}`)}
+              </Button.Label>
+            </Button>
           ))}
         </ScrollView>
       </Container>

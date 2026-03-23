@@ -3,9 +3,10 @@ import {
   useAudioPlayer,
   useAudioPlayerStatus,
 } from "expo-audio";
+import { useThemeColor } from "heroui-native";
 import { Pause, Play } from "lucide-react-native";
 import { useEffect } from "react";
-import { Pressable, useColorScheme } from "react-native";
+import { Pressable } from "react-native";
 
 setAudioModeAsync({ playsInSilentMode: true });
 
@@ -18,7 +19,7 @@ export function PlayPauseButton({
   previewUrl,
   size = 20,
 }: PlayPauseButtonProps) {
-  const colorScheme = useColorScheme();
+  const backgroundColor = useThemeColor("background");
   const player = useAudioPlayer(previewUrl);
   const status = useAudioPlayerStatus(player);
   const isPlaying = status.playing;
@@ -42,9 +43,9 @@ export function PlayPauseButton({
   return (
     <Pressable onPress={handlePress} className="p-2 rounded-full bg-foreground">
       {isPlaying ? (
-        <Pause size={size} color={colorScheme === "dark" ? "black" : "white"} />
+        <Pause size={size} color={backgroundColor} />
       ) : (
-        <Play size={size} color={colorScheme === "dark" ? "black" : "white"} />
+        <Play size={size} color={backgroundColor} />
       )}
     </Pressable>
   );

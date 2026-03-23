@@ -2,6 +2,7 @@
   "homePage": {
     "title": "Playlist Game",
     "createButton": "Create a game",
+    "createButtonPending": "Creating...",
     "joinButton": "Join a game",
     "cancelButton": "Cancel",
     "pinInputTitle": "Enter the PIN",
@@ -9,11 +10,13 @@
     "joinError": "Invalid PIN. Please try again."
   },
   "startPage": {
-    "startButton": "Start game"
+    "startButton": "Start game",
+    "startButtonPending": "Starting..."
   },
   "themePage": {
     "title": "Theme choice",
     "themeMaster": "You are the theme master, please choose the theme for this round",
+    "choosingPending": "Selecting...",
     "waiting": "%{name}",
     "waitingSubtitle": "is choosing the theme...",
     "themes": {
@@ -42,21 +45,26 @@
   "pickPage": {
     "yourSong": "You chose:",
     "cancelButton": "Cancel",
+    "cancelButtonPending": "Cancelling...",
     "chooseSong": "Pick a song that matches the theme",
     "chooseButton": "Choose",
+    "chooseButtonPending": "Choosing...",
     "notChosen": "Not chosen yet:",
     "alreadyChosen": "Already chosen:"
   },
   "votePage": {
     "title": "Who chose this song?",
     "voteButton": "Vote",
+    "voteButtonPending": "Voting...",
     "cancelButton": "Cancel",
+    "cancelButtonPending": "Cancelling...",
     "notVoted": "Not voted yet:",
     "alreadyVoted": "Already voted:"
   },
   "revealPage": {
     "title": "Round Reveal",
-    "nextRoundButton": "Next round"
+    "nextRoundButton": "Next round",
+    "nextRoundButtonPending": "Loading..."
   },
   "resultPage": {
     "title": "Results",

@@ -1,15 +1,13 @@
 import { Avatar } from "@/components/Avatar";
-import { OtpInput } from "@/components/base";
-import { Button } from "@/components/Button";
-import { ThemedTextInput } from "@/components/TextInput";
 import { useCreateRoom, useJoinRoom } from "@/hooks/useRoomMutations";
 import { userSessionQueryKey } from "@/hooks/useUserSession";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
 import { useQueryClient } from "@tanstack/react-query";
+import { Button, FieldError, Input, InputOTP } from "heroui-native";
 import React, { useState } from "react";
-import { Keyboard, Pressable, Text, useColorScheme, View } from "react-native";
+import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
@@ -19,12 +17,10 @@ export default function Main() {
   const { user, setName } = useUserStore();
   const createRoom = useCreateRoom();
   const joinRoom = useJoinRoom();
-  const colorScheme = useColorScheme();
   const queryClient = useQueryClient();
   const [screen, setScreen] = useState<Screen>("home");
   const [otpError, setOtpError] = useState(false);
 
-  const isDark = colorScheme === "dark";
   const hasName = user.name.trim().length > 0;
 
   async function handleCreateRoom() {
@@ -88,10 +84,12 @@ export default function Main() {
               <View className="flex-row items-center gap-5">
                 <Avatar name={user.name} />
                 <View className="flex-1">
-                  <ThemedTextInput
+                  <Input
                     value={user.name}
                     onChangeText={setName}
                     placeholder={i18n.t("homePage.pseudoPlaceholder")}
+                    autoCorrect={false}
+                    autoCapitalize="none"
                   />
                 </View>
               </View>
@@ -103,16 +101,21 @@ export default function Main() {
                 className="gap-5"
               >
                 <Button
-                  text={i18n.t("homePage.createButton")}
                   onPress={handleCreateRoom}
-                  isPending={createRoom.isPending}
-                  disabled={!user.name}
-                />
+                  isDisabled={!user.name || createRoom.isPending}
+                >
+                  <Button.Label>
+                    {createRoom.isPending
+                      ? i18n.t("homePage.createButtonPending")
+                      : i18n.t("homePage.createButton")}
+                  </Button.Label>
+                </Button>
                 <Button
-                  text={i18n.t("homePage.joinButton")}
                   onPress={() => setScreen("joining")}
-                  disabled={!user.name || createRoom.isPending}
-                />
+                  isDisabled={!user.name || createRoom.isPending}
+                >
+                  <Button.Label>{i18n.t("homePage.joinButton")}</Button.Label>
+                </Button>
               </Animated.View>
             )}
           </Animated.View>
@@ -127,33 +130,33 @@ export default function Main() {
             <Text className="text-2xl font-bold text-foreground">
               {i18n.t("homePage.pinInputTitle")}
             </Text>
-            <OtpInput
-              otpCount={6}
-              enableAutoFocus
-              animationVariant="fadeSlideDown"
-              inputBorderRadius={10}
-              inputWidth={50}
-              inputHeight={60}
-              focusedBackgroundColor={isDark ? "#000000" : "#ffffff"}
-              unfocusedBackgroundColor={isDark ? "#000000" : "#ffffff"}
-              focusedBorderColor={isDark ? "#ffffff" : "#000000"}
-              unfocusedBorderColor={
-                isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.3)"
-              }
-              textStyle={{
-                color: isDark ? "#ffffff" : "#000000",
-                fontSize: 22,
-              }}
-              onInputChange={() => otpError && setOtpError(false)}
-              onInputFinished={handleJoinRoom}
-              error={otpError}
-              errorMessage={i18n.t("homePage.joinError")}
-            />
+            <InputOTP
+              maxLength={6}
+              onComplete={handleJoinRoom}
+              onChange={() => otpError && setOtpError(false)}
+              isInvalid={otpError}
+            >
+              <InputOTP.Group>
+                <InputOTP.Slot index={0} />
+                <InputOTP.Slot index={1} />
+                <InputOTP.Slot index={2} />
+              </InputOTP.Group>
+              <InputOTP.Separator />
+              <InputOTP.Group>
+                <InputOTP.Slot index={3} />
+                <InputOTP.Slot index={4} />
+                <InputOTP.Slot index={5} />
+              </InputOTP.Group>
+            </InputOTP>
+            {otpError && (
+              <FieldError>{i18n.t("homePage.joinError")}</FieldError>
+            )}
             <Button
-              text={i18n.t("homePage.cancelButton")}
               onPress={() => setScreen("home")}
-              disabled={joinRoom.isPending}
-            />
+              isDisabled={joinRoom.isPending}
+            >
+              <Button.Label>{i18n.t("homePage.cancelButton")}</Button.Label>
+            </Button>
           </Animated.View>
         )}
       </Pressable>

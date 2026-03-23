@@ -1,29 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "uniwind";
+@import "heroui-native/styles";
 
-@layer base {
-  :root {
-    --background: #ffffff;
-    --foreground: #000000;
-    --foreground-secondary: #6b7280;
-    --border: #000000;
-    --muted: #9ca3af;
-    --primary: #000000;
-    --primary-foreground: #ffffff;
-    --danger: #ef4444;
-    --card: #f9fafb;
+@source "./node_modules/heroui-native/lib";
+
+@layer theme {
+  @variant light {
+    --accent: oklch(0 0 0);
+    --accent-foreground: oklch(1 0 0);
   }
-
-  .dark {
-    --background: #000000;
-    --foreground: #ffffff;
-    --foreground-secondary: #9ca3af;
-    --border: #ffffff;
-    --muted: #6b7280;
-    --primary: #ffffff;
-    --primary-foreground: #000000;
-    --danger: #ef4444;
-    --card: #111827;
+  @variant dark {
+    --accent: oklch(1 0 0);
+    --accent-foreground: oklch(0 0 0);
   }
 }

@@ -1,7 +1,5 @@
-import { Button } from "@/components/Button";
 import Container from "@/components/Container";
 import { PlayersStatus } from "@/components/PlayersStatus";
-import { ThemedTextInput } from "@/components/TextInput";
 import { TrackCard } from "@/components/TrackCard";
 import { useMusicApiSearch } from "@/hooks/usePick";
 import { useCancelPick, useValidatePick } from "@/hooks/usePickMutations";
@@ -12,6 +10,7 @@ import { Track } from "@/types/room";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
 import { useLocalSearchParams } from "expo-router";
+import { Button, SearchField } from "heroui-native";
 import { useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
@@ -111,10 +110,15 @@ export default function Song() {
             </Text>
             <TrackCard track={userPick.track}>
               <Button
-                text={i18n.t("pickPage.cancelButton")}
                 onPress={handleCancelSong}
-                isPending={cancelPick.isPending}
-              />
+                isDisabled={cancelPick.isPending}
+              >
+                <Button.Label>
+                  {cancelPick.isPending
+                    ? i18n.t("pickPage.cancelButtonPending")
+                    : i18n.t("pickPage.cancelButton")}
+                </Button.Label>
+              </Button>
             </TrackCard>
           </View>
         ) : (
@@ -123,7 +127,13 @@ export default function Song() {
               <Text className="text-xl font-bold text-foreground">
                 {i18n.t("pickPage.chooseSong")}
               </Text>
-              <ThemedTextInput value={search} onChangeText={setSearch} />
+              <SearchField value={search} onChange={setSearch}>
+                <SearchField.Group>
+                  <SearchField.SearchIcon />
+                  <SearchField.Input />
+                  <SearchField.ClearButton />
+                </SearchField.Group>
+              </SearchField>
             </View>
             <View className="flex-1">
               {isTracksLoading ? (
@@ -134,16 +144,18 @@ export default function Song() {
                     {tracks?.map((track) => (
                       <TrackCard key={track.id} track={track}>
                         <Button
-                          text={i18n.t("pickPage.chooseButton")}
                           onPress={() => handleSelectTrack(track)}
-                          isPending={
-                            validatePick.isPending &&
-                            search === track.title + " - " + track.artist
-                          }
-                          disabled={
+                          isDisabled={
                             validatePick.isPending || cancelPick.isPending
                           }
-                        />
+                        >
+                          <Button.Label>
+                            {validatePick.isPending &&
+                            search === track.title + " - " + track.artist
+                              ? i18n.t("pickPage.chooseButtonPending")
+                              : i18n.t("pickPage.chooseButton")}
+                          </Button.Label>
+                        </Button>
                       </TrackCard>
                     ))}
                   </View>
