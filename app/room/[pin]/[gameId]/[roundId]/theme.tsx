@@ -3,24 +3,28 @@ import Container from "@/components/Container";
 import { getRandomThemes } from "@/constants/theme";
 import { useRound } from "@/hooks/useRound";
 import { usePickTheme } from "@/hooks/useRoundMutations";
+import { userSessionQueryKey } from "@/hooks/useUserSession";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Button } from "heroui-native";
 import { useMemo } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function RoundTheme() {
   const user = useUserStore((state) => state.user);
-  const { pin, roundId } = useLocalSearchParams<{
+  const { pin, gameId, roundId } = useLocalSearchParams<{
     pin: string;
+    gameId: string;
     roundId: string;
   }>();
-
   const { round, isRoundLoading } = useRound(roundId);
   const pickTheme = usePickTheme();
   const themes = useMemo(() => getRandomThemes(5), []);
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   async function handleChoose(theme: string) {
     await pickTheme.mutate(
@@ -31,13 +35,17 @@ export default function RoundTheme() {
         pin,
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           Sentry.logger.info("Theme picked", {
             pin,
             userId: user.id,
             userName: user.name,
             theme,
           });
+          await queryClient.invalidateQueries({
+            queryKey: userSessionQueryKey(user.id),
+          });
+          router.navigate(`/room/${pin}/${gameId}/${roundId}/song`);
         },
       },
     );

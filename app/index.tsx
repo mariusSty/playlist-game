@@ -5,7 +5,16 @@ import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
 import { useQueryClient } from "@tanstack/react-query";
-import { Button, FieldError, Input, InputOTP } from "heroui-native";
+import { useRouter } from "expo-router";
+import {
+  Button,
+  CloseButton,
+  FieldError,
+  Input,
+  InputOTP,
+  useThemeColor,
+} from "heroui-native";
+import { Home } from "lucide-react-native";
 import React, { useState } from "react";
 import { Keyboard, Pressable, Text, View } from "react-native";
 import "react-native-get-random-values";
@@ -20,8 +29,10 @@ export default function Main() {
   const queryClient = useQueryClient();
   const [screen, setScreen] = useState<Screen>("home");
   const [otpError, setOtpError] = useState(false);
+  const router = useRouter();
 
   const hasName = user.name.trim().length > 0;
+  const foregroundColor = useThemeColor("foreground");
 
   async function handleCreateRoom() {
     await createRoom.mutate(
@@ -30,15 +41,16 @@ export default function Main() {
         id: user.id,
       },
       {
-        onSuccess: (room) => {
+        onSuccess: async (room) => {
           Sentry.logger.info("Room created", {
             pin: room.pin,
             userId: user.id,
             userName: user.name,
           });
-          queryClient.invalidateQueries({
+          await queryClient.invalidateQueries({
             queryKey: userSessionQueryKey(user.id),
           });
+          router.navigate(`/room/${room.pin}`);
         },
       },
     );
@@ -51,15 +63,16 @@ export default function Main() {
         onError: () => {
           setOtpError(true);
         },
-        onSuccess: () => {
+        onSuccess: async () => {
           Sentry.logger.info("Room joined", {
             pin,
             userId: user.id,
             userName: user.name,
           });
-          queryClient.invalidateQueries({
+          await queryClient.invalidateQueries({
             queryKey: userSessionQueryKey(user.id),
           });
+          router.navigate(`/room/${pin}`);
         },
       },
     );
@@ -67,6 +80,16 @@ export default function Main() {
 
   return (
     <View className="flex-1">
+      {screen === "joining" && (
+        <CloseButton
+          className="absolute z-10 top-6 left-6"
+          onPress={() => setScreen("home")}
+          isDisabled={joinRoom.isPending}
+          variant="ghost"
+        >
+          <Home size={20} color={foregroundColor} />
+        </CloseButton>
+      )}
       <Pressable
         className="items-stretch justify-center flex-1 gap-20 p-10"
         onPress={() => Keyboard.dismiss()}
@@ -151,12 +174,6 @@ export default function Main() {
             {otpError && (
               <FieldError>{i18n.t("homePage.joinError")}</FieldError>
             )}
-            <Button
-              onPress={() => setScreen("home")}
-              isDisabled={joinRoom.isPending}
-            >
-              <Button.Label>{i18n.t("homePage.cancelButton")}</Button.Label>
-            </Button>
           </Animated.View>
         )}
       </Pressable>

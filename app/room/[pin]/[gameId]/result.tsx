@@ -8,7 +8,7 @@ import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import * as Sentry from "@sentry/react-native";
 import { useQueryClient } from "@tanstack/react-query";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Button } from "heroui-native";
 import { Text, View } from "react-native";
 
@@ -25,14 +25,15 @@ export default function Result() {
 
   function handleFinishGame() {
     finishGame.mutate(gameId, {
-      onSuccess: () => {
+      onSuccess: async () => {
         Sentry.logger.info("Game finished", {
           gameId,
           userId,
         });
-        queryClient.invalidateQueries({
+        await queryClient.invalidateQueries({
           queryKey: userSessionQueryKey(userId),
         });
+        router.navigate(`/room/${pin}`);
       },
     });
   }
