@@ -61,8 +61,6 @@ export default function Song() {
     );
   }
 
-  const translatedTheme = i18n.t(`themePage.themes.${round?.theme}`);
-
   if (isRoundLoading || !round) {
     return (
       <View className="justify-center flex-1">
@@ -71,8 +69,15 @@ export default function Song() {
     );
   }
 
+  const displayTheme =
+    round.customTheme ?? i18n.t(`themePage.themes.${round.theme?.key}`);
+
+  if (!displayTheme) {
+    throw new Error("Theme is missing");
+  }
+
   return (
-    <Container title={translatedTheme}>
+    <Container title={displayTheme}>
       <View className="justify-between flex-1 w-full">
         {userPick ? (
           <View className="w-full gap-3">
@@ -101,7 +106,9 @@ export default function Song() {
               <SearchField value={search} onChange={setSearch}>
                 <SearchField.Group>
                   <SearchField.SearchIcon />
-                  <SearchField.Input />
+                  <SearchField.Input
+                    placeholder={i18n.t("pickPage.searchPlaceholder")}
+                  />
                   <SearchField.ClearButton />
                 </SearchField.Group>
               </SearchField>

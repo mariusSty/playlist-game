@@ -18,9 +18,15 @@ export type Game = {
 
 export type Round = {
   id: number;
-  theme: string;
+  theme: Theme | null;
+  customTheme: string | null;
   themeMaster: User;
   picks: Pick[];
+};
+
+export type Theme = {
+  id: number;
+  key: string;
 };
 
 export type Pick = {

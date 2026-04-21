@@ -18,10 +18,11 @@ type NextRoundResponse = {
 
 type PickThemeParams = {
   roundId: string;
-  theme: string;
   userId: string;
   userName: string;
   pin: string;
+  themeId?: number;
+  customTheme?: string;
 };
 
 export function useNextRound() {
@@ -58,7 +59,8 @@ export function usePickTheme() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          theme: params.theme,
+          themeId: params.themeId,
+          customTheme: params.customTheme,
           userId: params.userId,
           pin: params.pin,
         }),
@@ -73,7 +75,8 @@ export function usePickTheme() {
         pin: params.pin,
         userId: params.userId,
         userName: params.userName,
-        theme: params.theme,
+        themeId: params.themeId,
+        customTheme: params.customTheme,
       });
       queryClient.invalidateQueries({
         queryKey: userSessionQueryKey(params.userId),
