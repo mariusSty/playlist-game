@@ -80,22 +80,21 @@ export default function Song() {
     <Container title={displayTheme}>
       <View className="justify-between flex-1 w-full">
         {userPick ? (
-          <View className="w-full gap-3">
+          <View className="flex-1 justify-center w-full gap-4">
             <Text className="text-xl font-bold text-foreground">
               {i18n.t("pickPage.yourSong")}
             </Text>
-            <TrackCard track={userPick.track}>
-              <Button
-                onPress={handleCancelSong}
-                isDisabled={cancelPick.isPending}
-              >
-                <Button.Label>
-                  {cancelPick.isPending
-                    ? i18n.t("pickPage.cancelButtonPending")
-                    : i18n.t("pickPage.cancelButton")}
-                </Button.Label>
-              </Button>
-            </TrackCard>
+            <TrackCard track={userPick.track} />
+            <Button
+              onPress={handleCancelSong}
+              isDisabled={cancelPick.isPending}
+            >
+              <Button.Label>
+                {cancelPick.isPending
+                  ? i18n.t("pickPage.cancelButtonPending")
+                  : i18n.t("pickPage.cancelButton")}
+              </Button.Label>
+            </Button>
           </View>
         ) : (
           <>
