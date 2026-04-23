@@ -70,7 +70,12 @@
   "revealPage": {
     "title": "Round Reveal",
     "nextRoundButton": "Next round",
-    "nextRoundButtonPending": "Loading..."
+    "nextRoundButtonPending": "Loading...",
+    "yourSong": "Your song",
+    "yourVotes": "Your votes",
+    "chose": "chose:",
+    "correctVote": "Correct guess!",
+    "yourVote": "Your guess: %{name}"
   },
   "resultPage": {
     "title": "Results",

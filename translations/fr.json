@@ -70,7 +70,12 @@
   "revealPage": {
     "title": "Révélation du tour",
     "nextRoundButton": "Tour suivant",
-    "nextRoundButtonPending": "Chargement..."
+    "nextRoundButtonPending": "Chargement...",
+    "yourSong": "Votre chanson",
+    "yourVotes": "Vos votes",
+    "chose": "a choisi :",
+    "correctVote": "Bonne réponse !",
+    "yourVote": "Vous avez voté : %{name}"
   },
   "resultPage": {
     "title": "Résultats",

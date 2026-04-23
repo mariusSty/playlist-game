@@ -42,56 +42,74 @@ export default function Reveal() {
     );
   }
 
+  const myPick = round.picks.find((p) => p.user.id === user.id);
+  const otherPicks = round.picks.filter((p) => p.user.id !== user.id);
+
+  const score = otherPicks.reduce((acc, pick) => {
+    const myVote = pick.votes.find((v) => v.guessUser.id === user.id);
+    return myVote?.guessedUser.id === pick.user.id ? acc + 1 : acc;
+  }, 0);
+
   return (
     <Container title={i18n.t("revealPage.title")}>
-      <ScrollView contentContainerClassName="gap-8 py-4">
-        {round.picks.map((pick, index) => (
-          <View key={index} className="gap-2">
-            {index > 0 && <View className="mb-2 border-b border-foreground" />}
-            <TrackCard
-              track={pick.track}
-              header={
-                <View className="flex-row items-center gap-3">
-                  <Avatar name={pick.user.name} size="small" />
-                  <Text className="text-base font-bold text-foreground">
-                    {pick.user.name}
-                  </Text>
-                </View>
-              }
-            />
-            <View className="gap-1 px-2">
-              <View className="flex-row items-center gap-2">
-                <CircleCheck color="green" size={20} />
-                <View className="flex-row flex-wrap gap-2">
-                  {pick.votes
-                    .filter((vote) => vote.guessedUser.id === pick.user.id)
-                    .map((vote) => (
-                      <Avatar
-                        key={vote.id}
-                        name={vote.guessUser.name}
-                        size="small"
-                      />
-                    ))}
-                </View>
-              </View>
-              <View className="flex-row items-center gap-2">
-                <CircleX color="red" size={20} />
-                <View className="flex-row flex-wrap gap-2">
-                  {pick.votes
-                    .filter((vote) => vote.guessedUser.id !== pick.user.id)
-                    .map((vote) => (
-                      <Avatar
-                        key={vote.id}
-                        name={vote.guessUser.name}
-                        size="small"
-                      />
-                    ))}
-                </View>
-              </View>
-            </View>
+      <View className="items-center py-6">
+        <Text className="text-5xl font-bold text-foreground">{score}</Text>
+        <Text className="text-base text-foreground mt-1">
+          {score <= 1 ? "point" : "points"} ce tour
+        </Text>
+      </View>
+
+      <ScrollView contentContainerClassName="gap-6 pb-4">
+        {myPick && (
+          <View className="gap-2">
+            <Text className="text-sm font-semibold text-foreground uppercase tracking-wide px-1">
+              {i18n.t("revealPage.yourSong")}
+            </Text>
+            <TrackCard track={myPick.track} />
           </View>
-        ))}
+        )}
+
+        {otherPicks.length > 0 && (
+          <View className="gap-3">
+            <Text className="text-sm font-semibold text-foreground uppercase tracking-wide px-1">
+              {i18n.t("revealPage.yourVotes")}
+            </Text>
+            {otherPicks.map((pick) => {
+              const myVote = pick.votes.find((v) => v.guessUser.id === user.id);
+              const isCorrect = myVote?.guessedUser.id === pick.user.id;
+
+              return (
+                <View key={pick.id} className="gap-2">
+                  <TrackCard track={pick.track} pickedBy={pick.user} />
+                  {myVote && (
+                    <View className="flex-row items-center gap-2 px-2">
+                      {isCorrect ? (
+                        <>
+                          <CircleCheck color="green" size={20} />
+                          <Text className="text-sm text-foreground">
+                            {i18n.t("revealPage.correctVote")}
+                          </Text>
+                        </>
+                      ) : (
+                        <>
+                          <CircleX color="red" size={20} />
+                          <Text className="text-sm text-foreground">
+                            {i18n.t("revealPage.yourVote", {
+                              name: myVote.guessedUser.name,
+                            })}
+                          </Text>
+                          <Avatar name={myVote.guessedUser.name} size="small" />
+                        </>
+                      )}
+                    </View>
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        )}
       </ScrollView>
+
       {room?.host.id === user.id && (
         <Button onPress={handleNextRound} isDisabled={nextRound.isPending}>
           <Button.Label>

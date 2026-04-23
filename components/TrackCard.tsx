@@ -1,18 +1,32 @@
+import { Avatar } from "@/components/Avatar";
 import { PlayPauseButton } from "@/components/PlayPauseButton";
 import { Track } from "@/types/room";
+import i18n from "@/utils/translation";
 import { Image } from "expo-image";
 import { ReactNode } from "react";
 import { Text, View } from "react-native";
 
 type TrackCardProps = {
   track: Track;
+  pickedBy?: { name: string };
   header?: ReactNode;
   children?: ReactNode;
 };
 
-export function TrackCard({ track, header, children }: TrackCardProps) {
+export function TrackCard({ track, pickedBy, header, children }: TrackCardProps) {
   return (
     <View className="w-full gap-3 p-3 border border-foreground rounded-xl">
+      {pickedBy && (
+        <View className="flex-row items-center gap-2">
+          <Avatar name={pickedBy.name} size="small" />
+          <Text className="text-base font-bold text-foreground">
+            {pickedBy.name}
+          </Text>
+          <Text className="text-sm text-foreground">
+            {i18n.t("revealPage.chose")}
+          </Text>
+        </View>
+      )}
       {header}
       <View className="flex-row items-center gap-3">
         <View>
