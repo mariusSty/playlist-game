@@ -2,7 +2,6 @@
   "homePage": {
     "title": "Playlist Game",
     "createButton": "Créer une partie",
-    "createButtonPending": "Création...",
     "joinButton": "Rejoindre une partie",
     "cancelButton": "Annuler",
     "pinInputTitle": "Entrez le code PIN",
@@ -10,13 +9,11 @@
     "joinError": "Code PIN invalide. Veuillez réessayer."
   },
   "startPage": {
-    "startButton": "Commencer la partie",
-    "startButtonPending": "Lancement..."
+    "startButton": "Commencer la partie"
   },
   "themePage": {
     "title": "Choix du thème",
     "themeMaster": "Vous êtes le maître du thème, veuillez choisir le thème pour ce tour",
-    "choosingPending": "Sélection...",
     "waiting": "%{name}",
     "waitingSubtitle": "est en train de choisir le thème...",
     "addThemeButton": "Ajouter un thème personnalisé",
@@ -50,32 +47,37 @@
   "pickPage": {
     "yourSong": "Vous avez choisi :",
     "cancelButton": "Annuler",
-    "cancelButtonPending": "Annulation...",
     "chooseSong": "Choisissez une chanson en rapport avec le thème",
     "searchPlaceholder": "Rechercher une chanson...",
     "chooseButton": "Choisir",
-    "chooseButtonPending": "Sélection...",
     "notChosen": "Pas encore choisi :",
     "alreadyChosen": "Déjà choisi :"
   },
   "votePage": {
     "title": "Qui a choisi cette chanson ?",
     "voteButton": "Voter",
-    "voteButtonPending": "Vote...",
     "cancelButton": "Annuler",
-    "cancelButtonPending": "Annulation...",
     "notVoted": "Pas encore voté :",
     "alreadyVoted": "Déjà voté :"
   },
   "revealPage": {
     "title": "Révélation du tour",
     "nextRoundButton": "Tour suivant",
-    "nextRoundButtonPending": "Chargement...",
     "yourSong": "Votre chanson",
     "yourVotes": "Vos votes",
     "chose": "a choisi :",
     "correctVote": "Bonne réponse !",
-    "yourVote": "Vous avez voté : %{name}"
+    "yourVote": "Vous avez voté : %{name}",
+    "seeRankingButton": "Voir le classement"
+  },
+  "rankingPage": {
+    "title": "Classement",
+    "nextRoundButton": "Manche suivante",
+    "pointsThisRound": "+%{count} ce tour",
+    "totalPoints": "%{count} pts",
+    "rankUp": "↑%{count}",
+    "rankDown": "↓%{count}",
+    "rankSame": "−"
   },
   "resultPage": {
     "title": "Résultats",

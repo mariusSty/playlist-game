@@ -1,5 +1,6 @@
 import { Avatar } from "@/components/Avatar";
 import Container from "@/components/Container";
+import { LoadingButton } from "@/components/LoadingButton";
 import { PlayersStatus } from "@/components/PlayersStatus";
 import { TrackCard } from "@/components/TrackCard";
 import { usePick } from "@/hooks/usePick";
@@ -66,32 +67,29 @@ export default function Vote() {
             {hasVoted ? (
               <>
                 {userGuessedId === player.id && (
-                  <Button
+                  <LoadingButton
                     onPress={handleCancelVote}
-                    isDisabled={cancelVoteMutation.isPending}
+                    isLoading={cancelVoteMutation.isPending}
                   >
                     <Button.Label>
-                      {cancelVoteMutation.isPending
-                        ? i18n.t("votePage.cancelButtonPending")
-                        : i18n.t("votePage.cancelButton")}
+                      {i18n.t("votePage.cancelButton")}
                     </Button.Label>
-                  </Button>
+                  </LoadingButton>
                 )}
               </>
             ) : (
-              <Button
+              <LoadingButton
                 onPress={() => handleVote(player.id)}
+                isLoading={
+                  voteMutation.isPending &&
+                  voteMutation.variables?.guessId === player.id
+                }
                 isDisabled={
                   isMutating && voteMutation.variables?.guessId !== player.id
                 }
               >
-                <Button.Label>
-                  {voteMutation.isPending &&
-                  voteMutation.variables.guessId === player.id
-                    ? i18n.t("votePage.voteButtonPending")
-                    : i18n.t("votePage.voteButton")}
-                </Button.Label>
-              </Button>
+                <Button.Label>{i18n.t("votePage.voteButton")}</Button.Label>
+              </LoadingButton>
             )}
           </View>
         ))}

@@ -110,7 +110,11 @@ function RootLayoutNav() {
 
     if (userSession) {
       const route = sessionToRoute(userSession);
-      if (route !== pathname) {
+      const onSiblingRanking =
+        userSession.phase === "reveal" &&
+        pathname ===
+          `/room/${userSession.pin}/${userSession.gameId}/${userSession.roundId}/ranking`;
+      if (route !== pathname && !onSiblingRanking) {
         router.replace(route as Href);
       }
     }

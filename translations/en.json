@@ -2,7 +2,6 @@
   "homePage": {
     "title": "Playlist Game",
     "createButton": "Create a game",
-    "createButtonPending": "Creating...",
     "joinButton": "Join a game",
     "cancelButton": "Cancel",
     "pinInputTitle": "Enter the PIN",
@@ -10,13 +9,11 @@
     "joinError": "Invalid PIN. Please try again."
   },
   "startPage": {
-    "startButton": "Start game",
-    "startButtonPending": "Starting..."
+    "startButton": "Start game"
   },
   "themePage": {
     "title": "Theme choice",
     "themeMaster": "You are the theme master, please choose the theme for this round",
-    "choosingPending": "Selecting...",
     "waiting": "%{name}",
     "waitingSubtitle": "is choosing the theme...",
     "addThemeButton": "Add a custom theme",
@@ -50,32 +47,37 @@
   "pickPage": {
     "yourSong": "You chose:",
     "cancelButton": "Cancel",
-    "cancelButtonPending": "Cancelling...",
     "chooseSong": "Pick a song that matches the theme",
     "searchPlaceholder": "Search a song...",
     "chooseButton": "Choose",
-    "chooseButtonPending": "Choosing...",
     "notChosen": "Not chosen yet:",
     "alreadyChosen": "Already chosen:"
   },
   "votePage": {
     "title": "Who chose this song?",
     "voteButton": "Vote",
-    "voteButtonPending": "Voting...",
     "cancelButton": "Cancel",
-    "cancelButtonPending": "Cancelling...",
     "notVoted": "Not voted yet:",
     "alreadyVoted": "Already voted:"
   },
   "revealPage": {
     "title": "Round Reveal",
     "nextRoundButton": "Next round",
-    "nextRoundButtonPending": "Loading...",
     "yourSong": "Your song",
     "yourVotes": "Your votes",
     "chose": "chose:",
     "correctVote": "Correct guess!",
-    "yourVote": "Your guess: %{name}"
+    "yourVote": "Your guess: %{name}",
+    "seeRankingButton": "See ranking"
+  },
+  "rankingPage": {
+    "title": "Standings",
+    "nextRoundButton": "Next round",
+    "pointsThisRound": "+%{count} this round",
+    "totalPoints": "%{count} pts",
+    "rankUp": "↑%{count}",
+    "rankDown": "↓%{count}",
+    "rankSame": "−"
   },
   "resultPage": {
     "title": "Results",

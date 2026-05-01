@@ -1,12 +1,10 @@
 import { Avatar } from "@/components/Avatar";
 import Container from "@/components/Container";
 import { TrackCard } from "@/components/TrackCard";
-import { useRoom } from "@/hooks/useRoom";
 import { useRound } from "@/hooks/useRound";
-import { useNextRound } from "@/hooks/useRoundMutations";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Button } from "heroui-native";
 import { CircleCheck, CircleX } from "lucide-react-native";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
@@ -17,19 +15,11 @@ export default function Reveal() {
     pin: string;
     gameId: string;
   }>();
-  const { room } = useRoom(pin);
   const { round, isRoundLoading } = useRound(roundId);
   const user = useUserStore((state) => state.user);
-  const nextRound = useNextRound();
 
-  function handleNextRound() {
-    nextRound.mutate({
-      pin,
-      gameId,
-      userId: user.id,
-      userName: user.name,
-      roundId,
-    });
+  function handleSeeRanking() {
+    router.push(`/room/${pin}/${gameId}/${roundId}/ranking`);
   }
 
   if (isRoundLoading || !round) {
@@ -110,15 +100,9 @@ export default function Reveal() {
         )}
       </ScrollView>
 
-      {room?.host.id === user.id && (
-        <Button onPress={handleNextRound} isDisabled={nextRound.isPending}>
-          <Button.Label>
-            {nextRound.isPending
-              ? i18n.t("revealPage.nextRoundButtonPending")
-              : i18n.t("revealPage.nextRoundButton")}
-          </Button.Label>
-        </Button>
-      )}
+      <Button onPress={handleSeeRanking}>
+        <Button.Label>{i18n.t("revealPage.seeRankingButton")}</Button.Label>
+      </Button>
     </Container>
   );
 }

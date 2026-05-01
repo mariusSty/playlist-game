@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import { LoadingButton } from "@/components/LoadingButton";
 import { PlayersStatus } from "@/components/PlayersStatus";
 import { TrackCard } from "@/components/TrackCard";
 import { useMusicApiSearch } from "@/hooks/usePick";
@@ -85,16 +86,12 @@ export default function Song() {
               {i18n.t("pickPage.yourSong")}
             </Text>
             <TrackCard track={userPick.track} />
-            <Button
+            <LoadingButton
               onPress={handleCancelSong}
-              isDisabled={cancelPick.isPending}
+              isLoading={cancelPick.isPending}
             >
-              <Button.Label>
-                {cancelPick.isPending
-                  ? i18n.t("pickPage.cancelButtonPending")
-                  : i18n.t("pickPage.cancelButton")}
-              </Button.Label>
-            </Button>
+              <Button.Label>{i18n.t("pickPage.cancelButton")}</Button.Label>
+            </LoadingButton>
           </View>
         ) : (
           <>
@@ -120,19 +117,22 @@ export default function Song() {
                   <View className="flex-1 gap-3">
                     {tracks?.map((track) => (
                       <TrackCard key={track.id} track={track}>
-                        <Button
+                        <LoadingButton
                           onPress={() => handleSelectTrack(track)}
+                          isLoading={
+                            validatePick.isPending &&
+                            validatePick.variables?.track?.id === track.id
+                          }
                           isDisabled={
-                            validatePick.isPending || cancelPick.isPending
+                            (validatePick.isPending &&
+                              validatePick.variables?.track?.id !== track.id) ||
+                            cancelPick.isPending
                           }
                         >
                           <Button.Label>
-                            {validatePick.isPending &&
-                            search === track.title + " - " + track.artist
-                              ? i18n.t("pickPage.chooseButtonPending")
-                              : i18n.t("pickPage.chooseButton")}
+                            {i18n.t("pickPage.chooseButton")}
                           </Button.Label>
-                        </Button>
+                        </LoadingButton>
                       </TrackCard>
                     ))}
                   </View>

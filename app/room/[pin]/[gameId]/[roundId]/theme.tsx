@@ -1,5 +1,6 @@
 import { Avatar } from "@/components/Avatar";
 import Container from "@/components/Container";
+import { LoadingButton } from "@/components/LoadingButton";
 import { useRound } from "@/hooks/useRound";
 import { usePickTheme } from "@/hooks/useRoundMutations";
 import { useThemes } from "@/hooks/useThemes";
@@ -82,21 +83,22 @@ export default function RoundTheme() {
             contentContainerClassName="items-stretch gap-y-5"
           >
             {shuffledThemes.map((theme) => (
-              <Button
+              <LoadingButton
                 key={theme.id}
                 onPress={() => handleChoose(theme.id)}
+                isLoading={
+                  pickTheme.isPending &&
+                  pickTheme.variables?.themeId === theme.id
+                }
                 isDisabled={
                   pickTheme.isPending &&
                   pickTheme.variables?.themeId !== theme.id
                 }
               >
                 <Button.Label>
-                  {pickTheme.isPending &&
-                  pickTheme.variables?.themeId === theme.id
-                    ? i18n.t("themePage.choosingPending")
-                    : i18n.t(`themePage.themes.${theme.key}`)}
+                  {i18n.t(`themePage.themes.${theme.key}`)}
                 </Button.Label>
-              </Button>
+              </LoadingButton>
             ))}
           </ScrollView>
           <View className="pt-5">
@@ -129,17 +131,18 @@ export default function RoundTheme() {
                       onSubmitEditing={handleSubmitCustom}
                       returnKeyType="done"
                     />
-                    <Button
+                    <LoadingButton
                       onPress={handleSubmitCustom}
-                      isDisabled={!customValue.trim() || pickTheme.isPending}
+                      isLoading={
+                        pickTheme.isPending &&
+                        pickTheme.variables?.customTheme !== undefined
+                      }
+                      isDisabled={!customValue.trim()}
                     >
                       <Button.Label>
-                        {pickTheme.isPending &&
-                        pickTheme.variables?.customTheme !== undefined
-                          ? i18n.t("themePage.choosingPending")
-                          : i18n.t("themePage.customThemeSubmit")}
+                        {i18n.t("themePage.customThemeSubmit")}
                       </Button.Label>
-                    </Button>
+                    </LoadingButton>
                   </View>
                 </BottomSheet.Content>
               </BottomSheet.Portal>

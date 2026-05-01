@@ -48,6 +48,14 @@ export type Result = {
   score: number;
 };
 
+export type Standing = {
+  user: User;
+  totalScore: number;
+  roundScore: number;
+  place: number;
+  previousPlace: number | null;
+};
+
 export type Track = {
   id: string;
   title: string;

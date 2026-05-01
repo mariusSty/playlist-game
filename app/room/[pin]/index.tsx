@@ -1,5 +1,6 @@
 import { Avatar } from "@/components/Avatar";
 import Container from "@/components/Container";
+import { LoadingButton } from "@/components/LoadingButton";
 import { useStartGame } from "@/hooks/useGameMutations";
 import { useRoom } from "@/hooks/useRoom";
 import { useLeaveRoom } from "@/hooks/useRoomMutations";
@@ -23,7 +24,6 @@ export default function RoomScreen() {
 
   const users = room?.users ?? [];
   const hostId = room?.host?.id;
-  const anyPending = startGame.isPending || leaveRoom.isPending;
 
   return (
     <Container title={`PIN : ${pin}`}>
@@ -43,13 +43,13 @@ export default function RoomScreen() {
       </ScrollView>
       {user.id === hostId && (
         <View className="w-full">
-          <Button onPress={handleStartGame} isDisabled={anyPending}>
-            <Button.Label>
-              {startGame.isPending
-                ? i18n.t("startPage.startButtonPending")
-                : i18n.t("startPage.startButton")}
-            </Button.Label>
-          </Button>
+          <LoadingButton
+            onPress={handleStartGame}
+            isLoading={startGame.isPending}
+            isDisabled={leaveRoom.isPending}
+          >
+            <Button.Label>{i18n.t("startPage.startButton")}</Button.Label>
+          </LoadingButton>
         </View>
       )}
     </Container>

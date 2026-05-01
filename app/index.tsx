@@ -1,4 +1,5 @@
 import { Avatar } from "@/components/Avatar";
+import { LoadingButton } from "@/components/LoadingButton";
 import { useCreateRoom, useJoinRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
@@ -84,16 +85,13 @@ export default function Main() {
                 exiting={FadeOut.duration(200)}
                 className="gap-5"
               >
-                <Button
+                <LoadingButton
                   onPress={handleCreateRoom}
-                  isDisabled={!user.name || createRoom.isPending}
+                  isLoading={createRoom.isPending}
+                  isDisabled={!user.name}
                 >
-                  <Button.Label>
-                    {createRoom.isPending
-                      ? i18n.t("homePage.createButtonPending")
-                      : i18n.t("homePage.createButton")}
-                  </Button.Label>
-                </Button>
+                  <Button.Label>{i18n.t("homePage.createButton")}</Button.Label>
+                </LoadingButton>
                 <Button
                   onPress={() => setScreen("joining")}
                   isDisabled={!user.name || createRoom.isPending}
