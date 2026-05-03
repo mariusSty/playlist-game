@@ -2,7 +2,7 @@
   "expo": {
     "name": "Playlist Game",
     "slug": "playlist-game",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/images/icon-black.png",
     "scheme": "playlistgame",
