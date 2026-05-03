@@ -14,13 +14,12 @@
   "themePage": {
     "title": "Theme choice",
     "themeMaster": "You are the theme master, please choose the theme for this round",
+    "selectPrompt": "Which theme for this round?",
+    "validateButton": "Pick this theme",
     "waiting": "%{name}",
     "waitingSubtitle": "is choosing the theme...",
-    "addThemeButton": "Add a custom theme",
-    "customThemeTitle": "Custom theme",
-    "customThemeDescription": "Write your own theme for this round.",
-    "customThemePlaceholder": "Your theme",
-    "customThemeSubmit": "Validate",
+    "addThemeButton": "Custom theme",
+    "customThemePlaceholder": "Your custom theme",
     "themes": {
       "gultyPleasure": "😏 Your guilty pleasure",
       "sleepyTime": "😴 The perfect track to fall asleep",

@@ -7,9 +7,15 @@ import { useThemes } from "@/hooks/useThemes";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import { useLocalSearchParams } from "expo-router";
-import { BottomSheet, Button, Input } from "heroui-native";
+import { Button, Input } from "heroui-native";
 import { useMemo, useState } from "react";
-import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
+
+function splitEmoji(label: string): { emoji: string; text: string } {
+  const idx = label.indexOf(" ");
+  if (idx === -1) return { emoji: "", text: label };
+  return { emoji: label.slice(0, idx), text: label.slice(idx + 1) };
+}
 
 export default function RoundTheme() {
   const user = useUserStore((state) => state.user);
@@ -21,42 +27,52 @@ export default function RoundTheme() {
   const { round, isRoundLoading } = useRound(roundId);
   const { themes, isThemesLoading } = useThemes();
   const pickTheme = usePickTheme();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [customValue, setCustomValue] = useState("");
+  const [selectedThemeId, setSelectedThemeId] = useState<number | null>(null);
+  const [isCustomSelected, setIsCustomSelected] = useState(false);
 
   const shuffledThemes = useMemo(
     () => (themes ? [...themes].sort(() => Math.random() - 0.5) : []),
     [themes],
   );
 
-  function handleChoose(themeId: number) {
-    pickTheme.mutate({
-      roundId,
-      themeId,
-      userId: user.id,
-      userName: user.name,
-      pin,
-    });
+  function selectTheme(id: number) {
+    setSelectedThemeId(id);
+    setIsCustomSelected(false);
+    setCustomValue("");
   }
 
-  function handleSubmitCustom() {
-    const trimmed = customValue.trim();
-    if (!trimmed) return;
-    pickTheme.mutate(
-      {
+  function selectCustom() {
+    setSelectedThemeId(null);
+    setIsCustomSelected(true);
+  }
+
+  function handleCustomChange(value: string) {
+    setCustomValue(value);
+    if (!isCustomSelected) selectCustom();
+  }
+
+  function handleValidate() {
+    if (isCustomSelected) {
+      const trimmed = customValue.trim();
+      if (!trimmed) return;
+      pickTheme.mutate({
         roundId,
         customTheme: trimmed,
         userId: user.id,
         userName: user.name,
         pin,
-      },
-      {
-        onSuccess: () => {
-          setIsSheetOpen(false);
-          setCustomValue("");
-        },
-      },
-    );
+      });
+      return;
+    }
+    if (selectedThemeId === null) return;
+    pickTheme.mutate({
+      roundId,
+      themeId: selectedThemeId,
+      userId: user.id,
+      userName: user.name,
+      pin,
+    });
   }
 
   if (isRoundLoading || !round || !round.themeMaster || isThemesLoading) {
@@ -71,100 +87,96 @@ export default function RoundTheme() {
 
   const isThemeMaster = round.themeMaster.id === user.id;
 
-  if (isThemeMaster) {
+  if (!isThemeMaster) {
     return (
       <Container title={i18n.t("themePage.title")}>
-        <View className="flex-1 w-full">
-          <Text className="py-8 text-xl text-foreground">
-            {i18n.t("themePage.themeMaster")}
+        <View className="items-center py-8 gap-y-2">
+          <Avatar name={round.themeMaster.name} />
+          <Text className="text-xl font-bold text-foreground">
+            {i18n.t("themePage.waiting", {
+              name: round.themeMaster.name,
+            })}
           </Text>
-          <ScrollView
-            className="flex-1"
-            contentContainerClassName="items-stretch gap-y-5"
-          >
-            {shuffledThemes.map((theme) => (
-              <LoadingButton
-                key={theme.id}
-                onPress={() => handleChoose(theme.id)}
-                isLoading={
-                  pickTheme.isPending &&
-                  pickTheme.variables?.themeId === theme.id
-                }
-                isDisabled={
-                  pickTheme.isPending &&
-                  pickTheme.variables?.themeId !== theme.id
-                }
-              >
-                <Button.Label>
-                  {i18n.t(`themePage.themes.${theme.key}`)}
-                </Button.Label>
-              </LoadingButton>
-            ))}
-          </ScrollView>
-          <View className="pt-5">
-            <BottomSheet isOpen={isSheetOpen} onOpenChange={setIsSheetOpen}>
-              <BottomSheet.Trigger asChild>
-                <Button variant="tertiary" isDisabled={pickTheme.isPending}>
-                  <Button.Label>
-                    {i18n.t("themePage.addThemeButton")}
-                  </Button.Label>
-                </Button>
-              </BottomSheet.Trigger>
-              <BottomSheet.Portal>
-                <BottomSheet.Overlay />
-                <BottomSheet.Content>
-                  <View className="gap-2 mb-6">
-                    <BottomSheet.Title>
-                      {i18n.t("themePage.customThemeTitle")}
-                    </BottomSheet.Title>
-                    <BottomSheet.Description>
-                      {i18n.t("themePage.customThemeDescription")}
-                    </BottomSheet.Description>
-                  </View>
-                  <View className="gap-4">
-                    <Input
-                      value={customValue}
-                      onChangeText={setCustomValue}
-                      placeholder={i18n.t("themePage.customThemePlaceholder")}
-                      autoFocus={isSheetOpen}
-                      autoCorrect={false}
-                      onSubmitEditing={handleSubmitCustom}
-                      returnKeyType="done"
-                    />
-                    <LoadingButton
-                      onPress={handleSubmitCustom}
-                      isLoading={
-                        pickTheme.isPending &&
-                        pickTheme.variables?.customTheme !== undefined
-                      }
-                      isDisabled={!customValue.trim()}
-                    >
-                      <Button.Label>
-                        {i18n.t("themePage.customThemeSubmit")}
-                      </Button.Label>
-                    </LoadingButton>
-                  </View>
-                </BottomSheet.Content>
-              </BottomSheet.Portal>
-            </BottomSheet>
-          </View>
+          <Text className="text-lg text-foreground">
+            {i18n.t("themePage.waitingSubtitle")}
+          </Text>
         </View>
       </Container>
     );
   }
 
+  const selectedTheme = shuffledThemes.find((t) => t.id === selectedThemeId);
+  const trimmedCustom = customValue.trim();
+  const previewLabel = isCustomSelected
+    ? trimmedCustom || null
+    : selectedTheme
+      ? splitEmoji(i18n.t(`themePage.themes.${selectedTheme.key}`)).text
+      : null;
+  const isValidateDisabled =
+    pickTheme.isPending ||
+    (isCustomSelected ? !trimmedCustom : selectedThemeId === null);
+
   return (
     <Container title={i18n.t("themePage.title")}>
-      <View className="items-center py-8 gap-y-2">
-        <Avatar name={round.themeMaster.name} />
-        <Text className="text-xl font-bold text-foreground">
-          {i18n.t("themePage.waiting", {
-            name: round.themeMaster.name,
+      <View className="flex-1 w-full">
+        <View className="items-center justify-center px-4 py-6 min-h-28">
+          <Text
+            className={
+              previewLabel
+                ? "text-2xl font-bold text-center text-foreground"
+                : "text-lg text-center text-foreground/50"
+            }
+          >
+            {previewLabel ?? i18n.t("themePage.selectPrompt")}
+          </Text>
+        </View>
+
+        <View className="flex-row flex-wrap justify-center gap-3">
+          {shuffledThemes.map((theme) => {
+            const { emoji } = splitEmoji(
+              i18n.t(`themePage.themes.${theme.key}`),
+            );
+            const isSelected =
+              !isCustomSelected && selectedThemeId === theme.id;
+            return (
+              <Pressable
+                key={theme.id}
+                onPress={() => selectTheme(theme.id)}
+                disabled={pickTheme.isPending}
+                className={`w-[22%] aspect-square rounded-2xl border-2 ${
+                  isSelected
+                    ? "border-foreground bg-foreground/10"
+                    : "border-foreground/10 bg-foreground/5"
+                }`}
+              >
+                <View className="items-center justify-center flex-1">
+                  <Text>{emoji}</Text>
+                </View>
+              </Pressable>
+            );
           })}
-        </Text>
-        <Text className="text-lg text-foreground">
-          {i18n.t("themePage.waitingSubtitle")}
-        </Text>
+        </View>
+
+        <View className="w-full h-px my-6 bg-foreground/10" />
+
+        <Input
+          value={customValue}
+          onChangeText={handleCustomChange}
+          onFocus={selectCustom}
+          placeholder={i18n.t("themePage.customThemePlaceholder")}
+          autoCorrect={false}
+          returnKeyType="done"
+        />
+
+        <View className="pt-6 mt-auto">
+          <LoadingButton
+            onPress={handleValidate}
+            isLoading={pickTheme.isPending}
+            isDisabled={isValidateDisabled}
+          >
+            <Button.Label>{i18n.t("themePage.validateButton")}</Button.Label>
+          </LoadingButton>
+        </View>
       </View>
     </Container>
   );

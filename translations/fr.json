@@ -14,13 +14,12 @@
   "themePage": {
     "title": "Choix du thème",
     "themeMaster": "Vous êtes le maître du thème, veuillez choisir le thème pour ce tour",
+    "selectPrompt": "Quel thème pour ce tour ?",
+    "validateButton": "Valider ce thème",
     "waiting": "%{name}",
     "waitingSubtitle": "est en train de choisir le thème...",
-    "addThemeButton": "Ajouter un thème personnalisé",
-    "customThemeTitle": "Thème personnalisé",
-    "customThemeDescription": "Proposez votre propre thème pour ce tour.",
-    "customThemePlaceholder": "Votre thème",
-    "customThemeSubmit": "Valider",
+    "addThemeButton": "Thème personnalisé",
+    "customThemePlaceholder": "Votre thème personnalisé",
     "themes": {
       "gultyPleasure": "😏 Votre guilty pleasure",
       "sleepyTime": "😴 Le titre parfait pour s'endormir",
