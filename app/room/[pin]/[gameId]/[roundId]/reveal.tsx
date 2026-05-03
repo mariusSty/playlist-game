@@ -35,7 +35,7 @@ export default function Reveal() {
   const myPick = round.picks.find((p) => p.user.id === user.id);
   const otherPicks = round.picks.filter((p) => p.user.id !== user.id);
 
-  const score = otherPicks.reduce((acc, pick) => {
+  const score = round.picks.reduce((acc, pick) => {
     const myVote = pick.votes.find((v) => v.guessUser.id === user.id);
     return myVote?.guessedUser.id === pick.user.id ? acc + 1 : acc;
   }, 0);

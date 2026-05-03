@@ -62,7 +62,7 @@ export default function Song() {
     );
   }
 
-  if (isRoundLoading || !round) {
+  if (isRoundLoading || !round || (!round.theme && !round.customTheme)) {
     return (
       <View className="justify-center flex-1">
         <ActivityIndicator size="large" />
@@ -71,11 +71,7 @@ export default function Song() {
   }
 
   const displayTheme =
-    round.customTheme ?? i18n.t(`themePage.themes.${round.theme?.key}`);
-
-  if (!displayTheme) {
-    throw new Error("Theme is missing");
-  }
+    round.customTheme ?? i18n.t(`themePage.themes.${round.theme!.key}`);
 
   return (
     <Container title={displayTheme}>

@@ -126,7 +126,7 @@ export default function RoundTheme() {
                       value={customValue}
                       onChangeText={setCustomValue}
                       placeholder={i18n.t("themePage.customThemePlaceholder")}
-                      autoFocus
+                      autoFocus={isSheetOpen}
                       autoCorrect={false}
                       onSubmitEditing={handleSubmitCustom}
                       returnKeyType="done"
