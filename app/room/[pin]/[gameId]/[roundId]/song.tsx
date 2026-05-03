@@ -48,7 +48,6 @@ export default function Song() {
           artist: track.artist,
           album: track.album,
           cover: track.cover,
-          previewUrl: track.previewUrl,
         },
       },
       { onError: () => setSearch("") },

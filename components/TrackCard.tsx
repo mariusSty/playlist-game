@@ -37,7 +37,7 @@ export function TrackCard({ track, pickedBy, header, children }: TrackCardProps)
             transition={200}
           />
           <View className="absolute inset-0 items-center justify-center">
-            <PlayPauseButton previewUrl={track.previewUrl} size={16} />
+            <PlayPauseButton trackId={track.id} size={16} />
           </View>
         </View>
         <View className="flex-1 gap-1">

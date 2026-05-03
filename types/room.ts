@@ -62,7 +62,6 @@ export type Track = {
   artist: string;
   album: string;
   cover: string;
-  previewUrl: string;
 };
 
 export type UserSession =
