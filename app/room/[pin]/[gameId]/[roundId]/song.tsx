@@ -70,7 +70,7 @@ export default function Song() {
   }
 
   const displayTheme =
-    round.customTheme ?? i18n.t(`themePage.themes.${round.theme!.key}`);
+    round.customTheme ?? i18n.t(`themePage.themes.${round.theme!.key}`) ?? "";
 
   return (
     <Container title={displayTheme}>
