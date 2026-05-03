@@ -8,8 +8,14 @@ import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
 import { useLocalSearchParams } from "expo-router";
 import { Button, Input } from "heroui-native";
-import { useMemo, useState } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { useMemo, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 function splitEmoji(label: string): { emoji: string; text: string } {
   const idx = label.indexOf(" ");
@@ -30,6 +36,7 @@ export default function RoundTheme() {
   const [customValue, setCustomValue] = useState("");
   const [selectedThemeId, setSelectedThemeId] = useState<number | null>(null);
   const [isCustomSelected, setIsCustomSelected] = useState(false);
+  const customInputRef = useRef<TextInput>(null);
 
   const shuffledThemes = useMemo(
     () => (themes ? [...themes].sort(() => Math.random() - 0.5) : []),
@@ -40,6 +47,7 @@ export default function RoundTheme() {
     setSelectedThemeId(id);
     setIsCustomSelected(false);
     setCustomValue("");
+    customInputRef.current?.blur();
   }
 
   function selectCustom() {
@@ -160,6 +168,7 @@ export default function RoundTheme() {
         <View className="w-full h-px my-6 bg-foreground/10" />
 
         <Input
+          ref={customInputRef}
           value={customValue}
           onChangeText={handleCustomChange}
           onFocus={selectCustom}
