@@ -11,6 +11,8 @@ import { Button, Input } from "heroui-native";
 import { useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   ScrollView,
   Text,
@@ -127,7 +129,11 @@ export default function RoundTheme() {
 
   return (
     <Container title={i18n.t("themePage.title")}>
-      <View className="flex-1 w-full">
+      <KeyboardAvoidingView
+        className="flex-1 w-full"
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+      >
         <View className="items-center justify-center px-4 min-h-20">
           <Text
             className={
@@ -200,7 +206,7 @@ export default function RoundTheme() {
             </LoadingButton>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Container>
   );
 }
