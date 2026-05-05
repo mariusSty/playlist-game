@@ -1,4 +1,5 @@
 import { Theme } from "@/types/room";
+import { cn } from "@/utils/cn";
 import { splitEmoji } from "@/utils/splitEmoji";
 import i18n from "@/utils/translation";
 import { Pressable, Text, View } from "react-native";
@@ -21,11 +22,12 @@ export function ThemeTile({
     <Pressable
       onPress={onPress}
       disabled={disabled}
-      className={`w-[22%] aspect-square rounded-2xl border-2 ${
+      className={cn(
+        "w-[22%] aspect-square rounded-2xl border-2",
         isSelected
           ? "border-foreground bg-foreground/10"
-          : "border-foreground/10 bg-foreground/5"
-      }`}
+          : "border-foreground/10 bg-foreground/5",
+      )}
     >
       <View className="items-center justify-center flex-1">
         <Text>{emoji}</Text>

@@ -2,6 +2,7 @@ import { LoadingButton } from "@/components/LoadingButton";
 import { ThemeTile } from "@/components/ThemeTile";
 import { usePickTheme } from "@/hooks/useRoundMutations";
 import { Theme } from "@/types/room";
+import { cn } from "@/utils/cn";
 import { splitEmoji } from "@/utils/splitEmoji";
 import i18n from "@/utils/translation";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -102,11 +103,12 @@ export function ThemePicker({
     >
       <View className="items-center justify-center px-4 min-h-20">
         <Text
-          className={
+          className={cn(
+            "text-center",
             previewLabel
-              ? "text-2xl font-bold text-center text-foreground"
-              : "text-lg text-center text-foreground/50"
-          }
+              ? "text-2xl font-bold text-foreground"
+              : "text-lg text-foreground/50",
+          )}
         >
           {previewLabel ?? i18n.t("themePage.selectPrompt")}
         </Text>
