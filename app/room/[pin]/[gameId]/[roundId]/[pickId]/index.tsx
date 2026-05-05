@@ -1,5 +1,4 @@
 import { Avatar } from "@/components/Avatar";
-import Container from "@/components/Container";
 import { LoadingButton } from "@/components/LoadingButton";
 import { PlayersStatus } from "@/components/PlayersStatus";
 import { TrackCard } from "@/components/TrackCard";
@@ -8,7 +7,7 @@ import { useCancelVote, useVote } from "@/hooks/usePickMutations";
 import { useRoom } from "@/hooks/useRoom";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Button } from "heroui-native";
 import { ScrollView, Text, View } from "react-native";
 
@@ -52,7 +51,8 @@ export default function Vote() {
   }
 
   return (
-    <Container title={i18n.t("votePage.title")}>
+    <View className="flex-1 p-8 justify-around">
+      <Stack.Screen options={{ title: i18n.t("votePage.title") }} />
       {pick && <TrackCard track={pick.track} />}
       <ScrollView className="flex-1 p-4" showsVerticalScrollIndicator={false}>
         {room?.users?.map((player) => (
@@ -100,6 +100,6 @@ export default function Vote() {
         notValidatedLabel={i18n.t("votePage.notVoted")}
         validatedLabel={i18n.t("votePage.alreadyVoted")}
       />
-    </Container>
+    </View>
   );
 }

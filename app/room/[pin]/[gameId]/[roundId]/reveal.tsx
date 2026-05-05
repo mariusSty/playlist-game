@@ -1,10 +1,9 @@
 import { Avatar } from "@/components/Avatar";
-import Container from "@/components/Container";
 import { TrackCard } from "@/components/TrackCard";
 import { useRound } from "@/hooks/useRound";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Button } from "heroui-native";
 import { CircleCheck, CircleX } from "lucide-react-native";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
@@ -24,11 +23,12 @@ export default function Reveal() {
 
   if (isRoundLoading || !round) {
     return (
-      <Container title={i18n.t("revealPage.title")}>
+      <View className="flex-1 p-8 justify-around">
+        <Stack.Screen options={{ title: i18n.t("revealPage.title") }} />
         <View className="justify-center flex-1">
           <ActivityIndicator size="large" />
         </View>
-      </Container>
+      </View>
     );
   }
 
@@ -41,7 +41,8 @@ export default function Reveal() {
   }, 0);
 
   return (
-    <Container title={i18n.t("revealPage.title")}>
+    <View className="flex-1 p-8 justify-around">
+      <Stack.Screen options={{ title: i18n.t("revealPage.title") }} />
       <View className="items-center py-6">
         <Text className="text-5xl font-bold text-foreground">{score}</Text>
         <Text className="text-base text-foreground mt-1">
@@ -103,6 +104,6 @@ export default function Reveal() {
       <Button onPress={handleSeeRanking}>
         <Button.Label>{i18n.t("revealPage.seeRankingButton")}</Button.Label>
       </Button>
-    </Container>
+    </View>
   );
 }

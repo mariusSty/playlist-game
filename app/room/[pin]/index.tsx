@@ -1,12 +1,11 @@
 import { Avatar } from "@/components/Avatar";
-import Container from "@/components/Container";
 import { LoadingButton } from "@/components/LoadingButton";
 import { useStartGame } from "@/hooks/useGameMutations";
 import { useRoom } from "@/hooks/useRoom";
 import { useLeaveRoom } from "@/hooks/useRoomMutations";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Button } from "heroui-native";
 import { Star } from "lucide-react-native";
 import { ScrollView, Text, View } from "react-native";
@@ -26,7 +25,8 @@ export default function RoomScreen() {
   const hostId = room?.host?.id;
 
   return (
-    <Container title={`PIN : ${pin}`}>
+    <View className="flex-1 p-8 justify-around">
+      <Stack.Screen options={{ title: `PIN : ${pin}` }} />
       <ScrollView
         className="flex-1 w-full"
         showsVerticalScrollIndicator={false}
@@ -52,6 +52,6 @@ export default function RoomScreen() {
           </LoadingButton>
         </View>
       )}
-    </Container>
+    </View>
   );
 }

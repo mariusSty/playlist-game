@@ -6,15 +6,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { CloseButton, useThemeColor } from "heroui-native";
 import { DoorOpen } from "lucide-react-native";
-import { ReactNode } from "react";
-import { Alert, Text, View } from "react-native";
+import { Alert } from "react-native";
 
-type ContainerProps = {
-  children: ReactNode;
-  title: string;
-};
-
-export default function Container({ children, title }: ContainerProps) {
+export function LeaveRoomButton() {
   const { pin } = useLocalSearchParams<{ pin: string }>();
   const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
@@ -52,20 +46,12 @@ export default function Container({ children, title }: ContainerProps) {
   }
 
   return (
-    <View className="items-center flex-1 gap-8 p-8">
-      <View className="w-full gap-4">
-        <CloseButton
-          onPress={handleLeave}
-          isDisabled={leaveRoom.isPending}
-          variant="ghost"
-        >
-          <DoorOpen size={20} color={foregroundColor} />
-        </CloseButton>
-        <Text className="w-full text-3xl font-bold text-center text-foreground">
-          {title}
-        </Text>
-      </View>
-      <View className="justify-around flex-1 w-full">{children}</View>
-    </View>
+    <CloseButton
+      onPress={handleLeave}
+      isDisabled={leaveRoom.isPending}
+      variant="ghost"
+    >
+      <DoorOpen size={20} color={foregroundColor} />
+    </CloseButton>
   );
 }

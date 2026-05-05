@@ -1,4 +1,3 @@
-import Container from "@/components/Container";
 import { LoadingButton } from "@/components/LoadingButton";
 import { PlayersStatus } from "@/components/PlayersStatus";
 import { TrackCard } from "@/components/TrackCard";
@@ -9,7 +8,7 @@ import { useRound } from "@/hooks/useRound";
 import { useUserStore } from "@/stores/user-store";
 import { Track } from "@/types/room";
 import i18n from "@/utils/translation";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Button, SearchField } from "heroui-native";
 import { useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
@@ -73,7 +72,8 @@ export default function Song() {
     round.customTheme ?? i18n.t(`themePage.themes.${round.theme!.key}`) ?? "";
 
   return (
-    <Container title={displayTheme}>
+    <View className="flex-1 p-8 justify-around">
+      <Stack.Screen options={{ title: displayTheme }} />
       <View className="justify-between flex-1 w-full">
         {userPick ? (
           <View className="flex-1 justify-center w-full gap-4">
@@ -143,6 +143,6 @@ export default function Song() {
           validatedLabel={i18n.t("pickPage.alreadyChosen")}
         />
       </View>
-    </Container>
+    </View>
   );
 }

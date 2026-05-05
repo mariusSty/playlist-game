@@ -1,12 +1,11 @@
 import { Avatar } from "@/components/Avatar";
-import Container from "@/components/Container";
 import { LoadingButton } from "@/components/LoadingButton";
 import { useRoom } from "@/hooks/useRoom";
 import { useNextRound } from "@/hooks/useRoundMutations";
 import { useStandings } from "@/hooks/useStandings";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Button } from "heroui-native";
 import { ActivityIndicator, Text, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -34,18 +33,20 @@ export default function Ranking() {
 
   if (isStandingsLoading || !standings) {
     return (
-      <Container title={i18n.t("rankingPage.title")}>
+      <View className="flex-1 p-8 justify-around">
+        <Stack.Screen options={{ title: i18n.t("rankingPage.title") }} />
         <View className="justify-center flex-1">
           <ActivityIndicator size="large" />
         </View>
-      </Container>
+      </View>
     );
   }
 
   const sorted = [...standings].sort((a, b) => a.place - b.place);
 
   return (
-    <Container title={i18n.t("rankingPage.title")}>
+    <View className="flex-1 p-8 justify-around">
+      <Stack.Screen options={{ title: i18n.t("rankingPage.title") }} />
       <View className="gap-4 my-auto">
         {sorted.map((standing, index) => {
           const delta =
@@ -117,6 +118,6 @@ export default function Ranking() {
           <Button.Label>{i18n.t("rankingPage.nextRoundButton")}</Button.Label>
         </LoadingButton>
       )}
-    </Container>
+    </View>
   );
 }

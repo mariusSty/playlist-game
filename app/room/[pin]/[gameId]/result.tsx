@@ -1,11 +1,10 @@
 import { Avatar } from "@/components/Avatar";
-import Container from "@/components/Container";
 import { useResult } from "@/hooks/useGame";
 import { useFinishGame } from "@/hooks/useGameMutations";
 import { useRoom } from "@/hooks/useRoom";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Button } from "heroui-native";
 import { Text, View } from "react-native";
 
@@ -24,7 +23,8 @@ export default function Result() {
   }
 
   return (
-    <Container title={i18n.t("resultPage.title")}>
+    <View className="flex-1 p-8 justify-around">
+      <Stack.Screen options={{ title: i18n.t("resultPage.title") }} />
       <View className="gap-4 my-auto">
         {result
           .sort((a, b) => b.score - a.score)
@@ -51,6 +51,6 @@ export default function Result() {
           <Button.Label>{i18n.t("resultPage.exitButton")}</Button.Label>
         </Button>
       )}
-    </Container>
+    </View>
   );
 }

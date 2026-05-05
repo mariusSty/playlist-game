@@ -1,12 +1,12 @@
 import { Avatar } from "@/components/Avatar";
-import Container from "@/components/Container";
 import { LoadingButton } from "@/components/LoadingButton";
 import { useRound } from "@/hooks/useRound";
 import { usePickTheme } from "@/hooks/useRoundMutations";
 import { useThemes } from "@/hooks/useThemes";
 import { useUserStore } from "@/stores/user-store";
 import i18n from "@/utils/translation";
-import { useLocalSearchParams } from "expo-router";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Button, Input } from "heroui-native";
 import { useMemo, useRef, useState } from "react";
 import {
@@ -36,6 +36,7 @@ export default function RoundTheme() {
   const { round, isRoundLoading } = useRound(roundId);
   const { themes, isThemesLoading } = useThemes();
   const pickTheme = usePickTheme();
+  const headerHeight = useHeaderHeight();
   const [customValue, setCustomValue] = useState("");
   const [selectedThemeId, setSelectedThemeId] = useState<number | null>(null);
   const [isCustomSelected, setIsCustomSelected] = useState(false);
@@ -88,11 +89,12 @@ export default function RoundTheme() {
 
   if (isRoundLoading || !round || !round.themeMaster || isThemesLoading) {
     return (
-      <Container title={i18n.t("themePage.title")}>
+      <View className="flex-1 p-8 justify-around">
+        <Stack.Screen options={{ title: i18n.t("themePage.title") }} />
         <View>
           <ActivityIndicator size="large" />
         </View>
-      </Container>
+      </View>
     );
   }
 
@@ -100,7 +102,8 @@ export default function RoundTheme() {
 
   if (!isThemeMaster) {
     return (
-      <Container title={i18n.t("themePage.title")}>
+      <View className="flex-1 p-8 justify-around">
+        <Stack.Screen options={{ title: i18n.t("themePage.title") }} />
         <View className="items-center py-8 gap-y-2">
           <Avatar name={round.themeMaster.name} />
           <Text className="text-xl font-bold text-foreground">
@@ -112,7 +115,7 @@ export default function RoundTheme() {
             {i18n.t("themePage.waitingSubtitle")}
           </Text>
         </View>
-      </Container>
+      </View>
     );
   }
 
@@ -128,11 +131,12 @@ export default function RoundTheme() {
     (isCustomSelected ? !trimmedCustom : selectedThemeId === null);
 
   return (
-    <Container title={i18n.t("themePage.title")}>
+    <View className="flex-1 p-8 justify-around">
+      <Stack.Screen options={{ title: i18n.t("themePage.title") }} />
       <KeyboardAvoidingView
         className="flex-1 w-full"
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+        keyboardVerticalOffset={headerHeight}
       >
         <View className="items-center justify-center px-4 min-h-20">
           <Text
@@ -207,6 +211,6 @@ export default function RoundTheme() {
           </View>
         </View>
       </KeyboardAvoidingView>
-    </Container>
+    </View>
   );
 }
