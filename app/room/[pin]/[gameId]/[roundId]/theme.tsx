@@ -12,6 +12,7 @@ import { useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
+  ScrollView,
   Text,
   TextInput,
   View,
@@ -127,7 +128,7 @@ export default function RoundTheme() {
   return (
     <Container title={i18n.t("themePage.title")}>
       <View className="flex-1 w-full">
-        <View className="items-center justify-center px-4 py-6 min-h-28">
+        <View className="items-center justify-center px-4 min-h-20">
           <Text
             className={
               previewLabel
@@ -139,7 +140,12 @@ export default function RoundTheme() {
           </Text>
         </View>
 
-        <View className="flex-row flex-wrap justify-center gap-3">
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="flex-row flex-wrap justify-center gap-3"
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
           {shuffledThemes.map((theme) => {
             const { emoji } = splitEmoji(
               i18n.t(`themePage.themes.${theme.key}`),
@@ -163,28 +169,36 @@ export default function RoundTheme() {
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
 
-        <View className="w-full h-px my-6 bg-foreground/10" />
+        <View className="pt-4 bg-background">
+          <View className="flex-row items-center mb-4 gap-x-3">
+            <View className="flex-1 h-px bg-foreground/10" />
+            <Text className="text-sm text-foreground/50">
+              {i18n.t("themePage.orSeparator")}
+            </Text>
+            <View className="flex-1 h-px bg-foreground/10" />
+          </View>
 
-        <Input
-          ref={customInputRef}
-          value={customValue}
-          onChangeText={handleCustomChange}
-          onFocus={selectCustom}
-          placeholder={i18n.t("themePage.customThemePlaceholder")}
-          autoCorrect={false}
-          returnKeyType="done"
-        />
+          <Input
+            ref={customInputRef}
+            value={customValue}
+            onChangeText={handleCustomChange}
+            onFocus={selectCustom}
+            placeholder={i18n.t("themePage.customThemePlaceholder")}
+            autoCorrect={false}
+            returnKeyType="done"
+          />
 
-        <View className="pt-6 mt-auto">
-          <LoadingButton
-            onPress={handleValidate}
-            isLoading={pickTheme.isPending}
-            isDisabled={isValidateDisabled}
-          >
-            <Button.Label>{i18n.t("themePage.validateButton")}</Button.Label>
-          </LoadingButton>
+          <View className="pt-6">
+            <LoadingButton
+              onPress={handleValidate}
+              isLoading={pickTheme.isPending}
+              isDisabled={isValidateDisabled}
+            >
+              <Button.Label>{i18n.t("themePage.validateButton")}</Button.Label>
+            </LoadingButton>
+          </View>
         </View>
       </View>
     </Container>

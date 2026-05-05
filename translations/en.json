@@ -19,7 +19,8 @@
     "waiting": "%{name}",
     "waitingSubtitle": "is choosing the theme...",
     "addThemeButton": "Custom theme",
-    "customThemePlaceholder": "Your custom theme",
+    "customThemePlaceholder": "Make up your own theme...",
+    "orSeparator": "or",
     "themes": {
       "gultyPleasure": "😏 Your guilty pleasure",
       "sleepyTime": "😴 The perfect track to fall asleep",
