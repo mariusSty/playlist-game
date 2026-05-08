@@ -60,20 +60,24 @@ export default function Song() {
     );
   }
 
+  const displayTheme =
+    round?.customTheme ??
+    (round?.theme ? i18n.t(`themePage.themes.${round.theme.key}`) : "");
+
+  const screen = <Stack.Screen options={{ title: displayTheme }} />;
+
   if (isRoundLoading || !round || (!round.theme && !round.customTheme)) {
     return (
       <View className="justify-center flex-1">
+        {screen}
         <ActivityIndicator size="large" />
       </View>
     );
   }
 
-  const displayTheme =
-    round.customTheme ?? i18n.t(`themePage.themes.${round.theme!.key}`) ?? "";
-
   return (
     <View className="flex-1 p-8 justify-around">
-      <Stack.Screen options={{ title: displayTheme }} />
+      {screen}
       <View className="justify-between flex-1 w-full">
         {userPick ? (
           <View className="flex-1 justify-center w-full gap-4">
