@@ -81,7 +81,11 @@
   },
   "resultPage": {
     "title": "Results",
-    "exitButton": "Exit game"
+    "exitButton": "Exit game",
+    "messageFirst": "🏆 Victory!",
+    "messageSecond": "🥈 Great 2nd place!",
+    "messageThird": "🥉 On the podium!",
+    "messageOther": "%{place}th place"
   },
   "leaveGame": {
     "confirmTitle": "Leave Game",

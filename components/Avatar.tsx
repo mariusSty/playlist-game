@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
 
 const sizes = {
+  large: { width: 96, height: 96, borderRadius: 10 },
   normal: { width: 50, height: 50, borderRadius: 5 },
   small: { width: 20, height: 20, borderRadius: 5 },
 };
