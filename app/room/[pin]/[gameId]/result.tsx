@@ -25,10 +25,11 @@ export default function ResultPage() {
     finishGame.mutate({ gameId, userId });
   }
 
-  const { currentPlayer, first, second, third, others } = rankResults(
+  const { currentPlayer, firsts, seconds, thirds, others } = rankResults(
     result,
     userId,
   );
+  const podiumCount = firsts.length + seconds.length + thirds.length;
 
   return (
     <View className="flex-1">
@@ -55,14 +56,20 @@ export default function ResultPage() {
           </Animated.View>
         )}
 
-        {first && second && (
+        {podiumCount >= 2 && (
           <Animated.View
             entering={FadeInDown.duration(400).delay(150)}
             className="flex-row items-end justify-center gap-2 px-2"
           >
-            <PodiumColumn result={second} place={2} />
-            <PodiumColumn result={first} place={1} />
-            {third && <PodiumColumn result={third} place={3} />}
+            {seconds.map((entry) => (
+              <PodiumColumn key={entry.user.id} result={entry} place={2} />
+            ))}
+            {firsts.map((entry) => (
+              <PodiumColumn key={entry.user.id} result={entry} place={1} />
+            ))}
+            {thirds.map((entry) => (
+              <PodiumColumn key={entry.user.id} result={entry} place={3} />
+            ))}
           </Animated.View>
         )}
 

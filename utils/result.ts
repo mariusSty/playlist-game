@@ -4,17 +4,25 @@ import i18n from "@/utils/translation";
 export type RankedResult = Result & { place: number };
 
 export function rankResults(results: Result[], userId: string) {
-  const ranked: RankedResult[] = [...results]
-    .sort((a, b) => b.score - a.score)
-    .map((entry, index) => ({ ...entry, place: index + 1 }));
+  const sorted = [...results].sort((a, b) => b.score - a.score);
+
+  const ranked: RankedResult[] = [];
+  for (let i = 0; i < sorted.length; i++) {
+    const entry = sorted[i];
+    const place =
+      i > 0 && sorted[i - 1].score === entry.score
+        ? ranked[i - 1].place
+        : i + 1;
+    ranked.push({ ...entry, place });
+  }
 
   return {
     ranked,
     currentPlayer: ranked.find((r) => r.user.id === userId),
-    first: ranked.find((r) => r.place === 1),
-    second: ranked.find((r) => r.place === 2),
-    third: ranked.find((r) => r.place === 3),
-    others: ranked.slice(3),
+    firsts: ranked.filter((r) => r.place === 1),
+    seconds: ranked.filter((r) => r.place === 2),
+    thirds: ranked.filter((r) => r.place === 3),
+    others: ranked.filter((r) => r.place > 3),
   };
 }
 
