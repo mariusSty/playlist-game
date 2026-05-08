@@ -9,6 +9,13 @@
     "joinError": "Code PIN invalide. Veuillez réessayer."
   },
   "startPage": {
+    "title": "Salon",
+    "pinLabel": "Code PIN",
+    "playerCount": {
+      "one": "1 joueur connecté",
+      "other": "%{count} joueurs connectés"
+    },
+    "shareMessage": "Rejoins ma partie Playlist Game ! PIN : %{pin}",
     "startButton": "Commencer la partie"
   },
   "themePage": {

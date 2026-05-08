@@ -1,5 +1,7 @@
 import { Avatar } from "@/components/Avatar";
 import { LoadingButton } from "@/components/LoadingButton";
+import { PinDisplay } from "@/components/PinDisplay";
+import { PlayerCount } from "@/components/PlayerCount";
 import { useStartGame } from "@/hooks/useGameMutations";
 import { useRoom } from "@/hooks/useRoom";
 import { useLeaveRoom } from "@/hooks/useRoomMutations";
@@ -25,8 +27,10 @@ export default function RoomScreen() {
   const hostId = room?.host?.id;
 
   return (
-    <View className="flex-1 p-8 justify-around">
-      <Stack.Screen options={{ title: `PIN : ${pin}` }} />
+    <View className="flex-1 p-8 gap-6">
+      <Stack.Screen options={{ title: i18n.t("startPage.title") }} />
+      <PinDisplay pin={pin} />
+      <PlayerCount count={users.length} />
       <ScrollView
         className="flex-1 w-full"
         showsVerticalScrollIndicator={false}

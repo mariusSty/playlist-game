@@ -60,9 +60,10 @@ export default function Song() {
     );
   }
 
-  const displayTheme =
-    round?.customTheme ??
-    (round?.theme ? i18n.t(`themePage.themes.${round.theme.key}`) : "");
+  const displayTheme: string =
+    round?.customTheme ||
+    (round?.theme && i18n.t(`themePage.themes.${round.theme.key}`)) ||
+    "";
 
   const screen = <Stack.Screen options={{ title: displayTheme }} />;
 

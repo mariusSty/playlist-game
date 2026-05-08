@@ -9,6 +9,13 @@
     "joinError": "Invalid PIN. Please try again."
   },
   "startPage": {
+    "title": "Lobby",
+    "pinLabel": "Game PIN",
+    "playerCount": {
+      "one": "1 player connected",
+      "other": "%{count} players connected"
+    },
+    "shareMessage": "Join my Playlist Game! PIN: %{pin}",
     "startButton": "Start game"
   },
   "themePage": {
