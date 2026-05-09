@@ -18,6 +18,15 @@
     "shareMessage": "Rejoins ma partie Playlist Game ! PIN : %{pin}",
     "startButton": "Commencer la partie"
   },
+  "gameHeader": {
+    "round": "Manche %{current} / %{total}",
+    "steps": {
+      "theme": "Thème",
+      "song": "Chanson",
+      "vote": "Vote",
+      "reveal": "Révélation"
+    }
+  },
   "themePage": {
     "title": "Choix du thème",
     "themeMaster": "Vous êtes le maître du thème, veuillez choisir le thème pour ce tour",
@@ -52,6 +61,8 @@
     }
   },
   "pickPage": {
+    "title": "Choisis ta chanson",
+    "themeLabel": "Thème",
     "yourSong": "Vous avez choisi :",
     "cancelButton": "Annuler",
     "chooseSong": "Choisissez une chanson en rapport avec le thème",
