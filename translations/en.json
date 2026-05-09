@@ -30,6 +30,8 @@
   "themePage": {
     "title": "Theme choice",
     "themeMaster": "You are the theme master, please choose the theme for this round",
+    "subtitleExisting": "Choose from the existing themes",
+    "subtitleCustom": "Create your own",
     "selectPrompt": "Which theme for this round?",
     "validateButton": "Pick this theme",
     "waiting": "%{name}",

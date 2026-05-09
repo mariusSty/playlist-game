@@ -30,6 +30,8 @@
   "themePage": {
     "title": "Choix du thème",
     "themeMaster": "Vous êtes le maître du thème, veuillez choisir le thème pour ce tour",
+    "subtitleExisting": "Choisissez parmi les thèmes existants",
+    "subtitleCustom": "Créez le vôtre",
     "selectPrompt": "Quel thème pour ce tour ?",
     "validateButton": "Valider ce thème",
     "waiting": "%{name}",

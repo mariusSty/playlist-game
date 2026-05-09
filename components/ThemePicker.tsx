@@ -114,6 +114,10 @@ export function ThemePicker({
         </Text>
       </View>
 
+      <Text className="text-center text-sm text-foreground/60 px-4 pb-3">
+        {i18n.t("themePage.subtitleExisting")}
+      </Text>
+
       <ScrollView
         className="flex-1"
         contentContainerClassName="flex-row flex-wrap justify-center gap-3"
@@ -139,6 +143,10 @@ export function ThemePicker({
           </Text>
           <View className="flex-1 h-px bg-foreground/10" />
         </View>
+
+        <Text className="text-center text-sm text-foreground/60 px-4 pb-3">
+          {i18n.t("themePage.subtitleCustom")}
+        </Text>
 
         <Input
           ref={customInputRef}
