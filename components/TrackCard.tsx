@@ -10,10 +10,17 @@ type TrackCardProps = {
   track: Track;
   pickedBy?: { name: string };
   header?: ReactNode;
+  footer?: ReactNode;
   children?: ReactNode;
 };
 
-export function TrackCard({ track, pickedBy, header, children }: TrackCardProps) {
+export function TrackCard({
+  track,
+  pickedBy,
+  header,
+  footer,
+  children,
+}: TrackCardProps) {
   return (
     <View className="w-full gap-3 p-3 border border-foreground rounded-xl">
       {pickedBy && (
@@ -56,6 +63,7 @@ export function TrackCard({ track, pickedBy, header, children }: TrackCardProps)
         </View>
         {children}
       </View>
+      {footer}
     </View>
   );
 }

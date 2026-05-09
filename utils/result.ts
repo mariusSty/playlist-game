@@ -33,6 +33,10 @@ export function placeMessage(place: number) {
   return i18n.t("resultPage.messageOther", { place });
 }
 
+export function pointsLabel(score: number) {
+  return score <= 1 ? "point" : "points";
+}
+
 export function formatPoints(score: number) {
-  return `${score} ${score <= 1 ? "point" : "points"}`;
+  return `${score} ${pointsLabel(score)}`;
 }
